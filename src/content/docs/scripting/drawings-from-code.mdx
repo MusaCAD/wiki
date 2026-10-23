@@ -1,0 +1,65 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Drawings from code
+description: Write a Musa CAD drawing from a short Python program, check it and print it to PDF. The picture on this page is made by exactly the code shown.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Drawings from code
+  order: 2
+---
+
+import { Code } from '@astrojs/starlight/components';
+import Figure from '../../../components/Figure.astro';
+import flangeCode from '../../../../examples/flange.py?raw';
+import flangeMusa from '../../../../public/examples/flange.musa?raw';
+
+A Musa CAD drawing is a plain text file. That means any program can write one: a Python script, a spreadsheet macro, a web service, or an AI agent. This page walks through a short Python program that draws a flange. Change a number at the top, run it again, and you get a new drawing.
+
+<Figure id="flange" alt="A round flange drawn in outline: an outer circle 120 across, a central bore, six bolt holes evenly spaced on a circle, horizontal and vertical centre lines, a dimension under it reading 120.00, and the title FLANGE, 6 HOLES ON PCD 90 above it." caption="This drawing was written by the program below and printed by Musa CAD when this page was built." />
+
+## The program
+
+The code below is the exact program that made the drawing above. When the wiki is built, it runs this program, then asks Musa CAD to print the result. If either step fails, the wiki does not build.
+
+<Code code={flangeCode} lang="python" title="flange.py" />
+
+Run it, then check and print the result:
+
+```sh
+python3 flange.py flange.musa
+musacad --check flange.musa
+musacad --plot flange.musa flange.pdf --paper A4 --landscape
+```
+
+## What it writes
+
+This is the file the program produces:
+
+<Code code={flangeMusa} lang="text" title="flange.musa" />
+
+A few rules are worth knowing before you write your own:
+
+- **The first line names the format version**, here `MUSACAD 14`, and the last line is `END`. Musa CAD reads every older version, so a file written as version 14 opens in every release since 0.1.0. A newer release only refuses files that are newer than itself.
+- **One object per line.** The numbers come first (`LINE x0 y0 x1 y1`, `CIRCLE cx cy r`), followed by seven numbers for the object's properties: layer, which properties come from the layer, colour, linetype and lineweight. `0 7 255 255 255 0 25` means layer 0, with colour, linetype and lineweight taken from the layer.
+- **Text takes three lines:** the record, the words, then the font (an empty line means the built-in font).
+- **Dimensions are measured, not typed.** A `DIM` record gives the points it measures and where its line goes; Musa CAD works out the number. You cannot make a dimension show a wrong value by accident.
+- **The reader is strict.** A line with the wrong number of values stops the whole file, and `musacad --check` tells you which line it was. That is a feature: a broken drawing never opens half-right.
+- **Units are what you decide.** The file says `UNITS mm`; one unit is then one millimetre, and dimensions read in millimetres.
+
+The [.musa format page](/file-formats/musa-format/) has the version history. For the full list of record types, the definitive reference is Musa CAD's own reader, [native_format.cpp](https://github.com/MusaCAD/MusaCAD/blob/main/src/core/io/native_format.cpp). A complete, tested Python writer that covers text, dimensions, leaders, hatches, blocks and title blocks is part of the [fabrication pipeline](https://github.com/MusaCAD/fabrication_pipeline/blob/main/src/musa_writer.py).
+
+## Write DXF instead
+
+If your tool already writes DXF, Musa CAD reads it directly. Both `--check` and `--plot` accept a `.dxf` file. The file name's ending decides how it is read.
+
+## Ideas
+
+- **Parts from a spreadsheet:** one row per part, one drawing per row, printed to PDF in one go.
+- **Drawings that follow the design:** regenerate the drawing whenever the numbers change, and check it in your build.
+- **A drawing for every order:** fill in a title block and a bill of materials from your order system.
+- **Let an AI agent draft it:** see [AI workflows](/scripting/ai-workflows/).

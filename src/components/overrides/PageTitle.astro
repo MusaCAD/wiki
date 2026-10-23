@@ -1,7 +1,12 @@
 ---
-// Breadcrumbs, the title, and the status line every page carries: coverage status, the
-// release it was checked against, when, and the platforms it applies to.
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// Where you are (breadcrumbs), the page title, and a status line: whether the page is
+// complete, which Musa CAD release it was checked against and when, and which platforms it
+// is about. Command and system variable pages then show the facts Musa CAD reports about them.
 import type { WikiRouteData } from '../../route-data';
+import ReferenceHeader from '../reference/ReferenceHeader.astro';
 
 type Entry = { type: 'link'; isCurrent: boolean; label: string; href: string } | { type: 'group'; label: string; entries: Entry[] };
 
@@ -10,7 +15,7 @@ const { entry, sidebar, lang } = route;
 const wiki = route.wiki;
 const t = Astro.locals.t;
 const base = import.meta.env.BASE_URL;
-const data = entry.data as typeof entry.data & { platforms?: string[]; kind?: string };
+const data = entry.data as typeof entry.data & { platforms?: string[]; kind?: string; command?: string; sysvar?: string };
 
 function trail(entries: Entry[], acc: Entry[] = []): Entry[] | null {
 	for (const e of entries) {
@@ -22,14 +27,23 @@ function trail(entries: Entry[], acc: Entry[] = []): Entry[] | null {
 	}
 	return null;
 }
-const groups = trail(sidebar as Entry[]) ?? [];
-// A section's landing page carries its group's name as its title; one crumb is enough.
-if (groups.length && groups[groups.length - 1]!.label === entry.data.title) groups.pop();
+const crumbs: { label: string; href?: string }[] = [];
+if (data.kind === 'command') crumbs.push({ label: 'Command reference', href: `${base}reference/` });
+else if (data.kind === 'sysvar') {
+	crumbs.push({ label: 'Command reference', href: `${base}reference/` });
+	crumbs.push({ label: 'System variables', href: `${base}reference/system-variables/` });
+} else if (entry.id.startsWith('blog/')) crumbs.push({ label: 'Blog', href: `${base}blog/` });
+else {
+	const groups = trail(sidebar as Entry[]) ?? [];
+	// A section's overview page carries its section's name as its title; one crumb is enough.
+	if (groups.length && groups[groups.length - 1]!.label === entry.data.title) groups.pop();
+	for (const g of groups) crumbs.push({ label: g.label });
+}
 const isRootLanding = (data.kind === 'landing' && (entry.id === '' || entry.id === 'index')) || entry.id === '404';
-const verified = wiki.lastVerified.getTime() > 0
-	? wiki.lastVerified.toLocaleDateString(lang, { dateStyle: 'medium', timeZone: 'UTC' })
-	: null;
+const showStatus = !isRootLanding && wiki.tracked && wiki.kind !== 'blog';
+const verified = wiki.lastVerified ? wiki.lastVerified.toLocaleDateString(lang, { dateStyle: 'medium', timeZone: 'UTC' }) : null;
 const platformName: Record<string, string> = { windows: 'Windows', linux: 'Linux', macos: 'macOS' };
+const refName = data.kind === 'command' ? data.command : data.kind === 'sysvar' ? data.sysvar : undefined;
 ---
 
 {
@@ -39,10 +53,8 @@ const platformName: Record<string, string> = { windows: 'Windows', linux: 'Linux
 				<li>
 					<a href={base}>{t('mc.home')}</a>
 				</li>
-				{groups.map((g) => (
-					<li>
-						<span>{g.label}</span>
-					</li>
+				{crumbs.map((c) => (
+					<li>{c.href ? <a href={c.href}>{c.label}</a> : <span>{c.label}</span>}</li>
 				))}
 				<li>
 					<span aria-current="page">{entry.data.title}</span>
@@ -55,24 +67,26 @@ const platformName: Record<string, string> = { windows: 'Windows', linux: 'Linux
 <h1 id="_top">{entry.data.title}</h1>
 
 {
-	!isRootLanding && (
+	showStatus && (
 		<div class="mc-status" data-pagefind-ignore>
-			<span class="mc-chip" data-status={wiki.status}>{t(`mc.status.${wiki.status}` as 'mc.status.complete')}</span>
-			{wiki.tier === 'generated' && <span class="mc-chip">generated from the application</span>}
+			<span class="mc-chip" data-status={wiki.status}>
+				{t(`mc.status.${wiki.status}` as 'mc.status.complete')}
+			</span>
+			{wiki.tier === 'generated' && <span class="mc-chip">made from Musa CAD's own data</span>}
 			<span>
 				{t('mc.appliesTo')} {wiki.appliesTo}
 			</span>
-			{verified && (
+			{verified && wiki.lastVerified && (
 				<span>
 					{t('mc.verified')} <time datetime={wiki.lastVerified.toISOString()}>{verified}</time>
 				</span>
 			)}
-			{data.platforms && (
-				<span>{data.platforms.map((p) => platformName[p] ?? p).join(' · ')}</span>
-			)}
+			{data.platforms && <span>{data.platforms.map((p) => platformName[p] ?? p).join(' · ')}</span>}
 		</div>
 	)
 }
+
+{refName && <ReferenceHeader name={refName} />}
 
 <style>
 	@layer starlight.core {

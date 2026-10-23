@@ -1,10 +1,13 @@
+<!-- SPDX-License-Identifier: LGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Pranay Kiran -->
+
 # Example drawings
 
-Every `.musa` here is plotted by the pinned Musa CAD release at build time
+Every `.musa` here (and every `.py` program that writes one) is plotted by the pinned Musa CAD release at build time
 (`scripts/render-examples.mjs`) and embedded by `<Figure id="...">`. A drawing that stops
 plotting fails the build.
 
-- `<id>.musa` — the drawing. Written for the wiki; **CC0** (see LICENSE).
+- `<id>.musa` — the drawing, or `<id>.py` — a program that writes it (run as `python3 -I <id>.py <out.musa>`). Also CC0 (see LICENSE).
 - `<id>.plotargs` — optional, one line of `musacad --plot` options for the render
   (default `--paper A4 --landscape`).
 

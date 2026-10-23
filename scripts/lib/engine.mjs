@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // The pinned engine: fetch the release AppImage for a version, extract it once, run it headless.
 import { createWriteStream, existsSync, mkdirSync, renameSync, chmodSync, statSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';

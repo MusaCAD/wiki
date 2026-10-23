@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // A static file server for dist/, for the audits and the link check. No dependencies.
 // Text responses are gzipped when the client accepts it, as GitHub Pages serves them, so the
 // audits measure what readers get and not an uncompressed stand-in.

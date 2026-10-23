@@ -1,12 +1,19 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // Plot every drawing in examples/ with the pinned engine release and convert the PDF to SVG.
 //
 //   examples/<id>.musa        the drawing (CC0)
-//   examples/<id>.plotargs    optional: one line of `--plot` options (default: --paper A4 --landscape)
+//   examples/<id>.py          or a program that writes it: run as `python3 -I <id>.py <out.musa>`,
+//                             so the code a page shows is the code that made the picture
+//   examples/<id>.plotargs    optional: the `--plot` options on one line (default: --paper A4
+//                             --landscape); lines starting with # are comments
 //   public/rendered/<id>.svg  the illustration the pages embed
 //   public/examples/<id>.musa the download
 //   src/data/rendered.json    the manifest <Figure> reads: engine version, args, size, hash
 //
-// A drawing that fails to plot fails the build: that is the regression signal the brief asks for.
+// A drawing that fails to plot fails the build, so a change in Musa CAD that breaks an example is
+// caught here, before a reader sees it.
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join, basename } from 'node:path';
@@ -28,15 +35,37 @@ mkdirSync(WORK, { recursive: true });
 
 const previous = existsSync(MANIFEST) ? JSON.parse(readFileSync(MANIFEST, 'utf8')) : {};
 const manifest = {};
-const files = existsSync(EXAMPLES) ? readdirSync(EXAMPLES).filter((f) => f.endsWith('.musa')).sort() : [];
+// Programs that write drawings run first; their output joins the hand-written drawings.
+const generators = existsSync(EXAMPLES) ? readdirSync(EXAMPLES).filter((f) => f.endsWith('.py')).sort() : [];
+const generated = new Map();
+for (const g of generators) {
+  const id = basename(g, '.py');
+  const out = join(WORK, `${id}.musa`);
+  const r = spawnSync('python3', ['-I', join(EXAMPLES, g), out], { encoding: 'utf8' });
+  if (r.status !== 0) {
+    console.error(`render: ${g} failed (exit ${r.status}):\n${r.stderr || r.stdout}`);
+    process.exit(1);
+  }
+  generated.set(`${id}.musa`, out);
+}
+const files = [
+  ...(existsSync(EXAMPLES) ? readdirSync(EXAMPLES).filter((f) => f.endsWith('.musa')) : []),
+  ...generated.keys(),
+].sort();
 let rendered = 0;
 let failed = 0;
 
 for (const file of files) {
   const id = basename(file, '.musa');
-  const src = join(EXAMPLES, file);
+  const src = generated.get(file) ?? join(EXAMPLES, file);
   const argsFile = join(EXAMPLES, `${id}.plotargs`);
-  const args = existsSync(argsFile) ? readFileSync(argsFile, 'utf8').trim() : '--paper A4 --landscape';
+  const args = existsSync(argsFile)
+    ? readFileSync(argsFile, 'utf8')
+        .split('\n')
+        .filter((l) => l.trim() && !l.trim().startsWith('#'))
+        .join(' ')
+        .trim()
+    : '--paper A4 --landscape';
   const hash = sha(readFileSync(src));
   const svgPath = join(OUT_SVG, `${id}.svg`);
   const prev = previous[id];

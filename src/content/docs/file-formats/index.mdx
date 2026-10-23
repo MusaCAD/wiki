@@ -1,0 +1,32 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: File formats and other CAD programs
+description: The file types Musa CAD reads and writes, its own .musa format, DXF, DWG through the free ODA File Converter, and images.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: partial
+kind: landing
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+| Format | Read | Write | Notes |
+|---|---|---|---|
+| `.musa` | Yes | Yes | Musa CAD's own format. Plain text. |
+| `.dxf` | Yes | Yes | Built in, nothing to install. |
+| `.dwg` | Yes | Yes | Through the free ODA File Converter, which Musa CAD downloads for you from **DWG Setup**. |
+| PDF | No | Yes | Plot or export. Real vector output. |
+| PNG, JPEG, BMP, TIFF, GIF | As images in a drawing | No | Attach with `IMAGEATTACH`. |
+
+When Musa CAD imports a file, it tells you anything it could not bring across, instead of dropping it silently.
+
+<CardGrid>
+  <LinkCard title="The .musa format" description="What a drawing file contains, which versions open where, and the full version history." href="/file-formats/musa-format/" />
+</CardGrid>
+
+Pages on DXF support entity by entity, DWG setup, fonts and moving projects in from AutoCAD are being written. Until then, see [Install on Linux](/get-started/install-linux/#dwg-files-in-the-flatpak) and [Install on Windows](/get-started/install-windows/#opening-dwg-files) for DWG setup.

@@ -1,0 +1,70 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: AI workflows
+description: How an AI agent can produce complete, checked drawing sets with Musa CAD, shown through the open-source fabrication pipeline that turns FreeCAD 3D models into vendor-ready A4 drawings. And how to set up your own.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: AI workflows
+  order: 3
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Musa CAD is a good fit for AI agents. Everything an agent needs is plain text and plain commands: it writes the drawing as text, asks Musa CAD to check it, prints it to PDF, looks at the result, and fixes what is wrong. No one needs to click anything.
+
+## A real example: the fabrication pipeline
+
+The [fabrication pipeline](https://github.com/MusaCAD/fabrication_pipeline) is an open-source project that uses Musa CAD this way. It takes 3D models of parts and assemblies made in FreeCAD and produces print-ready A4 fabrication drawings: the kind of drawing set a workshop needs to make the parts. No one drafts them by hand.
+
+Each part gets a sheet with:
+
+- a front view and a section through the part, with hatching on the cut faces;
+- true dimensions, hole callouts such as `3 X Ø4 H7 (REAM) THRU`, and thread markings;
+- datum flags and geometric tolerance frames;
+- fabrication notes, a shaded 3D picture of the part, and a filled-in title block with the scale, revision and the weight worked out from the model.
+
+Each assembly gets a sheet with numbered balloons and a parts table.
+
+### How it works
+
+The pipeline runs in stages. An AI agent runs each one, and a person approves the key decisions:
+
+<Steps>
+
+1. **Analyse.** FreeCAD runs headless and reports what is in the models: parts, features, sizes.
+2. **Judge.** The agent decides whether the models are ready to be made, and says what is wrong if they are not.
+3. **Pause for a person.** The pipeline stops until someone approves the judgement. It never carries on alone.
+4. **Finalise.** The agent asks the person, one question at a time, about each part: which view to show, where the section goes, the drawing numbers, the tolerances.
+5. **Draw.** The pipeline writes one `.musa` sheet per part, laid out so that no text or dimension overlaps anything. A sheet that cannot be laid out cleanly fails loudly instead of being shipped.
+6. **Export and check.** Every sheet is plotted to PDF through Musa CAD's own plot code. A checker then goes through a list of points: paper size, scale, title block, sections, centring, no overlaps. It renders each PDF to an image and looks at it before passing it.
+
+</Steps>
+
+The pipeline writes drawings with a Python module that knows Musa CAD's file format, and plots them through Musa CAD's libraries. When it finds something Musa CAD cannot do yet, the gap is reported as an issue on the Musa CAD repository, and the program improves.
+
+## Set up your own
+
+You do not need the whole pipeline to start. An agent needs four things.
+
+<Steps>
+
+1. **A way to write the drawing.** Give it a small writer for the records it needs (lines, circles, text, dimensions), like the [drawings from code](/scripting/drawings-from-code/) example, or the pipeline's complete [musa_writer.py](https://github.com/MusaCAD/fabrication_pipeline/blob/main/src/musa_writer.py).
+
+2. **A rule to check every file.** After writing a drawing, the agent runs `musacad --check drawing.musa --json --lines` and fixes everything the report lists, until the exit code is 0. A broken file is reported with its line number. Overlapping text, text outside the border and missing characters are all reported.
+
+3. **A way to see the result.** The agent prints the drawing with `musacad --plot`, turns the PDF into an image (for example with `pdftoppm -png`), and looks at it. Many problems are only obvious when you see the sheet.
+
+4. **The facts about Musa CAD.** Point the agent at this wiki. Every page is plain text that AI tools can read, and two files collect it all: [`/llms.txt`](/llms.txt) lists every page, and [`/llms-full.txt`](/llms-full.txt) has the text of every page in one file. The command data is also available as [JSON](/data/commands.json).
+
+</Steps>
+
+Keep a person in the loop for decisions that matter, as the pipeline does. The agent drafts quickly and checks itself; a person decides what the drawing should say.
+
+## What an agent cannot do (yet)
+
+An agent cannot drive the Musa CAD window itself. There is no remote control or plug-in interface for the running program. All automation works with files and the `musacad` command, which is what makes it reliable and easy to test.

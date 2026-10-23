@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // Expressive Code plugin: a ```musacad fence renders as Musa CAD's command line.
 //
 // Lines are read with the conventions the application's own prompts use:
@@ -49,7 +52,7 @@ function renderLine(line) {
   return [span('mc-echo', [text(line)])];
 }
 
-/** What the user typed. `↵` is shown as an Enter key; `⎋` as Esc. */
+/** What was typed at the prompt. `↵` is shown as the Enter key, `⎋` as Esc. */
 function renderInput(s) {
   if (s === '') return [];
   const parts = s.split(/(↵|⎋)/);

@@ -3,23 +3,29 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
-  "description": "The Musa CAD Wiki — wiki.musacad.org. Content CC BY-SA 4.0; code samples and example drawings CC0.",
+  "description": "The Musa CAD Wiki, wiki.musacad.org: the documentation for Musa CAD.",
   "engines": {
     "node": ">=22.23.4"
   },
   "scripts": {
     "dev": "astro dev",
+    "predev": "node scripts/render-examples.mjs",
     "render": "node scripts/render-examples.mjs",
+    "sync": "node scripts/sync-engine.mjs && node scripts/generate-reference.mjs",
+    "generate": "node scripts/generate-reference.mjs",
     "prebuild": "node scripts/render-examples.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "precheck": "node scripts/render-examples.mjs",
     "check": "astro check",
+    "check:headers": "node scripts/check-headers.mjs",
+    "check:pages": "node scripts/check-pages.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:staleness": "node scripts/check-staleness.mjs",
     "check:links": "node scripts/check-links.mjs",
     "audit": "node scripts/audit.mjs",
-    "verify": "npm run check:contrast && npm run check:staleness && npm run build && npm run check:links && npm run audit"
+    "verify": "npm run check:headers && npm run check:pages && npm run check:contrast && npm run check:staleness && npm run build && npm run check:links && npm run audit"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.4",
@@ -29,7 +35,8 @@
     "@fontsource-variable/space-grotesk": "^5.2.10",
     "@fontsource/opendyslexic": "^5.3.0",
     "astro": "^7.2.10",
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.3",
+    "starlight-blog": "^0.30.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
@@ -39,5 +46,12 @@
     "typescript": "^5.6.3",
     "unist-util-visit": "^5.1.0",
     "yaml": "^2.9.1"
-  }
+  },
+  "license": "LGPL-3.0-or-later",
+  "author": "Pranay Kiran",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MusaCAD/wiki.git"
+  },
+  "homepage": "https://wiki.musacad.org"
 }

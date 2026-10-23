@@ -1,0 +1,38 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Scripting and automation
+description: Musa CAD drawings can be made, checked and printed entirely by programs, scripts and AI agents. How it works, what you can automate, and where to start.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: landing
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Musa CAD is built so that programs can do everything a drafter does at the keyboard: create a drawing, check it, and print it. You can generate a part drawing from a spreadsheet, plot a whole drawing set every night, check every drawing in a repository before it goes out, or let an AI agent draft a complete set of fabrication drawings from a 3D model.
+
+## How it works
+
+Automation in Musa CAD rests on four simple pieces.
+
+1. **Drawings are plain text.** A `.musa` file is a list of readable records, one object per line: `LINE 0 0 120 0 ...`, `CIRCLE 30 40 10 ...`. Any language can write one. DXF works too.
+2. **The `musacad` command runs without a window.** `musacad --check` opens a drawing and reports problems. `musacad --plot` prints it to PDF. Neither needs a screen, so they work on servers, in scheduled jobs and in build pipelines.
+3. **Clear answers for programs.** Every run ends with an exit code that a script can test, and `--check --json` gives a report a program can read.
+4. **The libraries can be linked.** Musa CAD is LGPL-licensed C++, so your own tool can link its libraries to load, change and plot drawings directly.
+
+There is no macro language inside the program (no AutoLISP or VBA). Work happens outside it: a program writes the drawing, and Musa CAD checks and prints it. For most automation this is simpler and goes further, because the program can use any language, any data source and any library.
+
+## Where to start
+
+<CardGrid>
+  <LinkCard title="The command line" description="musacad --check and --plot: every option, the exit codes, batch printing and CI recipes." href="/scripting/command-line/" />
+  <LinkCard title="Drawings from code" description="A short Python program that writes a real drawing. Change a number, get a new drawing." href="/scripting/drawings-from-code/" />
+  <LinkCard title="AI workflows" description="How an AI agent turns 3D models into finished fabrication drawings with Musa CAD, and how to set up your own." href="/scripting/ai-workflows/" />
+  <LinkCard title="The .musa format" description="What a drawing file contains, how versions work, and the full version history." href="/file-formats/musa-format/" />
+</CardGrid>

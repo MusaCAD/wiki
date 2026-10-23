@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // Types for Starlight's virtual modules used by the component overrides. Starlight resolves
 // them at build time; `astro check` needs to know their shape.
 declare module 'virtual:starlight/components/*' {

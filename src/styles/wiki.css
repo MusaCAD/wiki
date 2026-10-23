@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+/* Copyright (C) 2026 Pranay Kiran */
+
 /*
   The wiki's own styling on top of Starlight: type, measure, the drafting vocabulary where it
   carries meaning (corner marks on cards, dimension-line rules under section headings, the
@@ -621,4 +624,266 @@ dialog.mc-rs .mc-rs-actions button:hover {
   .mc-footer .mc-meta {
     display: none;
   }
+}
+
+/* ---- Command and system variable pages: the facts block ---- */
+.mc-ref {
+  position: relative;
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem 0.9rem;
+  border: 1px solid var(--mc-line);
+  border-radius: 0.5rem;
+  background: var(--mc-paper-2);
+}
+.mc-ref::before,
+.mc-ref::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--mc-line-strong);
+  pointer-events: none;
+}
+.mc-ref::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; border-top-left-radius: 0.5rem; }
+.mc-ref::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; border-bottom-right-radius: 0.5rem; }
+.mc-ref-desc {
+  margin: 0 0 0.75rem;
+  font-size: var(--sl-text-lg);
+  color: var(--sl-color-white);
+  line-height: 1.5;
+}
+.mc-ref-facts {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+}
+.mc-ref-facts > div {
+  display: grid;
+  grid-template-columns: 9.5rem 1fr;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+@media (max-width: 30rem) {
+  .mc-ref-facts > div { grid-template-columns: 1fr; gap: 0.1rem; }
+}
+.mc-ref-facts dt {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mc-ink-faint);
+}
+.mc-ref-facts dd {
+  margin: 0;
+  color: var(--sl-color-gray-2);
+}
+.mc-ref a {
+  color: var(--sl-color-text-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+.mc-ref a:hover {
+  color: var(--sl-color-white);
+}
+.mc-ref-facts code {
+  font-family: var(--__sl-font-mono);
+  background: var(--sl-color-bg-inline-code);
+  padding: 0.05rem 0.35rem;
+  border-radius: 0.25rem;
+}
+.mc-ref-locs {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.mc-ref-transcript {
+  margin-top: 0.9rem;
+}
+.mc-ref-label {
+  margin: 0 0 0.4rem;
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mc-ink-faint);
+}
+.mc-ref-source {
+  margin: 0.8rem 0 0;
+  font-size: var(--sl-text-xs);
+  color: var(--mc-ink-faint);
+}
+
+/* ---- Index tables (commands, variables, shortcuts, exit codes) ---- */
+.mc-table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid var(--mc-line);
+  border-radius: 0.375rem;
+}
+.mc-table-wrap:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+}
+.mc-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--sl-text-sm);
+  line-height: 1.45;
+}
+.mc-table-wrap :is(th, td) {
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid var(--mc-line);
+  text-align: left;
+  vertical-align: top;
+}
+.mc-table-wrap thead th {
+  position: sticky;
+  top: 0;
+  background: var(--mc-panel);
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mc-ink-soft);
+}
+.mc-table-wrap tbody th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.mc-table-wrap a {
+  color: var(--sl-color-text-accent);
+}
+.mc-mono {
+  font-family: var(--__sl-font-mono);
+  font-size: 0.92em;
+}
+.mc-coverage {
+  font-size: var(--sl-text-base);
+  color: var(--sl-color-gray-2);
+}
+.mc-index-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: end;
+  margin: 1rem 0 0.25rem;
+}
+.mc-index-filters label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: var(--sl-text-xs);
+  color: var(--mc-ink-soft);
+}
+.mc-index-filters :is(input, select) {
+  min-height: 2.4rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--mc-line-strong);
+  border-radius: 0.375rem;
+  background: var(--mc-paper-2);
+  color: var(--sl-color-white);
+  font: inherit;
+  font-size: var(--sl-text-sm);
+}
+.mc-index-filters input {
+  min-width: min(22rem, 80vw);
+}
+.mc-index-count {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-xs);
+  color: var(--mc-ink-faint);
+  padding-bottom: 0.6rem;
+}
+.mc-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  white-space: nowrap;
+  font-size: var(--sl-text-xs);
+}
+.mc-dot::before {
+  content: '';
+  width: 0.5em;
+  height: 0.5em;
+  border: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+.mc-dot[data-status='complete'] { color: var(--mc-status-ok); }
+.mc-dot[data-status='complete']::before { background: currentColor; }
+.mc-dot[data-status='partial'] { color: var(--mc-status-warn); }
+.mc-dot[data-status='stub'] { color: var(--mc-ink-soft); }
+
+/* ---- The ribbon map ---- */
+.mc-ribbon-tab h2 {
+  margin-top: 2rem;
+  font-family: var(--mc-font-display);
+  font-size: var(--sl-text-2xl);
+  color: var(--sl-color-white);
+}
+.mc-ribbon-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.mc-ribbon-panel {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--mc-line);
+  border-radius: 0.375rem;
+  background: var(--mc-paper-2);
+  font-size: var(--sl-text-sm);
+}
+.mc-ribbon-panel h3 {
+  margin: 0 0 0.4rem;
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mc-ink-soft);
+}
+.mc-ribbon-panel ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+.mc-ribbon-panel li + li {
+  margin-top: 0.15rem;
+}
+.mc-ribbon-panel a {
+  color: var(--sl-color-text-accent);
+}
+.mc-ribbon-cmd {
+  font-family: var(--__sl-font-mono);
+  font-size: var(--sl-text-2xs);
+  color: var(--mc-ink-faint);
+}
+.mc-ribbon-note {
+  font-size: var(--sl-text-xs);
+  color: var(--mc-ink-faint);
+}
+.is-placeholder > span:first-child {
+  color: var(--mc-ink-soft);
+  text-decoration: line-through;
+  text-decoration-color: var(--mc-line-strong);
+}
+
+/* ---- Shortcut pages ---- */
+.mc-shortcuts h2 {
+  margin-top: 2rem;
+  font-family: var(--mc-font-display);
+  font-size: var(--sl-text-2xl);
+  color: var(--sl-color-white);
+}
+.mc-shortcuts kbd.mc-kbd + kbd.mc-kbd {
+  margin-left: 0.2rem;
+}
+
+/* Inline code inside a link keeps the link's meaning and a readable contrast (the accent on
+   the code background is only 4.25:1 in the light theme; the deeper accent is 7.6:1). */
+.sl-markdown-content a code,
+.mc-ref a code {
+  color: var(--sl-color-accent-high);
+}
+
+/* The blog's list pages hide the page title; keep it, so every page has its heading and
+   its breadcrumbs. */
+main > .content-panel:first-of-type {
+  display: block !important;
 }

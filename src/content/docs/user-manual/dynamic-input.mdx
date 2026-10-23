@@ -1,0 +1,135 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Dynamic Input
+description: Dynamic Input lets you type commands, answer prompts, pick options and enter exact lengths, angles and coordinates right next to the cursor in Musa CAD. How it works, every key, and every setting.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Dynamic Input
+  order: 1
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import commandEntry from '../../../assets/screenshots/command-entry.png';
+import dynamicInput from '../../../assets/screenshots/dynamic-input.png';
+
+**Dynamic Input** means you work at the cursor. You type commands there, read the prompt there, pick options there, and type exact sizes there. Your eyes stay on the drawing instead of going back and forth to a command line at the bottom of the screen.
+
+It is how Musa CAD works from the first time you start it, and it is the biggest difference you will notice from other 2D CAD programs. It feels like AutoCAD's hands-on way of working, with everything brought to where you are looking.
+
+## Switch it on or off
+
+Dynamic Input is **on** in a new installation. Turn it on or off in any of these ways:
+
+- Press <kbd>F12</kbd>.
+- Click **DYN** on the status bar at the bottom of the window.
+- Type `DS` to open Drafting Settings, go to the **Dynamic Input** tab, and tick or untick **Enable Dynamic Input (F12)**.
+
+Musa CAD remembers your choice the next time it starts.
+
+When Dynamic Input is off, the classic command line appears at the bottom of the window. Both show exactly the same prompts and accept exactly the same input, so you can switch whenever you like.
+
+## Start a command
+
+<Screenshot src={commandEntry} alt="REC typed in a small box beside the crosshair on a house plan. Under the box, a list offers RECTANG and RECTANGLE, each with a one-line description." caption="Typing REC: the matching commands appear at the cursor." capturedWith="0.8.0" />
+
+When no command is running, **just start typing** on the drawing. You do not need to click first.
+
+1. A small box appears at the cursor with what you type.
+2. Under it, a list shows the commands whose name or alias starts with those letters, each with a short description.
+3. Use <kbd>↓</kbd> and <kbd>↑</kbd> (or <kbd>Tab</kbd>) to choose one, and press <kbd>Enter</kbd> to run it. Or keep typing the full alias and press <kbd>Enter</kbd>.
+4. <kbd>Esc</kbd> clears what you typed.
+
+## Answer the prompts
+
+Once a command starts, its prompt appears next to the cursor, for example:
+
+```musacad
+Specify next point or [Close/Undo]:
+```
+
+- **Type a value** and press <kbd>Enter</kbd> or <kbd>Space</kbd>.
+- **Choose an option** by typing its capital letters (`C` for Close), or press <kbd>↓</kbd> to see the options as a list at the cursor and pick one.
+- **Accept the default** shown in angle brackets, like `<10.0000>`, by pressing <kbd>Enter</kbd> without typing anything.
+- **Cancel** with <kbd>Esc</kbd>. It always cancels the command, even if you have half-typed a value.
+
+## Type exact sizes while you draw
+
+<Screenshot src={dynamicInput} alt="A thick polyline being drawn away from a house plan. Next to the cursor, two boxes show the segment's length and angle, and a dashed line shows polar tracking holding the segment at 45 degrees." caption="Drawing a polyline: its length and angle wait at the cursor for a typed value." capturedWith="0.8.0" />
+
+While you draw, Musa CAD shows the size of what you are drawing in small boxes stuck to the shape:
+
+| Command | The boxes show |
+|---|---|
+| LINE, PLINE | the length and the angle of the segment |
+| CIRCLE | the radius |
+| RECTANG | the width and the height |
+
+You do not need to click into a box. Just type a number and it goes into the first box. Then:
+
+- <kbd>Tab</kbd> moves to the next box, and <kbd>Shift</kbd>+<kbd>Tab</kbd> moves back.
+- A value you type is **locked**, and the mouse still controls the other boxes. Type a length of `50`, then swing the mouse to choose the direction.
+- <kbd>Enter</kbd> or <kbd>Space</kbd> commits the values and the command carries on, ready for the next point.
+- Pressing <kbd>Enter</kbd> with nothing typed ends the step. At LINE's next-point prompt, that ends the command.
+- Ortho, polar tracking and snaps still apply, so a typed length follows the angle they give.
+
+Other commands show their prompt and value at the cursor in the same way. The boxes stuck to the shape are available for LINE, PLINE, CIRCLE and RECTANG in version 0.8.0.
+
+## Type coordinates (pointer input)
+
+Wherever Musa CAD asks for a point, the cursor's position is shown next to it.
+
+- Type the X value, press <kbd>Tab</kbd>, and type the Y value.
+- For a **second or later point**, what you type is measured **from the previous point**. So `10,5` means `@10,5`, 10 units right and 5 up from the last point. This matches AutoCAD.
+- Put `#` in front for an **absolute** point on the drawing, for example `#10,5`.
+- Put `@` in front to make a point relative either way.
+- `50<45` means 50 units at 45 degrees.
+
+Two settings change this. `DYNPICOORDS` set to `1` makes second points absolute too. `DYNPIFORMAT` set to `1` shows the next point as `x,y` instead of `distance<angle`.
+
+## Edit with grips
+
+When you drag a grip (the small squares on a selected object), the boxes show how the object changes: the new length, the change in length, the angle or the radius. Type a value to put the grip at exactly that length or angle, and use <kbd>Tab</kbd> to move between the values. `DYNDIGRIP` and `DYNDIVIS` choose which values appear.
+
+## Every key at a glance
+
+| Key | What it does with Dynamic Input on |
+|---|---|
+| any letter | starts typing a command at the cursor (when no command is running) |
+| <kbd>Enter</kbd> or <kbd>Space</kbd> | runs the command, or commits what you typed; with nothing typed, ends the step |
+| <kbd>Esc</kbd> | cancels the command, always |
+| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | moves between the value boxes |
+| <kbd>↓</kbd> | at a prompt with options, lists the options at the cursor |
+| <kbd>↑</kbd> <kbd>↓</kbd> | in the command list, choose a command |
+| <kbd>F12</kbd> | switches Dynamic Input on or off |
+
+## The settings
+
+Type a setting's name to change it, or open its page for the details.
+
+| Setting | What it controls | Fresh install |
+|---|---|---|
+| [`DYNMODE`](/reference/system-variables/dynmode/) | Which parts are on: 1 pointer input (coordinates), 2 dimensional input (the size boxes), 3 both, 0 off. A negative value is off until you press <kbd>F12</kbd>. | 3 |
+| [`DYNPROMPT`](/reference/system-variables/dynprompt/) | Show the command's prompt at the cursor (1) or only the value (0). | 1 |
+| [`DYNPICOORDS`](/reference/system-variables/dynpicoords/) | Second and later points relative (0) or absolute (1). | 0 |
+| [`DYNPIFORMAT`](/reference/system-variables/dynpiformat/) | Show the next point as distance and angle (0) or as x,y (1). | 0 |
+| [`DYNDIGRIP`](/reference/system-variables/dyndigrip/) | Which values show while you drag a grip: 1 resulting length, 2 length change, 4 absolute angle, 8 angle change, 16 arc radius. Add them up. | 31 |
+| [`DYNDIVIS`](/reference/system-variables/dyndivis/) | How many grip values show: 0 the length change only, 1 the change and the result, 2 everything DYNDIGRIP asks for. | 1 |
+
+All six settings are kept between sessions, along with the on/off state.
+
+## Tips
+
+- **Never reach for the mouse to type a number.** Start typing as soon as the prompt appears.
+- **Learn the aliases.** `L`, `C`, `REC`, `TR`, `O`, `F`, `M`, `CO`. The list under the cursor shows them as you type, so you pick them up as you go.
+- **Use <kbd>↓</kbd> for options.** You do not need to remember that Ttr is "tan tan radius"; press <kbd>↓</kbd> and pick it.
+- **Mix the two ways.** Type a length, then let the mouse and polar tracking choose the angle.
+
+## Next
+
+- Try it in [Your first drawing](/get-started/first-drawing/).
+- See every command and its alias in the [command reference](/reference/).

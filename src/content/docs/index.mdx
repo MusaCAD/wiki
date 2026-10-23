@@ -1,6 +1,8 @@
 ---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 title: Musa CAD Wiki
-description: The documentation for Musa CAD, the free, open-source 2D CAD application that follows AutoCAD's commands, prompts, ribbon and shortcuts. Install guides, the user manual, every command, file formats, scripting and tutorials.
+description: The official guide to Musa CAD, the free 2D CAD program that works like AutoCAD. Install it, draw your first part, look up any command, and automate your drawings.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
@@ -9,42 +11,51 @@ kind: landing
 tableOfContents: false
 ---
 
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { CardGrid, Card, LinkCard } from '@astrojs/starlight/components';
 
 <p class="mc-home-intro">
-  Musa CAD is a free, open-source 2D CAD application. It follows AutoCAD's command line, prompts, ribbon and shortcuts, so a drafter's habits carry over, and runs them on a multi-threaded, GPU-accelerated core. This wiki is its documentation: how to install it, how to draft with it, what every command does, and what it does not do yet.
+  Musa CAD is a free program for 2D technical drawings: parts, plans, sections and sheets. If you have used AutoCAD, you already know how to use it. The commands, prompts, ribbon and keyboard shortcuts are the same. This wiki shows you how to install it, how to draw with it, and what every command does.
 </p>
 
 ## Start here
 
 <CardGrid>
-  <LinkCard title="Install" description="Windows, Linux from Flathub or an AppImage, and the macOS preview." href="/get-started/install-linux/" />
-  <LinkCard title="Your first drawing" description="A dimensioned plate in ten minutes, prompt by prompt, with the drawing to download." href="/get-started/first-drawing/" />
-  <LinkCard title="Coming from AutoCAD" description="What carries over, what is different, and what is not there yet." href="/get-started/coming-from-autocad/" />
-  <LinkCard title="A tour of the interface" description="The ribbon, the command line, dynamic input and the status bar, named." href="/get-started/interface-tour/" />
+  <LinkCard title="Install Musa CAD" description="Windows, Linux (Flathub or AppImage) and the macOS preview. Five minutes." href="/get-started/install-linux/" />
+  <LinkCard title="Your first drawing" description="Draw a plate with two holes, add dimensions and print it to PDF, step by step." href="/get-started/first-drawing/" />
+  <LinkCard title="Coming from AutoCAD" description="What works the same, what is different, and what is not there yet." href="/get-started/coming-from-autocad/" />
+  <LinkCard title="Find a command" description="Every command and setting, with its shortcut and where it is on the ribbon." href="/reference/" />
 </CardGrid>
 
-## What is here, and what is being written
+## What makes Musa CAD different
 
-The wiki is being built section by section, the machinery that keeps it true before the content. Sections appear in the navigation when their first pages are ready.
+<CardGrid>
+  <Card title="Type where you draw">
+    With Dynamic Input, the command, the prompt and the exact length or angle all appear next to your cursor. You type the number there and keep your eyes on the drawing. It is on from the first start. [How Dynamic Input works](/user-manual/dynamic-input/)
+  </Card>
+  <Card title="Automate whole drawings">
+    A Musa CAD drawing is a plain text file that any program can write, and the `musacad` command checks and prints drawings without opening a window. Scripts and AI agents can produce finished drawing sets. [Scripting and automation](/scripting/)
+  </Card>
+  <Card title="Open the files you already have">
+    Musa CAD reads and writes DXF directly. It opens and saves DWG through the free ODA File Converter, which it downloads for you in one click.
+  </Card>
+  <Card title="Free, open source, no account">
+    It runs on Windows and Linux, with a macOS preview. There is no licence key, no sign-in and no subscription.
+  </Card>
+</CardGrid>
 
-<ul class="mc-planned">
-  <li>Get started <span>ready</span></li>
-  <li>User manual <span>being written</span></li>
-  <li>Command reference <span>being generated</span></li>
-  <li>Tutorials <span>planned</span></li>
-  <li>File formats and interop <span>planned</span></li>
-  <li>Scripting and automation <span>planned</span></li>
-  <li>Developer <span>planned</span></li>
-  <li>Troubleshooting <span>planned</span></li>
-  <li>Releases <span>planned</span></li>
-  <li>Project <span>planned</span></li>
-</ul>
+## News
 
-Until those sections exist, the engine repository's own documents are the reference: [BUILD.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/BUILD.md), [CLI.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/CLI.md), [COMMANDS.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/COMMANDS.md), [ROADMAP.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/ROADMAP.md) and the [release notes](https://github.com/MusaCAD/MusaCAD/releases).
+New releases and longer write-ups are on the [blog](/blog/). The latest: [Musa CAD 0.8.0 is out](/blog/musa-cad-0-8-0/).
 
-## How this wiki stays true
+## How to read this wiki
 
-Every page says which release it was last checked against and whether it is complete, partial or a stub. A page that falls behind a release says so at the top. The data on command pages comes from the application itself, not from a hand-written table, and the illustrations of drawings are plotted by the application at build time from the example files you can download. Where the wiki does not yet cover something, it says "not documented yet" rather than guessing.
+Every page tells you how far to trust it, just under its title:
 
-Nothing here is taken from Autodesk's documentation. Every description is written from Musa CAD's own source, its own prompts and testing.
+- **Complete** means the page covers its topic.
+- **Partial** means it covers part of it, and says what is missing.
+- **Not written yet** means the page only shows what Musa CAD itself reports, such as a command's name, shortcut and first prompt.
+- **Checked against Musa CAD 0.8.0** is the release the page was last tested with. If a newer release comes out and the page has not been checked again, a note at the top says so.
+
+The command lists and the pictures of drawings are made by Musa CAD itself whenever the wiki is built, so they always match the release it was built for.
+
+Nothing here is copied from Autodesk's documentation. Every page is written from Musa CAD's own source code, its own prompts and real use.

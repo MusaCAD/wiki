@@ -1,40 +1,35 @@
-Musa CAD Wiki — licences
+Musa CAD Wiki — licence
 
-1. Documentation content (the pages under src/content/, the images the wiki authors,
-   and the text of this repository's Markdown files) is licensed under the
-   Creative Commons Attribution-ShareAlike 4.0 International licence (CC BY-SA 4.0).
-   https://creativecommons.org/licenses/by-sa/4.0/
+Copyright (C) 2026 Pranay Kiran and the Musa CAD contributors.
 
-2. Code samples shown in the pages, and the example drawings under examples/ (the .musa
-   files and their render settings), are dedicated to the public domain under CC0 1.0,
-   so they can be pasted into real work without attribution.
-   https://creativecommons.org/publicdomain/zero/1.0/
+This wiki — its pages, its code and its other files — is free software: you can redistribute
+it and/or modify it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at your option) any later
+version. This is the same licence as Musa CAD itself.
 
-3. The wiki's own source code (astro.config.mjs, wiki.config.mjs, src/components/,
-   src/plugins/, src/styles/, scripts/, .github/) is licensed under the MIT licence:
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
 
-   Copyright (c) 2026 Musa CAD contributors
+The full texts are in COPYING (the GNU General Public License, version 3) and COPYING.LESSER
+(the GNU Lesser General Public License, version 3). Each file names its licence with an
+SPDX-License-Identifier line.
 
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this
-   software and associated documentation files (the "Software"), to deal in the Software
-   without restriction, including without limitation the rights to use, copy, modify, merge,
-   publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
-   to whom the Software is furnished to do so, subject to the following conditions: The above
-   copyright notice and this permission notice shall be included in all copies or substantial
-   portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-   FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-   CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE.
+Example drawings and code samples
+---------------------------------
+The example drawings under examples/ (the .musa files, the programs that write them and their
+render settings) and the code samples shown on the pages are, in addition, dedicated to the
+public domain under CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/), so you can
+use them in your own work without credit.
 
-4. Screenshots under src/assets/screenshots/ come from the Musa CAD repository and remain
-   under its licence, LGPL-3.0-or-later (see src/assets/screenshots/SOURCES.md). The Musa CAD
-   logo belongs to the Musa CAD project.
+Screenshots and logo
+--------------------
+The screenshots under src/assets/screenshots/ come from the Musa CAD repository and are under
+its licence, LGPL-3.0-or-later (see src/assets/screenshots/SOURCES.md). The Musa CAD logo
+belongs to the Musa CAD project.
 
-5. Musa CAD itself is a separate work, licensed LGPL-3.0-or-later:
-   https://github.com/MusaCAD/MusaCAD
-
+Trademarks
+----------
 AutoCAD is a registered trademark of Autodesk, Inc. Musa CAD is an independent open-source
 project and is not affiliated with, endorsed by or sponsored by Autodesk. Nothing in this wiki
-is derived from Autodesk's documentation.
+is taken from Autodesk's documentation.

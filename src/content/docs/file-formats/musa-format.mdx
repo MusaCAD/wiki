@@ -1,0 +1,53 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: The .musa format
+description: Musa CAD's own drawing format is plain text. Which versions open in which release, what each format version added, and how to write one from a program.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: reference
+sidebar:
+  label: The .musa format
+  order: 1
+---
+
+import FormatHistory from '../../../components/reference/FormatHistory.astro';
+import formats from '../../../data/format-history.json';
+import releases from '../../../data/releases.json';
+import { compareVersions } from '../../../../wiki.config.mjs';
+
+A `.musa` file is Musa CAD's own drawing format. It is plain text: you can open one in any text editor and read it. Each line is one record, such as a layer, a line, a circle or a dimension. The first line says which version of the format the file uses, for example `MUSACAD 45`, and the last line is `END`.
+
+## Which files open where
+
+The rule is simple:
+
+- **Newer Musa CAD always opens older files.** A file from version 0.1.0 opens in every later release.
+- **Older Musa CAD cannot open newer files.** When a release adds something to the format, files saved by it need that release or newer. An older release says `Unsupported file format version` and does not open the file.
+
+So if you share drawings with someone, check that they have the same Musa CAD version as you, or a newer one.
+
+<div class="mc-table-wrap not-content" role="region" aria-label="Which release opens which format" tabindex="0">
+  <table>
+    <thead><tr><th scope="col">Musa CAD</th><th scope="col">Saves format</th><th scope="col">Opens formats</th></tr></thead>
+    <tbody>
+      {[...releases].sort((a, b) => compareVersions(b.version, a.version)).map((r) => (
+        <tr><th scope="row" class="mc-mono">{r.version}</th><td class="mc-mono">v{r.formatVersion}</td><td class="mc-mono">v1 to v{r.formatVersion}</td></tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+To give a drawing to someone with an older release, export it as DXF, which every version reads.
+
+## Version history
+
+Every format version, newest first: the release that first saved it, and what it added. This table is made from the comments in Musa CAD's source code (release {formats.from}) when the wiki is built, so it is written by the developers, in their words.
+
+<FormatHistory />
+
+## Writing a .musa file from a program
+
+See [Drawings from code](/scripting/drawings-from-code/) for a short, tested example and the rules worth knowing.

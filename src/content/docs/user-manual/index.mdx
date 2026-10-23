@@ -1,0 +1,40 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: User manual
+description: How to draft with Musa CAD, organised by what you are doing, from drawing and editing to dimensions, layers, layouts and printing.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: partial
+kind: landing
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+The user manual is organised by what you are trying to do, not by menu. Each chapter explains how the tools for one job fit together, and links to the [command reference](/reference/) for every detail of each command.
+
+The manual is being written chapter by chapter. Until a chapter exists, the command reference already has a page for every command, with its prompt, its aliases and where it is on the ribbon.
+
+## Ready now
+
+<CardGrid>
+  <LinkCard title="Dynamic Input" description="Type commands, options and exact sizes right at the cursor. The fastest way to draw in Musa CAD." href="/user-manual/dynamic-input/" />
+</CardGrid>
+
+## Coming next
+
+<ul class="mc-planned">
+  <li>Drawing <span>lines, circles, polylines and more</span></li>
+  <li>Modifying <span>move, trim, fillet, offset, array</span></li>
+  <li>Precision and drafting aids <span>snaps, tracking, ortho</span></li>
+  <li>Annotation <span>text, dimensions, leaders, tables, GD&amp;T</span></li>
+  <li>Organising a drawing <span>layers, blocks, xrefs, groups</span></li>
+  <li>Layouts, viewports and plotting</li>
+  <li>Working with files and other CAD programs</li>
+  <li>Settings and system variables</li>
+  <li>Customising <span>shortcuts, aliases, workspaces</span></li>
+</ul>

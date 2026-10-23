@@ -1,6 +1,8 @@
 ---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 title: What Musa CAD is
-description: A 2D drafting application that follows AutoCAD's conventions on a modern multi-threaded, GPU-accelerated core. What it does, what it is built on, what it is not, and where it stands today.
+description: Musa CAD is a free, open-source 2D CAD program that works like AutoCAD. Here is what it can do, what makes it different, what it runs on, and what it does not do yet.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
@@ -13,46 +15,60 @@ sidebar:
 import Screenshot from '../../../components/Screenshot.astro';
 import overview from '../../../assets/screenshots/overview.png';
 
-Musa CAD is a 2D drafting application for technical, architectural and engineering drawings. It is free and open source, licensed LGPL-3.0-or-later, and written in C++23. It mirrors AutoCAD's ribbon, command line, prompts, aliases and keyboard shortcuts on purpose: a drafter who knows `L`, `TR`, `F8` and `Select objects:` can sit down and work.
+Musa CAD is a free program for making 2D technical drawings: mechanical parts, floor plans, sections, wiring layouts and the sheets they are printed on. It works the way AutoCAD works. The commands, the aliases (like `L` for LINE), the prompts, the ribbon and the keyboard shortcuts are the same. So if you know AutoCAD, you can sit down and draw.
 
-<Screenshot src={overview} alt="The Musa CAD window: a ribbon with Home, Insert, Annotate, Parametric, View, Manage and Output tabs; three drawing tabs; a house floor plan with an exterior wall selected and its grips showing; the Properties palette on the right listing the wall's layer and width." caption="The window at version 0.8.0: ribbon, drawing tabs, a selected wall and the Properties palette." capturedWith="0.8.0" eager />
+It is open source under the LGPL-3.0-or-later licence. It costs nothing, needs no account and has no licence key.
 
-## What it does
+<Screenshot src={overview} alt="The Musa CAD window: the ribbon with its Home, Insert, Annotate, Parametric, View, Manage and Output tabs; three drawing tabs; a house floor plan with one outside wall selected and its grips showing; the Properties palette on the right listing the wall's layer and width." caption="Musa CAD 0.8.0 with a floor plan open and one wall selected." capturedWith="0.8.0" eager />
 
-- **Draw:** lines, polylines with widths and arc segments, circles, arcs, ellipses, splines, polygons, rectangles with chamfers and fillets, construction lines and rays, donuts, revision clouds, multilines, points, hatches and gradients.
-- **Modify:** move, copy, rotate, mirror, scale, stretch, trim, extend, fillet, chamfer, offset, array, break, join, lengthen, align, explode, polyline editing, draw order; grips on every object.
-- **Draft precisely:** running and single-pick object snaps, polar and object snap tracking, ortho, grid snap, dynamic input at the cursor, absolute, relative (`@dx,dy`) and polar (`@dist<angle`) coordinates, feet-and-inches input.
-- **Annotate:** single-line and multiline text with styles; linear, aligned, angular, radial, diameter, jogged, ordinate and arc-length dimensions with named styles, associativity and editing commands; leaders and multileaders with styles; tables with data links; geometric tolerance frames and datums; fields.
-- **Organise:** layers with states and filters, linetypes and lineweights, blocks with attributes and the Block Editor, external references, raster images, groups.
-- **Lay out and plot:** layouts with viewports, page setups, plot preview, plotting to PDF or a printer, batch plotting with PUBLISH.
-- **Exchange files:** DXF read and written natively; DWG through the free ODA File Converter, which the application downloads for you from DWG Setup.
-- **Script:** a command line that opens, checks and plots drawings headlessly, with exit codes a pipeline can read.
+## What you can do with it
 
-The [release notes](https://github.com/MusaCAD/MusaCAD/releases) list what each version added, and what it did not.
+- **Draw** lines, polylines (with widths and curved segments), circles, arcs, ellipses, splines, rectangles, polygons, points, multilines, revision clouds, hatches and gradient fills.
+- **Edit** with move, copy, rotate, mirror, scale, stretch, trim, extend, fillet, chamfer, offset, array, break, join and explode. Every object has grips you can drag.
+- **Draw accurately** with object snaps (endpoint, midpoint, centre and the rest), polar tracking, ortho, grid snap, and exact coordinates such as `@50,0` or `@50<45`.
+- **Annotate** with text, dimensions of every common kind, leaders, tables, and geometric tolerance frames (GD&T).
+- **Organise** a drawing with layers, linetypes, lineweights, blocks with attributes, external references, images and groups.
+- **Print** layouts with viewports to PDF or to a printer, one sheet or a whole set at once.
+- **Exchange files** in DXF directly, and DWG through a free converter.
 
-## What it is built on
+Each release adds more. The [release notes](https://github.com/MusaCAD/MusaCAD/releases) list what each version added, and what is still missing.
 
-Three threads, no shared mutable state: a UI and command thread, a geometry thread and a render thread, passing messages through a queue and a triple-buffered snapshot. Geometry lives in cache-friendly structure-of-arrays storage with its own 2D geometry kernel, so there is no third-party CAD dependency and the project is clone-and-build clean. The viewport draws through OpenGL with instanced rendering, which is why the drawing area needs **OpenGL 4.5 Core** and why a million primitives pan and zoom smoothly. The architecture is documented in the repository's [ARCHITECTURE.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/ARCHITECTURE.md).
+## Two things that set it apart
 
-## What it is not
+### You type where you draw
 
-- **Not 3D.** Musa CAD is for 2D drafting. The kernel has a seam for a future 3D backend, but there is no 3D modelling and none is scheduled.
-- **No AutoLISP, VBA or plug-ins.** There is no scripting API inside the application. Automation is the headless command line: open, check and plot drawings from scripts and CI.
-- **Not a DWG application.** The native format is `.musa`, a line-oriented text format. DWG goes through an external converter, never linked in, which keeps the application LGPL-clean.
-- **Not finished.** It is at version 0.8.0, released on 22 October 2026, after seven releases since June. Large areas are complete; others are partial, and the project says so in its release notes, its roadmap and in the ribbon, where a tool that is not built yet is a disabled button whose tooltip says so.
+Musa CAD has **Dynamic Input**, and it is switched on from the first start. When you start typing, the command appears next to your cursor, with the list of matching commands under it. The prompt (`Specify next point or [Close/Undo]:`) appears there too. While you draw, the length and angle of the line you are drawing sit in small boxes beside it, and you can type an exact value straight into them.
 
-## Platforms
+You never have to look down at a command line at the bottom of the screen. If you prefer that classic command line, press <kbd>F12</kbd> and it comes back. [Read how Dynamic Input works](/user-manual/dynamic-input/).
+
+### Whole drawings can be made by programs
+
+Every Musa CAD drawing is a plain text file (`.musa`) that any program or script can write, line by line. DXF works the same way. The `musacad` command can check a drawing for problems and print it to PDF without opening a window, so it runs on servers, in scheduled jobs and in build pipelines.
+
+This is enough for an AI agent to produce complete drawing sets. One real example is the [fabrication pipeline](https://github.com/MusaCAD/fabrication_pipeline). It takes 3D models made in FreeCAD and turns them into finished A4 fabrication drawings, with views, sections, dimensions, tolerances and a filled-in title block, without anyone drafting by hand. [Read about scripting and automation](/scripting/).
+
+## What it runs on
 
 | Platform | What you get |
 |---|---|
-| Windows | An installer, `MusaCAD-<version>-x86_64-setup.exe`, 64-bit. Two programs: the application and a console front-end for scripts. |
-| Linux | Flathub (`org.musacad.MusaCAD`, x86_64 and aarch64), an AppImage, and a Flatpak bundle on the release page. |
-| macOS | A preview on Apple silicon: the command line works; the drawing area needs OpenGL 4.5, which macOS does not provide, and the application says so at startup. |
+| **Windows** | A 64-bit installer, `MusaCAD-<version>-x86_64-setup.exe`. |
+| **Linux** | Flathub (`org.musacad.MusaCAD`, for x86_64 and ARM64), an AppImage, and a Flatpak file on each release page. |
+| **macOS** | A preview for Apple silicon. The command line works, but the drawing area does not open yet, because it needs OpenGL 4.5 and macOS does not provide it. |
 
-## Where things are
+## What it does not do (yet)
 
-- The application and its source: [github.com/MusaCAD/MusaCAD](https://github.com/MusaCAD/MusaCAD).
-- The site, downloads and the AutoCAD comparison: [musacad.org](https://musacad.org).
-- The Linux package: [Flathub](https://flathub.org/apps/org.musacad.MusaCAD).
-- Bugs and requests: [GitHub issues](https://github.com/MusaCAD/MusaCAD/issues). A crash leaves a report the application offers to save on the next start; attach it.
-- This wiki: [github.com/MusaCAD/wiki](https://github.com/MusaCAD/wiki). Every page has an edit link and a report link at the bottom.
+- **3D.** Musa CAD is for 2D drawings only. There is no 3D modelling, and none is planned at the moment.
+- **AutoLISP, VBA or plug-ins.** These do not run inside Musa CAD. Automation works from the outside instead: a program writes the drawing file and calls the `musacad` command to check and print it. See [Scripting and automation](/scripting/).
+- **DWG on its own.** Musa CAD's own format is `.musa`. DWG files go through the free ODA File Converter, which Musa CAD downloads for you. DXF needs nothing extra.
+- **Everything AutoCAD has.** Musa CAD is at version 0.8.0, released on 22 October 2026, the eighth release since June. Most everyday drafting is covered. Some tools are still missing. On the ribbon, those tools appear greyed out, and their tooltip says they are not built yet.
+
+## How it is built
+
+For the curious: Musa CAD is written in C++23 with Qt 6. It splits work across three threads: one for the interface and commands, one for geometry, and one for drawing on screen. That is why a drawing with a million lines still pans and zooms smoothly. It has its own geometry engine, so it does not depend on any other CAD library. The details are in [ARCHITECTURE.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/ARCHITECTURE.md) in the source repository.
+
+## Where to go next
+
+- [Install Musa CAD](/get-started/install-linux/) on your computer.
+- Already installed? Make [your first drawing](/get-started/first-drawing/).
+- Using AutoCAD today? Read [Coming from AutoCAD](/get-started/coming-from-autocad/).
+- Found a bug or want something added? Open an issue on [GitHub](https://github.com/MusaCAD/MusaCAD/issues). If Musa CAD ever crashes, it offers to save a crash report the next time it starts. Attach that report to the issue.

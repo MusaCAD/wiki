@@ -1,6 +1,8 @@
 ---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 title: Your first drawing
-description: Draw a 120 by 80 plate with two holes, dimension it, save it and plot it to PDF, prompt by prompt, in about ten minutes. The finished drawing is plotted by Musa CAD itself and is yours to download.
+description: Step by step, draw a 120 × 80 plate with two holes, add two dimensions, save it and print it to PDF. Takes about ten minutes. The finished drawing is free to download.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
@@ -13,22 +15,22 @@ sidebar:
 import Figure from '../../../components/Figure.astro';
 import { Steps } from '@astrojs/starlight/components';
 
-You will draw this: a plate 120 units wide and 80 high, two holes of radius 10, and two linear dimensions. Then you will save it and plot it to a PDF. Every prompt below is the application's own, so you can follow it exactly.
+In about ten minutes you will draw the plate below: 120 units wide, 80 high, with two round holes and two dimensions. Then you will save it and print it to a PDF. Each step shows exactly what Musa CAD asks and what you type, so you can follow along.
 
-<Figure id="first-part" alt="A rectangular plate, 120 wide by 80 high, drawn in outline with two circular holes of radius 10 at the left and right thirds. A horizontal dimension under the plate reads 120 and a vertical dimension to its left reads 80." caption="What you will have at the end, as Musa CAD plots it to A4 landscape." eager />
+<Figure id="first-part" alt="A rectangular plate, 120 wide by 80 high, drawn in outline, with two round holes of radius 10 at its left and right thirds. A horizontal dimension under the plate reads 120.00 and a vertical dimension on its left reads 80.00." caption="The finished drawing, printed to an A4 sheet by Musa CAD." eager />
 
 ## Before you start
 
-- Musa CAD opens with an empty drawing called **Drawing1**. The units are drawing units; treat them as millimetres for this page.
-- Type at the cursor. Dynamic Input is on by default, so what you type appears beside the crosshair, and the prompt appears there too. If you prefer the classic command line at the bottom of the window, press <kbd>F12</kbd>.
-- <kbd>Enter</kbd> and <kbd>Space</kbd> both accept what you typed. <kbd>Esc</kbd> cancels the command. Shown below as `↵` and `⎋`.
-- The mouse wheel zooms around the cursor; holding the middle button pans.
+- Musa CAD opens with an empty drawing called **Drawing1**. Think of one unit as one millimetre.
+- **Just start typing.** You do not need to click anywhere first. What you type appears next to your cursor, and so do Musa CAD's questions (the *prompts*). This is called Dynamic Input. If you prefer a command line at the bottom of the window, press <kbd>F12</kbd>.
+- <kbd>Enter</kbd> or <kbd>Space</kbd> confirms what you typed. <kbd>Esc</kbd> cancels. In the boxes below, `↵` means "press Enter".
+- Roll the mouse wheel to zoom in and out. Hold the middle button and drag to move around (pan).
 
 ## Draw the plate
 
 <Steps>
 
-1. Type `REC` (RECTANG) and press <kbd>Enter</kbd>, then give the two corners. The second corner is typed relative to the first with `@`:
+1. Type `REC` and press <kbd>Enter</kbd>. This starts the RECTANG command. Type the first corner, then the second corner. The `@` means "measured from the last point":
 
    ```musacad
    Command: REC
@@ -36,9 +38,13 @@ You will draw this: a plate 120 units wide and 80 high, two holes of radius 10, 
    Specify other corner point or [Area/Dimensions/Rotation]: @120,80
    ```
 
-   A rectangle is one object, a closed polyline. If it is tiny or off-screen, type `Z`, press <kbd>Enter</kbd>, then `E` for Extents.
+   :::tip[The same thing with Dynamic Input]
+   After the first corner, move the mouse up and to the right. Two boxes appear beside the rectangle, showing its width and its height. Type `120`, press <kbd>Tab</kbd>, type `80`, and press <kbd>Enter</kbd>.
+   :::
 
-2. Draw the first hole with CIRCLE, by centre and radius:
+   If the rectangle is too small to see, type `Z`, press <kbd>Enter</kbd>, then type `E` and press <kbd>Enter</kbd>. This zooms to fit everything (Zoom Extents).
+
+2. Draw the first hole. Type `C` for CIRCLE, give the centre, then the radius:
 
    ```musacad
    Command: C
@@ -46,7 +52,7 @@ You will draw this: a plate 120 units wide and 80 high, two holes of radius 10, 
    Specify radius of circle or [Diameter]: 10
    ```
 
-3. The second hole. The radius you gave last time is offered as the default in angle brackets; <kbd>Enter</kbd> takes it:
+3. Draw the second hole. Musa CAD remembers the last radius and offers it in angle brackets, so you only need to press <kbd>Enter</kbd>:
 
    ```musacad
    Command: C
@@ -56,13 +62,13 @@ You will draw this: a plate 120 units wide and 80 high, two holes of radius 10, 
 
 </Steps>
 
-Pressing <kbd>Enter</kbd> at an empty prompt repeats the last command, which is how a drafter draws the second circle without typing `C` again.
+**Tip:** pressing <kbd>Enter</kbd> when no command is running repeats the last command. That is a quick way to start the second circle without typing `C` again.
 
-## Dimension it
+## Add the dimensions
 
 <Steps>
 
-1. DIMLINEAR asks for the two points it measures between, then where to put the dimension line. Snap to the plate's corners by typing the coordinates, or hover a corner and let the Endpoint snap mark it:
+1. Type `DLI` for DIMLINEAR. It asks for the two points to measure between, then where to put the dimension line. You can type the points, or hover over a corner until the Endpoint snap marker appears and click:
 
    ```musacad
    Command: DLI
@@ -71,9 +77,9 @@ Pressing <kbd>Enter</kbd> at an empty prompt repeats the last command, which is 
    Specify dimension line location or [Mtext/Text/Angle/Horizontal/Vertical/Rotated]: 60,-15
    ```
 
-   The dimension reads **120**. Musa CAD measures it from the points, so it stays right if you later stretch the plate.
+   The dimension shows the width, 120. Musa CAD measures it from the two points, so the number is always right, even if you change the plate later.
 
-2. The height, placed to the left of the plate. Musa CAD decides horizontal or vertical from where you put the dimension line:
+2. Now the height, on the left side. Musa CAD works out whether the dimension is horizontal or vertical from where you put the dimension line:
 
    ```musacad
    Command: DLI
@@ -84,37 +90,42 @@ Pressing <kbd>Enter</kbd> at an empty prompt repeats the last command, which is 
 
 </Steps>
 
-If a dimension landed in the wrong place, <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it; or click it, grab the square grip on its text and drag.
+Made a mistake? Press <kbd>Ctrl</kbd>+<kbd>Z</kbd> to undo. To move a dimension's text, click the dimension, then drag the small square on its text.
 
 ## Save it
 
-Press <kbd>Ctrl</kbd>+<kbd>S</kbd>. For a drawing that has never been saved this opens the Save dialog with the filter **Musa CAD (*.musa)**; name it `first-part.musa`. The tab is renamed after the file. From now on <kbd>Ctrl</kbd>+<kbd>S</kbd> saves silently and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> is Save As.
+Press <kbd>Ctrl</kbd>+<kbd>S</kbd>. Because the drawing has never been saved, the Save window opens with the file type **Musa CAD (*.musa)**. Name it `first-part.musa`. The tab at the top now shows the file name. From now on <kbd>Ctrl</kbd>+<kbd>S</kbd> saves straight away, and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> is Save As.
 
-`.musa` is Musa CAD's native format, a readable text file. Files saved by 0.8.0 need 0.8.0 or newer to open; older files always open in newer versions.
+A `.musa` file is Musa CAD's own format. It is plain text, so you can even open it in a text editor. Files saved by version 0.8.0 need 0.8.0 or newer to open. Older files always open in newer versions.
 
-## Plot it to PDF
+## Print it to PDF
 
-Press <kbd>Ctrl</kbd>+<kbd>P</kbd> (or type `PLOT`). In the Plot window:
+Press <kbd>Ctrl</kbd>+<kbd>P</kbd>, or type `PLOT`. In the Plot window, choose:
 
 - **Printer/plotter:** PDF File…
-- **Paper size:** A4, **Orientation:** Landscape.
-- **Plot area:** Extents, so the whole drawing is used.
-- **Scale:** Fit to paper. (A real sheet would use a stated scale such as `1 mm = 1 units`; fit is right for a first look.)
-- **Plot style (CTB):** Monochrome (all black), the way a vendor expects a drawing.
+- **Paper size:** A4, **Orientation:** Landscape
+- **Plot area:** Extents (the whole drawing)
+- **Scale:** Fit to paper. For a real drawing you would pick a fixed scale instead.
+- **Plot style (CTB):** Monochrome (all black), which is how a workshop usually wants a drawing.
 
-**Preview…** shows the sheet; **Plot** asks where to write the PDF. The output is true vector: zoom into it and the lines stay sharp.
+Click **Preview…** to check the sheet, then **Plot** and choose where to save the PDF. The PDF is made of real lines, not pixels, so it stays sharp however far you zoom in.
 
-The same plot can be made without opening the application at all. The illustration at the top of this page was made exactly that way by the wiki's build:
+You can also print it without opening Musa CAD at all. The picture at the top of this page was made exactly that way:
 
 ```sh
 musacad --plot first-part.musa first-part.pdf --paper A4 --landscape --monochrome
 ```
 
-## What you now know
+## What you learned
 
-- Commands by alias (`REC`, `C`, `DLI`, `Z`), prompts with options in brackets and defaults in angle brackets, <kbd>Enter</kbd> to accept and repeat.
-- Absolute (`30,40`) and relative (`@120,80`) coordinates. Polar is `@dist<angle`, for example `@50<45`.
-- Dimensions measured from points, not typed.
-- Save as `.musa`, plot to PDF.
+- Start commands by typing their short names: `REC`, `C`, `DLI`, `Z`.
+- Read the prompt: options are in `[square brackets]`, the default is in `<angle brackets>`, and <kbd>Enter</kbd> accepts it.
+- Type exact points: `30,40` is a point on the drawing, `@120,80` is measured from the last point, and `@50<45` means 50 units at 45 degrees.
+- Dimensions measure the drawing; you never type their numbers.
+- Save as `.musa`, print to PDF.
 
-Next: [A tour of the interface](/get-started/interface-tour/) names the parts of the window, and the user manual's Drawing chapter takes each command further. The drawing on this page is yours: [download it](/examples/first-part.musa) and open it with File ▸ Open.
+## Next
+
+- [A tour of the interface](/get-started/interface-tour/) names every part of the window.
+- [Dynamic Input](/user-manual/dynamic-input/) shows how to draw faster by typing values right at the cursor.
+- The drawing from this page is yours to keep: [download first-part.musa](/examples/first-part.musa) and open it with **File ▸ Open**.

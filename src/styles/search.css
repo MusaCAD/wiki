@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+/* Copyright (C) 2026 Pranay Kiran */
+
 /* The search dialog's styles: Pagefind's UI and Starlight's overrides of it, as Starlight ships
    them, in their own file so they load after the first paint (see Search.astro). */
 	@import url('@pagefind/default-ui/css/ui.css') layer(starlight.core);

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // Root-relative links in content (`/get-started/`) are rewritten to honour the configured
 // base path, so moving the wiki from wiki.musacad.org to musacad.org/wiki is a change to
 // BASE in wiki.config.mjs and nothing in the pages.

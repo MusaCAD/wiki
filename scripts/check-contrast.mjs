@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // WCAG contrast of the token pairs the wiki actually uses, in every theme. Fails under AA.
 import { readFileSync } from 'node:fs';
 
@@ -55,6 +58,7 @@ const pairs = [
   ['--mc-ink-faint', '--sl-color-black', 4.5, 'faint text (status line, footer) on the page'],
   ['--sl-color-text-accent', '--sl-color-black', 4.5, 'links on the page'],
   ['--sl-color-text-accent', '--sl-color-gray-6', 4.5, 'links on panels and the sidebar'],
+  ['--sl-color-accent-high', '--sl-color-bg-inline-code', 4.5, 'inline code inside a link'],
   ['--sl-color-text-invert', '--sl-color-text-accent', 4.5, 'the current sidebar item'],
   ['--sl-color-gray-2', '--sl-color-bg-inline-code', 4.5, 'inline code'],
   ['--sl-color-white', '--mc-paper-2', 4.5, 'card titles and keys'],

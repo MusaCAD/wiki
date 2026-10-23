@@ -1,14 +1,17 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // Every page's `appliesTo` against the pinned release: warn at 1 release behind, fail at 3.
 // Also counts coverage (complete / partial / stub) and screenshots' `capturedWith`.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import YAML from 'yaml';
-import { ENGINE, STALENESS } from '../wiki.config.mjs';
+import { ENGINE, STALENESS, compareVersions } from '../wiki.config.mjs';
 
 const DOCS = 'src/content/docs';
 const releases = JSON.parse(readFileSync('src/data/releases.json', 'utf8'))
-  .sort((a, b) => (a.date < b.date ? 1 : -1))
-  .map((r) => r.version);
+  .map((r) => r.version)
+  .sort((a, b) => compareVersions(b, a)); // newest first
 const currentIndex = releases.indexOf(ENGINE.version);
 if (currentIndex < 0) {
   console.error(`staleness: pinned engine ${ENGINE.version} is not in src/data/releases.json`);

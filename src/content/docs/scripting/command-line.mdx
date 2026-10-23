@@ -1,0 +1,139 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: The command line
+description: Use the musacad command to check drawings and print them to PDF without opening a window, in scripts, on servers and in CI. Every option, the exit codes, and ready-to-use recipes.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: The command line
+  order: 1
+---
+
+import CliHelp from '../../../components/reference/CliHelp.astro';
+
+The `musacad` program can do three things from a terminal or a script, without opening a window:
+
+- **open** a drawing in the normal window: `musacad part.musa`
+- **check** a drawing and report problems: `musacad --check part.musa`
+- **print** a drawing to PDF: `musacad --plot part.musa part.pdf`
+
+`--check` and `--plot` need no screen at all. They work over SSH, in a scheduled job, on a build server and inside a container.
+
+## Which program to run
+
+| Install | Run |
+|---|---|
+| Windows | `"C:\Program Files\Musa CAD\musacad.exe"`. Use `musacad.exe`, not `musacad_app.exe`, so scripts wait for it and see its exit code. |
+| Linux AppImage | `./MusaCAD-0.8.0-x86_64.AppImage`. On a server without FUSE, put `APPIMAGE_EXTRACT_AND_RUN=1` in front. |
+| Linux Flatpak | `flatpak run --filesystem=home org.musacad.MusaCAD`. The `--filesystem` part lets it read your files. |
+| macOS | `/Applications/MusaCAD.app/Contents/MacOS/musacad_app` |
+| Built from source | `build/release/bin/musacad_app` |
+
+The examples below just say `musacad`.
+
+## Check a drawing
+
+```sh
+musacad --check part.musa && echo "ok"
+```
+
+Musa CAD reads the drawing with exactly the code the program itself uses. If the file is broken, it says which line, and exits with code 2:
+
+```sh
+$ musacad --check broken.musa
+musacad: broken.musa: LINE record malformed (line 2).
+$ echo $?
+2
+```
+
+If the drawing opens, `--check` then looks at every text the way a person checks a sheet before it goes out, and reports any text that:
+
+- **overlaps** another text;
+- runs **outside the frame**, which is the drawing's largest rectangle (such as a border), or the area you give with `--window x0,y0,x1,y1`;
+- uses a **character the font cannot draw**, which would come out blank on paper;
+- with `--lines`, is **crossed by a line**. A dimension's own lines and a leader's line do not count.
+
+When it finds a problem, it lists it and exits with code 4:
+
+```sh
+$ musacad --check board.musa
+board.musa: Opened 214 entities.
+board.musa: overlap: TEXT "R1 750 Ω" (layer NOTES, at 10.2,10) and TEXT "C3" (layer NOTES, at 14.2,10.5)
+board.musa: outside the frame: TEXT "REV B" (layer TITLE, at 410.4,6)
+board.musa: 38 texts checked, 2 problems
+```
+
+Add `--json` to get the same report as JSON, for a program to read. Each problem has a `kind` (`overlap`, `outside-frame`, `crosses-line` or `missing-glyph`), the text's layer, position and exact box, and what it collides with.
+
+## Print to PDF
+
+```sh
+musacad --plot drawing.musa out.pdf --paper A3 --landscape --scale 1:5
+```
+
+| Option | What it does |
+|---|---|
+| `--paper <name>` | `A4` `A3` `A2` `A1` `A0` `Letter` `Tabloid`. The default is A4. |
+| `--landscape`, `--portrait` | Sheet orientation. The default is landscape. |
+| `--extents` | Print the whole drawing. This is the default. |
+| `--window x0,y0,x1,y1` | Print only this rectangle of the drawing. The corners can be in any order. |
+| `--fit` | Scale the drawing to fill the sheet. This is the default. |
+| `--scale <n:m>` | Print `n` mm on paper for every `m` drawing units, for example `1:5`. This turns `--fit` off. |
+| `--monochrome` | Print everything in black. |
+
+The PDF is made by the same code as **Plot** in the program, so linetypes, lineweights, hatches and text come out exactly the same. It is real vector output, not an image.
+
+## Exit codes
+
+Scripts can rely on these:
+
+<CliHelp show="exit-codes" />
+
+## Recipes
+
+### Print every drawing in a folder
+
+```sh
+mkdir -p out
+for f in sheets/*.musa; do
+    musacad --plot "$f" "out/$(basename "${f%.musa}").pdf" --paper A3 --landscape || exit 1
+done
+```
+
+### Stop a build when a drawing has a problem
+
+```yaml
+# A GitHub Actions step: fail the job if any drawing does not open or has text problems.
+- name: Check drawings
+  run: |
+    for f in drawings/*.musa; do
+      ./MusaCAD-0.8.0-x86_64.AppImage --check "$f" --lines || exit 1
+    done
+  env:
+    APPIMAGE_EXTRACT_AND_RUN: 1
+```
+
+### Windows batch file
+
+```bat
+for %%f in (sheets\*.musa) do (
+  "C:\Program Files\Musa CAD\musacad.exe" --plot "%%f" "out\%%~nf.pdf" --paper A3 || exit /b 1
+)
+```
+
+## Every option
+
+This is exactly what `musacad --help` prints. It is read from the program when this wiki is built:
+
+<CliHelp />
+
+Options with one dash, such as `-platform offscreen`, are passed to Qt, the toolkit Musa CAD is built on.
+
+## Next
+
+- [Write drawings from code](/scripting/drawings-from-code/), then check and print them with these commands.
+- See how an [AI workflow](/scripting/ai-workflows/) puts it all together.

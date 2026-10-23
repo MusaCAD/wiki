@@ -1,3 +1,6 @@
+<!-- SPDX-License-Identifier: LGPL-3.0-or-later -->
+<!-- Copyright (C) 2026 Pranay Kiran -->
+
 # Screenshot sources
 
 These pictures come from the engine repository, `assets/screenshots/`, at commit 742295f

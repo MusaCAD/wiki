@@ -1,6 +1,8 @@
 ---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 title: Get started
-description: How to get Musa CAD onto your machine and draw something real with it, in the order that makes sense, from installing to the page every AutoCAD user should read first.
+description: Get Musa CAD running and make your first real drawing. Install it, learn the parts of the window, and see what carries over from AutoCAD.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
@@ -13,21 +15,23 @@ sidebar:
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-This section takes you from nothing to a saved, dimensioned, plotted drawing. Read it in order if Musa CAD is new to you. If you draft in AutoCAD already, read [Coming from AutoCAD](/get-started/coming-from-autocad/) first: it is the page that tells you which of your habits work unchanged and which do not yet.
+This section takes you from nothing to a saved, dimensioned drawing printed to PDF. If Musa CAD is new to you, read the pages in order. If you already use AutoCAD, start with [Coming from AutoCAD](/get-started/coming-from-autocad/). It tells you which habits work straight away.
 
-## In this section
+## The pages in this section
 
-1. [What Musa CAD is](/get-started/what-is-musa-cad/) — what it does, what it is built on, what it is not.
-2. Install it: [Windows](/get-started/install-windows/) · [Linux](/get-started/install-linux/) · [macOS preview](/get-started/install-macos/) · or [build from source](/get-started/build-from-source/).
-3. [Your first drawing](/get-started/first-drawing/) — a plate with two holes and two dimensions, saved and plotted to PDF.
-4. [A tour of the interface](/get-started/interface-tour/) — the names of the parts, so the rest of the wiki makes sense.
-5. [Coming from AutoCAD](/get-started/coming-from-autocad/) — what carries over, what is different, what is missing.
+1. [What Musa CAD is](/get-started/what-is-musa-cad/): what it does well, and what it does not do.
+2. Install it on [Windows](/get-started/install-windows/), [Linux](/get-started/install-linux/) or [macOS (preview)](/get-started/install-macos/). You can also [build it from source](/get-started/build-from-source/).
+3. [Your first drawing](/get-started/first-drawing/): a plate with two holes and two dimensions, saved and printed to PDF.
+4. [A tour of the interface](/get-started/interface-tour/): the names of the parts of the window, so the rest of the wiki makes sense.
+5. [Coming from AutoCAD](/get-started/coming-from-autocad/): what carries over, what is different, and what is missing.
 
-## Before you install
+## Check your graphics first
 
-Musa CAD's drawing area needs a graphics driver with **OpenGL 4.5 Core**. Current drivers for Intel, AMD and NVIDIA on Windows and Linux have it. macOS does not, which is why the macOS build is a preview with the command line only. If the viewport cannot be created, the application says what it found and what it needs at startup instead of showing a black window.
+The drawing area needs a graphics driver that supports **OpenGL 4.5**. Up-to-date drivers for Intel, AMD and NVIDIA graphics on Windows and Linux all do. macOS does not, which is why the Mac version is only a preview for now.
+
+If your computer cannot run the drawing area, Musa CAD does not just show a black window. It tells you what it found and what it needs, and then closes.
 
 <CardGrid>
-  <LinkCard title="Download" description="The current release on GitHub, with the installer, AppImage, Flatpak bundle and disk image." href="https://github.com/MusaCAD/MusaCAD/releases/latest" />
-  <LinkCard title="Flathub" description="The Linux install that updates with the rest of your apps." href="https://flathub.org/apps/org.musacad.MusaCAD" />
+  <LinkCard title="Download page" description="The newest release on GitHub: Windows installer, AppImage, Flatpak bundle and Mac disk image." href="https://github.com/MusaCAD/MusaCAD/releases/latest" />
+  <LinkCard title="Musa CAD on Flathub" description="The easiest Linux install. Updates arrive with your other apps." href="https://flathub.org/apps/org.musacad.MusaCAD" />
 </CardGrid>

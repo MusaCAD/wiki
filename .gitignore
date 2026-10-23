@@ -1,6 +1,13 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 .cache/
 node_modules/
 dist/
 .astro/
 *.log
 .DS_Store
+.notes/
+# Generated at build time by scripts/render-examples.mjs from examples/
+public/rendered/
+public/examples/
+src/data/rendered.json

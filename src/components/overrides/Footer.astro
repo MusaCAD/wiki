@@ -1,6 +1,8 @@
 ---
-// Edit · Report a problem · last updated · prev/next, then the wiki's footer: the origin,
-// links, licences and the trademark line every page carries.
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+// The bottom of every page: edit it, report a problem with it, when it last changed, the
+// previous and next pages; then the links, the licence and the trademark notice.
 import EditLink from '@astrojs/starlight/components/EditLink.astro';
 import LastUpdated from '@astrojs/starlight/components/LastUpdated.astro';
 import Pagination from '@astrojs/starlight/components/Pagination.astro';
@@ -47,9 +49,9 @@ const year = new Date().getUTCFullYear();
 	</ul>
 
 	<p>
-		{t('mc.footer.content')} {t('mc.footer.examples')} {t('mc.footer.engine')}
+		{t('mc.footer.licence')} {t('mc.footer.examples')}
 		<a href={`${WIKI_REPO}/blob/main/LICENSE`} rel="noopener">Licence details</a>.
 	</p>
 	<p>{t('mc.footer.trademark')}</p>
-	<p>© {year} Musa CAD contributors · built against Musa CAD {ENGINE.version}</p>
+	<p>© {year} Pranay Kiran and the Musa CAD contributors · written for Musa CAD {ENGINE.version}</p>
 </footer>

@@ -1,9 +1,12 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // @ts-check
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import starlight from '@astrojs/starlight';
+import starlightBlog from 'starlight-blog';
 import { SITE_URL, BASE, ENGINE, WIKI_REPO, SITE_HOME, LOCALES } from './wiki.config.mjs';
-import { musacadCommandLine, musacadGrammar } from './src/plugins/ec-musacad.mjs';
 import { remarkBaseLinks } from './src/plugins/remark-base-links.mjs';
 
 const locales = Object.fromEntries(
@@ -53,6 +56,14 @@ export default defineConfig({
         { tag: 'meta', attrs: { name: 'theme-color', content: '#232323', media: '(prefers-color-scheme: dark)' } },
         { tag: 'link', attrs: { rel: 'apple-touch-icon', href: `${BASE}apple-touch-icon.png` } },
         { tag: 'link', attrs: { rel: 'icon', type: 'image/png', sizes: '48x48', href: `${BASE}favicon-48.png` } },
+        { tag: 'meta', attrs: { property: 'og:site_name', content: 'Musa CAD Wiki' } },
+        { tag: 'meta', attrs: { property: 'og:image', content: `${SITE_URL}${BASE}og-image.png` } },
+        { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+        { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+        { tag: 'meta', attrs: { property: 'og:image:alt', content: 'Musa CAD, free and open-source 2D CAD with AutoCAD-style commands, drafting a house plan' } },
+        { tag: 'meta', attrs: { name: 'twitter:image', content: `${SITE_URL}${BASE}og-image.png` } },
+        { tag: 'meta', attrs: { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1' } },
+        { tag: 'link', attrs: { rel: 'alternate', type: 'text/plain', title: 'The wiki for AI assistants (llms.txt)', href: `${BASE}llms.txt` } },
       ],
       components: {
         Head: './src/components/overrides/Head.astro',
@@ -64,22 +75,26 @@ export default defineConfig({
         MobileMenuFooter: './src/components/overrides/MobileMenuFooter.astro',
       },
       routeMiddleware: './src/route-data.ts',
-      expressiveCode: {
-        themes: ['github-dark', 'github-light'],
-        useStarlightUiThemeColors: true,
-        shiki: { langs: [musacadGrammar] },
-        plugins: [musacadCommandLine()],
-        // Long prompts and commands wrap instead of scrolling: nothing hides off the right edge
-        // on a phone, and a code block never becomes a scroll-region landmark.
-        defaultProps: { wrap: true, preserveIndent: true },
-        styleOverrides: {
-          borderRadius: '0.375rem',
-          codeFontFamily: 'var(--__sl-font-mono)',
-          codeFontSize: 'var(--sl-text-code)',
-        },
-      },
-      // The information architecture of §4. A section appears here the moment it has a landing
-      // page; sections not yet written are listed on the home page, unlinked.
+      plugins: [
+        starlightBlog({
+          title: 'Blog',
+          prefix: 'blog',
+          navigation: 'header-end',
+          postCount: 10,
+          recentPostCount: 6,
+          metrics: { readingTime: true },
+          authors: {
+            pranay: {
+              name: 'Pranay Kiran',
+              title: 'Musa CAD maintainer',
+              url: 'https://github.com/KiranPranay',
+            },
+          },
+        }),
+      ],
+      // Code block settings are in ec.config.mjs.
+      // The navigation. A section is listed here once its first pages exist; the home page
+      // says which sections are still being written.
       sidebar: [
         {
           label: 'Get started',
@@ -94,6 +109,32 @@ export default defineConfig({
             { slug: 'get-started/interface-tour' },
             { slug: 'get-started/coming-from-autocad' },
           ],
+        },
+        {
+          label: 'User manual',
+          items: [{ slug: 'user-manual' }, { slug: 'user-manual/dynamic-input' }],
+        },
+        {
+          label: 'Command reference',
+          items: [
+            { slug: 'reference' },
+            { slug: 'reference/system-variables' },
+            { slug: 'reference/keyboard-shortcuts' },
+            { slug: 'reference/ribbon' },
+          ],
+        },
+        {
+          label: 'Scripting and automation',
+          items: [
+            { slug: 'scripting' },
+            { slug: 'scripting/command-line' },
+            { slug: 'scripting/drawings-from-code' },
+            { slug: 'scripting/ai-workflows' },
+          ],
+        },
+        {
+          label: 'File formats',
+          items: [{ slug: 'file-formats' }, { slug: 'file-formats/musa-format' }],
         },
       ],
     }),

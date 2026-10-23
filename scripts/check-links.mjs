@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // Internal links and anchors in dist/, and (with --external) the GitHub / musacad.org links out.
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { join, dirname, resolve, posix } from 'node:path';

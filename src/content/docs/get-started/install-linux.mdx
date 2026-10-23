@@ -1,6 +1,8 @@
 ---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 title: Install on Linux
-description: Musa CAD on Linux from Flathub, as an AppImage, or as a Flatpak bundle from the release page; the sandbox, DWG converter and headless-use notes for each.
+description: Install Musa CAD on Linux from Flathub, as an AppImage, or from a Flatpak file, and learn what each one means for files, DWG and scripts.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
@@ -15,73 +17,77 @@ import Platforms from '../../../components/Platforms.astro';
 
 <Platforms items={['linux']} />
 
-Three ways, in the order most people should take them. All of them bundle Qt, so nothing else needs installing. All of them need a graphics driver with **OpenGL 4.5 Core**: Mesa on Intel and AMD has it, as does NVIDIA's driver; a driver without it gets a message at startup saying what was found and what is needed.
+There are three ways to install Musa CAD on Linux. Most people should use Flathub. All three include everything Musa CAD needs, so you do not have to install Qt or anything else.
 
-## From Flathub (recommended)
+Your graphics driver must support **OpenGL 4.5**. Mesa (for Intel and AMD graphics) and NVIDIA's driver both do. If yours does not, Musa CAD says so when it starts.
 
-Updates arrive with the rest of your applications, and the package exists for both x86_64 and aarch64.
+## Option 1: Flathub (recommended)
+
+Updates then arrive with your other apps. Flathub has Musa CAD for both x86_64 and ARM64 computers.
 
 ```sh
 flatpak install flathub org.musacad.MusaCAD
 flatpak run org.musacad.MusaCAD
 ```
 
-If `flatpak` or the Flathub remote is new to your system, [Flathub's setup page](https://flathub.org/setup) has the two commands for your distribution.
+If you have never used Flatpak, [Flathub's setup page](https://flathub.org/setup) shows the two commands to set it up on your distribution. Many software centres (GNOME Software, KDE Discover) can also install it with a click.
 
-### What the sandbox means
+### What the Flatpak can and cannot see
 
-The Flatpak asks for no filesystem access. Every file dialog is the desktop's own, routed through the file-chooser portal, so the application sees the file you picked and nothing else. Three consequences:
+The Flatpak version runs in a sandbox and cannot see your files on its own. When you open or save a drawing, your desktop's own file dialog appears, and Musa CAD gets only the file you choose. In practice this means:
 
-- A drawing whose external references or images sit beside it offers to open its folder instead, so relative paths resolve. A DXF export that writes embedded images beside the DXF asks for the destination folder the same way.
-- **Save As** keeps a name typed without an extension exactly as typed, because the portal grants that name.
-- The command line needs an explicit grant to read a path it was not handed by a dialog:
+- If a drawing uses images or other drawings stored next to it, Musa CAD asks you to choose that folder, so it can find them.
+- In **Save As**, a name you type without `.musa` is kept exactly as you typed it.
+- From a terminal, you must give it access to your files, or it cannot open them:
 
 ```sh
 flatpak run --filesystem=home org.musacad.MusaCAD --check ~/drawings/part.musa
 ```
 
-Without `--filesystem=home` the same command answers `Cannot open file`.
+Without `--filesystem=home`, the same command answers `Cannot open file`.
 
-### DWG in the Flatpak
+### DWG files in the Flatpak
 
-The converter download works inside the sandbox (it has network access for exactly that). The converter needs an X11 display: under an X11 session it runs inside the sandbox; under Wayland the sandbox has no display, so it runs on the host through the Flatpak portal, which you allow once:
+The ODA File Converter (for DWG files) downloads fine inside the Flatpak. It needs an X11 display to run. On an X11 desktop that just works. On a Wayland desktop, the converter has to run outside the sandbox, which you allow once with this command:
 
 ```sh
 flatpak override --user --talk-name=org.freedesktop.Flatpak org.musacad.MusaCAD
 ```
 
-The DWG Setup dialog says so when it needs it. A converter already installed on your system is used the same way with **Use a converter installed on the host**.
+The DWG Setup window tells you when this is needed. If you already have a DWG converter installed on your system, choose **Use a converter installed on the host**.
 
-## The AppImage
+## Option 2: the AppImage
 
-One file that runs on any reasonably recent glibc Linux (x86_64), from the [latest release](https://github.com/MusaCAD/MusaCAD/releases/latest):
+One file you download and run. It works on most Linux distributions from the last few years (x86_64 only). Get it from the [latest release](https://github.com/MusaCAD/MusaCAD/releases/latest):
 
 ```sh
 chmod +x MusaCAD-0.8.0-x86_64.AppImage
 ./MusaCAD-0.8.0-x86_64.AppImage
 ```
 
-- It needs FUSE 2 to mount itself (`libfuse2` on Debian and Ubuntu). Without FUSE, set `APPIMAGE_EXTRACT_AND_RUN=1` in the environment and it extracts and runs instead.
-- It runs natively on Wayland when you have a Wayland session (the Wayland platform plugins are bundled), and on X11 otherwise. On NVIDIA under Wayland, 0.7.0 and later ask for desktop OpenGL by name; earlier versions reported OpenGL missing there.
-- It does not add itself to your application menu. Put it where you like; a desktop entry is yours to write.
-- The headless command line works from it with no display at all, which makes it the right binary for scripts and servers:
+Good to know:
+
+- The AppImage needs FUSE 2 (the `libfuse2` package on Debian and Ubuntu). Without it, run it with `APPIMAGE_EXTRACT_AND_RUN=1` in front, and it unpacks itself and runs.
+- It runs natively on Wayland, and on X11 when that is what you use.
+- It does not add itself to your applications menu. You can keep the file wherever you like.
+- It is the best choice for scripts and servers, because it runs headless (with no screen at all):
 
 ```sh
 ./MusaCAD-0.8.0-x86_64.AppImage --plot part.musa part.pdf --paper A3 --landscape
 ```
 
-## The Flatpak bundle
+## Option 3: the Flatpak file
 
-Each release also carries `MusaCAD-<version>.flatpak`, a single-file bundle for installing a specific version without Flathub, for example on a machine that is not on the network. It needs the KDE runtime it was built against, which `flatpak` fetches from Flathub if the remote is configured:
+Each release also has a file called `MusaCAD-<version>.flatpak`. Use it to install one exact version, for example on a computer without internet. It still needs the KDE runtime, which Flatpak downloads from Flathub if it can:
 
 ```sh
 flatpak install --user MusaCAD-0.8.0.flatpak
 flatpak run org.musacad.MusaCAD
 ```
 
-Installed this way the application still checks Flathub for newer versions and says so in the status bar, but updates do not arrive by themselves.
+Installed this way, Musa CAD still tells you about new versions, but it does not update by itself.
 
-## Check the install
+## Check that it works
 
 ```sh
 flatpak run org.musacad.MusaCAD --version
@@ -90,6 +96,6 @@ flatpak run org.musacad.MusaCAD --version
 
 Both print `Musa CAD 0.8.0`.
 
-## Build it yourself
+## Next
 
-The repository is clone-and-build clean on Linux: [Build from source](/get-started/build-from-source/).
+[Make your first drawing](/get-started/first-drawing/). If you want to build Musa CAD yourself, see [Build from source](/get-started/build-from-source/).

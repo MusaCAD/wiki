@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // Accessibility and performance gates on the built site (dist/):
 //   axe (WCAG 2.2 AA) on every page, light and dark;
 //   a keyboard walk: the skip link comes first and every focused element shows a focus ring;
@@ -28,7 +31,13 @@ const allPages = [...htmlFiles(DIST)]
   .map((f) => '/' + posix.relative(DIST, f).replace(/index\.html$/, ''))
   .filter((p) => !p.endsWith('404.html'))
   .sort();
-const pages = pagesArg ? pagesArg.split(',') : allPages;
+// Command and variable pages share one template: audit every written page and every
+// fifteenth generated one, rather than all 394 of them twice.
+const isGenerated = (p) => /^\/reference\/(commands|system-variables)\/[^/]+\/$/.test(p);
+const generated = allPages.filter(isGenerated);
+const pages = pagesArg
+  ? pagesArg.split(',')
+  : [...allPages.filter((p) => !isGenerated(p)), ...generated.filter((_, i) => i % 15 === 0)];
 
 const { server, url } = await serve(DIST);
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
@@ -129,7 +138,9 @@ if (!noLighthouse) {
   const { default: lighthouse } = await import('lighthouse');
   const { launch } = await import('chrome-launcher');
   const chrome = await launch({ chromeFlags: ['--headless=new', '--no-sandbox'] });
-  const sample = pagesArg ? pages : [pages[0], ...pages.filter((p) => /install-linux|first-drawing|coming-from-autocad/.test(p))].filter(Boolean);
+  const sample = pagesArg
+    ? pages
+    : [pages[0], ...pages.filter((p) => /install-linux\/|first-drawing\/|dynamic-input\/|^\/reference\/$|commands\/line\/|^\/blog\/$/.test(p))].filter(Boolean);
   const mins = { accessibility: 1, performance: 0.95, 'best-practices': 0.9, seo: 0.9 };
   for (const p of sample) {
     const result = await lighthouse(url + p, { port: chrome.port, output: 'json', logLevel: 'error', onlyCategories: Object.keys(mins) });

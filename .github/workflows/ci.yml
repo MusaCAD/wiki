@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 name: Build, check and deploy
 
 on:
@@ -43,6 +45,20 @@ jobs:
           key: engine-${{ hashFiles('wiki.config.mjs') }}
 
       - run: npm ci
+
+      - name: Licence header on every file
+        run: npm run check:headers
+
+      - name: Every page has its fields; every command has a page
+        run: npm run check:pages
+
+      - name: Generated pages match the data (nobody edited them by hand)
+        run: |
+          npm run generate
+          git diff --exit-code -- src/content/docs/reference || {
+            echo "::error::Pages under src/content/docs/reference with tier: generated differ from what scripts/generate-reference.mjs makes. Do not edit them by hand: set tier to assisted or human to write a page."
+            exit 1
+          }
 
       - name: Tokens — contrast, both themes
         run: npm run check:contrast

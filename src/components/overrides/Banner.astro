@@ -1,32 +1,36 @@
 ---
-// The page's notices, in this order: an announcement banner from frontmatter (Starlight's),
-// then the version banner when the page is behind the pinned engine release, then the
-// coverage notice for a stub or partial page. Stated, not hidden (§5 of the brief).
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// The notices at the top of a page, in this order: an announcement from the page's own
+// frontmatter; a note when the page was checked against an older release than the newest;
+// a note when the page is only partly written, or not written yet. A reader should know how
+// far to trust a page before reading it.
 import type { WikiRouteData } from '../../route-data';
 
 const route = Astro.locals.starlightRoute as typeof Astro.locals.starlightRoute & { wiki: WikiRouteData };
 const { banner } = route.entry.data;
 const wiki = route.wiki;
 const t = Astro.locals.t;
-const isKnown = wiki.behind !== null;
-const isNotFound = route.entry.id === '404';
+const show = wiki.tracked && route.entry.id !== '404';
+const known = wiki.behind !== null;
 ---
 
 {banner && <div class="sl-banner" data-pagefind-ignore set:html={banner.content} />}
 
 {
-	!isNotFound && wiki.level !== 'ok' && (
+	show && wiki.level !== 'ok' && (
 		<p class="mc-notice" data-level={wiki.level} data-pagefind-ignore>
 			<span>
-				{isKnown ? (
+				{known ? (
 					<>
-						<strong>Musa CAD {wiki.appliesTo}.</strong>{' '}
-						{t('mc.stale.behind', { appliesTo: wiki.appliesTo, current: wiki.current, count: String(wiki.behind) })}
+						<strong>Checked against Musa CAD {wiki.appliesTo}.</strong>{' '}
+						{t('mc.stale.behind', { appliesTo: wiki.appliesTo, current: wiki.current })}
 					</>
 				) : (
 					<>
-						<strong>Unknown version.</strong> This page says it was checked against Musa CAD {wiki.appliesTo || '(none)'},
-						which is not a release the wiki knows. The current release is {wiki.current}.
+						<strong>Unknown version.</strong> This page says it was checked against Musa CAD {wiki.appliesTo}, which is
+						not a released version. The newest release is {wiki.current}.
 					</>
 				)}
 			</span>
@@ -34,7 +38,7 @@ const isNotFound = route.entry.id === '404';
 	)
 }
 {
-	!isNotFound && wiki.status === 'stub' && (
+	show && wiki.status === 'stub' && (
 		<p class="mc-notice" data-level="stub" data-pagefind-ignore>
 			<span>
 				<strong>{t('mc.status.stub')}.</strong> {t('mc.stub.notice')}
@@ -43,7 +47,7 @@ const isNotFound = route.entry.id === '404';
 	)
 }
 {
-	!isNotFound && wiki.status === 'partial' && (
+	show && wiki.status === 'partial' && (
 		<p class="mc-notice" data-level="partial" data-pagefind-ignore>
 			<span>
 				<strong>{t('mc.status.partial')}.</strong> {t('mc.partial.notice')}

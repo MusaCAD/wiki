@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 // One place for every value that would otherwise be scattered: the public URL, the
 // pinned engine release, repository links, locales and the staleness policy.
 // Plain ESM so astro.config.mjs, build scripts and components can all import it.
@@ -30,6 +33,14 @@ export const LOCALES = {
   root: { label: 'English', lang: 'en', enabled: true },
   hi: { label: 'हिन्दी', lang: 'hi', enabled: false },
   te: { label: 'తెలుగు', lang: 'te', enabled: false },
+};
+
+/** Compare two release versions ("0.10.0" > "0.9.0"); for sorting, oldest first. */
+export const compareVersions = (a, b) => {
+  const pa = String(a).split('.').map(Number);
+  const pb = String(b).split('.').map(Number);
+  for (let i = 0; i < 3; i++) if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) - (pb[i] ?? 0);
+  return 0;
 };
 
 /** Staleness policy, in releases behind the pinned engine: warn at 1, fail the build at 3. */

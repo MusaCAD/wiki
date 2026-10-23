@@ -1,32 +1,142 @@
 ---
-// Starlight's <head>, plus: the two fonts every page paints with, preloaded so they do not
-// wait behind the stylesheet; the reading settings applied before first paint (no flash of
-// the wrong size or contrast); and nothing else.
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// Starlight's <head> (title, description, canonical URL, Open Graph, sitemap), plus:
+// - structured data (schema.org JSON-LD) describing the site, Musa CAD, and this page, so
+//   search engines and AI assistants know what each page is about and how current it is;
+// - the two fonts every page paints with, preloaded so they do not wait behind the CSS;
+// - the reading settings applied before the first paint (no flash of the wrong size).
 import Default from '@astrojs/starlight/components/Head.astro';
 import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import groteskUrl from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+import { ENGINE, SITE_HOME, WIKI_REPO } from '../../../wiki.config.mjs';
+import type { WikiRouteData } from '../../route-data';
+
+const route = Astro.locals.starlightRoute as typeof Astro.locals.starlightRoute & { wiki?: WikiRouteData };
+const data = route.entry.data as typeof route.entry.data & {
+	kind?: string;
+	command?: string;
+	sysvar?: string;
+	appliesTo?: string;
+	lastVerified?: Date;
+	date?: Date;
+};
+const site = (Astro.site?.href ?? 'https://wiki.musacad.org/').replace(/\/$/, '');
+const base = import.meta.env.BASE_URL;
+const url = new URL(Astro.url.pathname, site + '/').href;
+const ids = {
+	website: `${site}${base}#website`,
+	org: `${SITE_HOME}/#organization`,
+	app: `${SITE_HOME}/#software`,
+	maintainer: `${site}${base}#maintainer`,
+};
+const isBlogPost = route.entry.id.startsWith('blog/');
+const isHome = route.entry.id === '' || route.entry.id === 'index';
+const modified = route.lastUpdated ?? data.lastVerified;
+
+const crumbs: { name: string; item: string }[] = [{ name: 'Musa CAD Wiki', item: `${site}${base}` }];
+if (data.kind === 'command' || data.kind === 'sysvar') crumbs.push({ name: 'Command reference', item: `${site}${base}reference/` });
+if (data.kind === 'sysvar') crumbs.push({ name: 'System variables', item: `${site}${base}reference/system-variables/` });
+if (isBlogPost) crumbs.push({ name: 'Blog', item: `${site}${base}blog/` });
+if (!isHome) crumbs.push({ name: data.title, item: url });
+
+const graph: Record<string, unknown>[] = [
+	{
+		'@type': 'WebSite',
+		'@id': ids.website,
+		name: 'Musa CAD Wiki',
+		url: `${site}${base}`,
+		description: 'The official documentation for Musa CAD, the free, open-source 2D CAD program that works like AutoCAD.',
+		inLanguage: 'en',
+		publisher: { '@id': ids.org },
+		about: { '@id': ids.app },
+	},
+	{
+		'@type': 'Organization',
+		'@id': ids.org,
+		name: 'Musa CAD',
+		url: SITE_HOME,
+		logo: `${site}${base}icon-512.png`,
+		sameAs: ['https://github.com/MusaCAD', 'https://flathub.org/apps/org.musacad.MusaCAD'],
+	},
+	{
+		'@type': 'Person',
+		'@id': ids.maintainer,
+		name: 'Pranay Kiran',
+		url: 'https://github.com/KiranPranay',
+	},
+	{
+		'@type': 'SoftwareApplication',
+		'@id': ids.app,
+		name: 'Musa CAD',
+		applicationCategory: 'DesignApplication',
+		applicationSubCategory: '2D CAD',
+		operatingSystem: 'Windows, Linux, macOS (command line preview)',
+		softwareVersion: ENGINE.version,
+		url: SITE_HOME,
+		downloadUrl: ENGINE.releaseUrl(ENGINE.tag),
+		license: 'https://www.gnu.org/licenses/lgpl-3.0.html',
+		isAccessibleForFree: true,
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+		codeRepository: ENGINE.repo,
+		author: { '@id': ids.maintainer },
+	},
+];
+if (crumbs.length > 1) {
+	graph.push({
+		'@type': 'BreadcrumbList',
+		itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: c.item })),
+	});
+}
+// Blog posts get BlogPosting data from the blog plugin; every other page is an article.
+if (!isBlogPost && !isHome && route.entry.id !== '404') {
+	const about =
+		data.kind === 'command' || data.kind === 'sysvar'
+			? { '@type': 'DefinedTerm', name: data.command ?? data.sysvar, inDefinedTermSet: `${site}${base}reference/` }
+			: { '@id': ids.app };
+	graph.push({
+		'@type': 'TechArticle',
+		'@id': `${url}#article`,
+		headline: data.title,
+		description: data.description,
+		url,
+		inLanguage: 'en',
+		isPartOf: { '@id': ids.website },
+		about,
+		mentions: { '@id': ids.app },
+		author: { '@id': ids.maintainer },
+		publisher: { '@id': ids.org },
+		license: `${WIKI_REPO}/blob/main/LICENSE`,
+		...(modified ? { dateModified: new Date(modified).toISOString() } : {}),
+		...(data.appliesTo ? { version: data.appliesTo, proficiencyLevel: 'Beginner' } : {}),
+	});
+}
+const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 ---
 
 <Default><slot /></Default>
 
 <link rel="preload" as="font" type="font/woff2" href={interUrl} crossorigin />
 <link rel="preload" as="font" type="font/woff2" href={groteskUrl} crossorigin />
+{modified && <meta property="article:modified_time" content={new Date(modified).toISOString()} />}
+<script type="application/ld+json" set:html={jsonld} />
 
 {/* Inlined on purpose: it must run before the first paint. Keys match tokens.css. */}
 <script is:inline>
-  (() => {
-    try {
-      var raw = localStorage.getItem('mc-reading');
-      if (!raw) return;
-      var s = JSON.parse(raw);
-      var d = document.documentElement.dataset;
-      if (s.fontSize) d.fontSize = s.fontSize;
-      if (s.lineHeight) d.lineHeight = s.lineHeight;
-      if (s.measure) d.measure = s.measure;
-      if (s.codeSize) d.codeSize = s.codeSize;
-      if (s.font) d.font = s.font;
-      if (s.motion) d.motion = s.motion;
-      if (s.contrast) d.contrast = s.contrast;
-    } catch (e) {}
-  })();
+	(() => {
+		try {
+			var raw = localStorage.getItem('mc-reading');
+			if (!raw) return;
+			var s = JSON.parse(raw);
+			var d = document.documentElement.dataset;
+			if (s.fontSize) d.fontSize = s.fontSize;
+			if (s.lineHeight) d.lineHeight = s.lineHeight;
+			if (s.measure) d.measure = s.measure;
+			if (s.codeSize) d.codeSize = s.codeSize;
+			if (s.font) d.font = s.font;
+			if (s.motion) d.motion = s.motion;
+			if (s.contrast) d.contrast = s.contrast;
+		} catch (e) {}
+	})();
 </script>

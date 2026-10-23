@@ -1,74 +1,82 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
 import { defineCollection } from 'astro:content';
 import { file } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders';
 import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
+import { blogSchema } from 'starlight-blog/schema';
 
-/** A release version as the engine prints it: `0.8.0`. */
+/** A release version as the application prints it: `0.8.0`. */
 const releaseVersion = z
   .string()
   .regex(/^\d+\.\d+\.\d+$/, 'must be a release version such as 0.8.0 (no leading v)');
 
 /**
- * Every page carries these. They are what the status banner, the staleness check and the
- * tier guard read. Build fails on a page without them (§5 of the brief).
+ * The fields every page of the wiki carries, read by the status line, the version banner and
+ * the checks. They are optional here only because pages the blog generates (its index, tag and
+ * author pages) have no file to put them in; scripts/check-pages.mjs requires them on every
+ * file under src/content/docs/, and CI runs it.
  */
 export const wikiFrontmatter = z.object({
-  /** A short description is required on every page: search results, cards and social previews read it. */
-  description: z.string().min(20, 'description: write at least a sentence'),
-  /** Who owns the words. generated: nobody edits by hand. assisted: an agent drafts, a human merges. human: left alone by automation. */
-  tier: z.enum(['generated', 'assisted', 'human']),
-  /** The engine release the page was last checked against. */
-  appliesTo: releaseVersion,
-  /** When a person last verified the page against that release. */
-  lastVerified: z.coerce.date(),
-  /** Honest coverage: complete, partial (says what is missing), or stub (header data only). */
-  status: z.enum(['complete', 'partial', 'stub']),
-  /** The page shape. Drives the components and the frontmatter rules below. */
+  /** One or two sentences: search results, link previews and AI tools read it. Required on
+   * every file (scripts/check-pages.mjs); optional here for the blog's generated pages. */
+  description: z.string().min(20, 'description: write at least a sentence').optional(),
+  /**
+   * Who writes the page.
+   * generated: written by scripts from the application's own data; never edited by hand.
+   * assisted:  drafted from a release's changes, then read and corrected by a person.
+   * human:     written by a person; automation may flag it as out of date, never rewrite it.
+   */
+  tier: z.enum(['generated', 'assisted', 'human']).optional(),
+  /** The Musa CAD release the page was last checked against. */
+  appliesTo: releaseVersion.optional(),
+  /** When a person last checked the page against that release. */
+  lastVerified: z.coerce.date().optional(),
+  /** complete, partial (the page says what it leaves out), or stub (only what the application reports). */
+  status: z.enum(['complete', 'partial', 'stub']).optional(),
+  /** The kind of page, which decides its layout and the rules it follows. */
   kind: z
     .enum([
       'landing',
       'guide',
       'command',
       'sysvar',
-      'shortcuts',
+      'reference',
       'tutorial',
       'troubleshooting',
       'release',
-      'reference',
       'developer',
       'project',
+      'blog',
     ])
     .default('guide'),
-  /** For kind: command — the registry name, upper case, e.g. LINE. */
+  /** kind: command — the command's name as the application lists it, e.g. LINE. */
   command: z.string().regex(/^-?[A-Z0-9]+$/).optional(),
-  /** For kind: sysvar — the variable name, upper case. */
+  /** kind: sysvar — the variable's name, e.g. PICKBOX. */
   sysvar: z.string().regex(/^[A-Z0-9]+$/).optional(),
-  /** Which platforms the page applies to; omitted means all. */
+  /** The platforms the page is about; leave out for all of them. */
   platforms: z.array(z.enum(['windows', 'linux', 'macos'])).optional(),
-  /** For kind: tutorial. */
+  /** kind: tutorial. */
   tutorial: z
     .object({
       level: z.enum(['beginner', 'intermediate', 'advanced']),
       /** e.g. "20 minutes" */
       time: z.string(),
-      /** The example id under examples/ whose rendered image opens the page and whose file is offered for download. */
+      /** The example under examples/ whose picture opens the page and whose file is offered for download. */
       example: z.string().optional(),
     })
     .optional(),
-  /** For kind: troubleshooting — the symptom-first fields. */
+  /** kind: troubleshooting — the problem as a user would describe it, who it affects, and why. */
   symptom: z
     .object({
-      /** Who it affects: platforms and versions, in words. */
       affects: z.string(),
-      /** The cause, in one sentence. */
       cause: z.string(),
     })
     .optional(),
-  /** For pages rendered from a file in the engine repo at build time (ARCHITECTURE.md, ROADMAP.md). */
+  /** Pages rendered at build time from a file in the Musa CAD repository (ARCHITECTURE.md ...). */
   sourceOf: z.string().optional(),
-  /** For screenshots that are manual assets: the version they were captured with. Rendered figures carry their own stamp. */
-  capturedWith: releaseVersion.optional(),
 });
 
 export type WikiFrontmatter = z.infer<typeof wikiFrontmatter>;
@@ -84,7 +92,10 @@ const releaseSchema = z.object({
 });
 
 export const collections = {
-  docs: defineCollection({ loader: docsLoader(), schema: docsSchema({ extend: wikiFrontmatter }) }),
+  docs: defineCollection({
+    loader: docsLoader(),
+    schema: docsSchema({ extend: (context) => blogSchema(context).extend(wikiFrontmatter.shape) }),
+  }),
   i18n: defineCollection({
     loader: i18nLoader(),
     schema: i18nSchema({
@@ -111,9 +122,8 @@ export const collections = {
           'mc.stub.notice': z.string(),
           'mc.partial.notice': z.string(),
           'mc.home': z.string(),
-          'mc.footer.content': z.string(),
+          'mc.footer.licence': z.string(),
           'mc.footer.examples': z.string(),
-          'mc.footer.engine': z.string(),
           'mc.footer.trademark': z.string(),
           'mc.figure.renderedBy': z.string(),
           'mc.figure.download': z.string(),

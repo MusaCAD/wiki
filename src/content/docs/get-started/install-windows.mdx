@@ -1,6 +1,8 @@
 ---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 title: Install on Windows
-description: The Windows installer for Musa CAD, what the SmartScreen and publisher warnings mean, what gets installed, how updates work, and how to check the install from a terminal.
+description: How to install Musa CAD on Windows, what the security warnings mean, how updates work, and how to use it from a script.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
@@ -12,65 +14,79 @@ sidebar:
 ---
 
 import Platforms from '../../../components/Platforms.astro';
+import { Steps } from '@astrojs/starlight/components';
 
 <Platforms items={['windows']} />
 
-Musa CAD for Windows is a 64-bit installer, `MusaCAD-<version>-x86_64-setup.exe`, published on each release's page on GitHub.
+Musa CAD for Windows comes as a normal installer, `MusaCAD-<version>-x86_64-setup.exe`. You download it from the release page on GitHub.
 
-:::note[Version 0.8.0 and the installer]
-Version 0.8.0 shipped on 22 October 2026 for Linux and macOS first. The project attaches the Windows installer to the same release once it has been checked on real Windows hardware; a 0.7.0 installation then offers the update from its Update window. Until it appears, the current Windows release is [0.7.0](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.7.0).
+:::note[Version 0.8.0 on Windows]
+Version 0.8.0 came out on 22 October 2026 for Linux and macOS first. The Windows installer is added to the same release once it has been tested on a real Windows PC. When it arrives, an installed 0.7.0 offers the update by itself. Until then, the newest Windows version is [0.7.0](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.7.0).
 :::
 
 ## What you need
 
-- 64-bit Windows 10 or 11.
-- A graphics driver with **OpenGL 4.5 Core**. Current Intel, AMD and NVIDIA drivers have it. Without it the application explains what it found at startup instead of drawing.
-- No account, no licence key, no internet connection to run. The application checks GitHub once a day for a newer version; Options turns that off.
+- Windows 10 or 11, 64-bit.
+- A graphics driver that supports **OpenGL 4.5**. Current Intel, AMD and NVIDIA drivers all do. If yours does not, Musa CAD tells you so when it starts.
+- Nothing else. There is no account, licence key or internet connection needed to use it.
 
-## Install
+## Install it
 
-1. Download `MusaCAD-<version>-x86_64-setup.exe` from the [latest release](https://github.com/MusaCAD/MusaCAD/releases/latest). The `.sha256` file beside it is its checksum, for checking the download by hand if you want to.
-2. Run it. You will meet warnings; the next section says why.
-3. Choose whether to **Register .musa / .dxf file types**. This claims `.musa` for Musa CAD and only adds Musa CAD to the "Open with" list for `.dxf` and `.dwg`; it never takes those away from another program.
-4. Finish. Musa CAD is in the Start menu.
+<Steps>
 
-The installer puts the application in `C:\Program Files\Musa CAD`, writes an uninstall entry, and needs administrator rights for both. Running a newer installer over an existing installation updates it in place.
+1. Download `MusaCAD-<version>-x86_64-setup.exe` from the [latest release](https://github.com/MusaCAD/MusaCAD/releases/latest). The `.sha256` file next to it lets you check the download if you want to.
 
-## The warnings, and what they mean
+2. Run the installer. Windows will show one or more warnings first; the next section explains them.
 
-The installer and the application are not code-signed yet, so Windows has no publisher name to show and no reputation to look up. You will see some or all of these:
+3. Choose whether to tick **Register .musa / .dxf file types**. This makes Musa CAD open `.musa` files when you double-click them. For `.dxf` and `.dwg` files it only adds Musa CAD to the "Open with" list. It never takes those files away from another program.
 
-- The browser flags the download as not commonly downloaded.
+4. Click Finish. Musa CAD is now in the Start menu.
+
+</Steps>
+
+Musa CAD installs into `C:\Program Files\Musa CAD` and needs administrator rights to do so. To update, you can run a newer installer over the old one.
+
+## Why Windows warns you
+
+The installer is not yet signed with a code-signing certificate. Without one, Windows does not know who made the file, so it shows warnings. You may see any of these:
+
+- Your browser says the file is not commonly downloaded.
 - SmartScreen says "Windows protected your PC". Click **More info**, then **Run anyway**.
-- The User Account Control prompt says **Publisher: Unknown**.
+- The administrator prompt says **Publisher: Unknown**.
 
-Nothing in Musa CAD is being flagged as harmful; the files are unknown to Windows, which is what an unsigned file from a small project is. The project's plan to sign releases, and the options it is weighing, is written up in the repository's [WINDOWS_SIGNING.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/WINDOWS_SIGNING.md).
+This does not mean Windows found anything harmful. It only means the file is new to Windows. Getting the installer signed is planned; the options are written up in [WINDOWS_SIGNING.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/WINDOWS_SIGNING.md).
 
-## Two programs
+## Two programs, and why
 
-The installation holds two executables, on purpose:
+Musa CAD installs two programs side by side:
 
-| Program | What it is |
+| Program | Use it for |
 |---|---|
-| `musacad_app.exe` | The windowed application. The Start menu shortcut and the file associations open this. It has no console window. |
-| `musacad.exe` | The console front-end for scripts. It runs `musacad_app.exe` with the same arguments, waits for it and exits with its exit code. |
+| `musacad_app.exe` | Drawing. This is what the Start menu and double-clicked files open. |
+| `musacad.exe` | Scripts and the command prompt. It runs the app, waits for it, and passes back its exit code. |
 
-Use `musacad.exe` from Command Prompt, PowerShell and batch files, because Windows shells do not wait for a windowed program: run directly, `musacad_app.exe --check part.musa` returns before the check has run. To confirm the install from a terminal:
+The second one exists because Command Prompt and PowerShell do not wait for a windowed program to finish. Use `musacad.exe` in scripts. To check that the install works from a terminal:
 
 ```powershell
 & "C:\Program Files\Musa CAD\musacad.exe" --version
 ```
 
-The command line itself, with `--check` and headless `--plot`, is the same on every platform. The scripting section of this wiki will cover it; until then, [CLI.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/CLI.md) in the repository is the reference.
+The [command line page](/scripting/command-line/) explains everything `musacad.exe` can do, such as checking a drawing or printing it to PDF without opening a window.
 
 ## Updates
 
-Once a day the application asks GitHub whether a newer release exists and, if there is one, says so in the status bar. Clicking it opens the Update window. On Windows that window can download the new installer and run it over the current installation; before running it, it checks the download against the release's published SHA-256 and the version stamped in the installer, and refuses one that does not match.
+Once a day, Musa CAD checks GitHub for a newer version. If there is one, a small notice appears in the status bar at the bottom of the window. Click it to open the Update window. On Windows, that window can download the new installer and run it for you. It first checks the download's size, its SHA-256 checksum and its version number, and refuses a file that does not match.
+
+You can turn the daily check off in **Options** (type `OP`).
 
 ## Uninstall
 
-Settings ▸ Apps ▸ Musa CAD ▸ Uninstall, or `uninstall.exe` in the installation folder. Your drawings and your settings are left alone.
+Open **Settings ▸ Apps ▸ Musa CAD ▸ Uninstall**, or run `uninstall.exe` in the install folder. Your drawings and settings are not deleted.
 
-## DWG files
+## Opening DWG files
 
-DWG import and export go through the free ODA File Converter, which Musa CAD downloads for you: **DWG Setup** in the application menu, then **Download ODA File Converter…**. DXF needs nothing extra.
+To open or save DWG files, Musa CAD uses the free ODA File Converter. Open **DWG Setup** from the application menu (the Musa CAD logo at the top left) and click **Download ODA File Converter…**. DXF files work without it.
+
+## Next
+
+[Make your first drawing](/get-started/first-drawing/).

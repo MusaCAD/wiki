@@ -1,6 +1,8 @@
 ---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
 title: Build from source
-description: Musa CAD is clone-and-build clean. The prerequisites, the three commands, where the binary lands, and where the full per-platform guide lives.
+description: Build Musa CAD yourself from its source code on Linux in three commands. What you need to install first, and where the program ends up.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
@@ -10,27 +12,27 @@ sidebar:
   order: 5
 ---
 
-Musa CAD builds from a clone with CMake presets and no third-party CAD dependency. This page is the short version for a Linux desktop. The developer section of this wiki will carry the per-platform guide, the sanitizer presets and the packaging; until it does, [BUILD.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/BUILD.md) in the repository is the reference, and this page is marked partial for that reason.
+You can build Musa CAD from its source code with a few standard tools. It does not depend on any other CAD library. This page covers a Linux desktop. Windows and macOS builds, the debug and sanitizer builds, and packaging are covered in [BUILD.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/BUILD.md) in the source repository for now. That is why this page is marked partial.
 
-## Prerequisites
+## What you need
 
-| What | Minimum |
+| Tool | Version |
 |---|---|
-| C++23 compiler | GCC 13, Clang 17, or MSVC 19.38 (Visual Studio 2022 17.8) |
-| CMake | 3.25 |
-| Ninja | 1.10 |
-| Qt 6 (Core, Gui, Widgets) | 6.4 |
-| Vulkan loader and headers | 1.3 (located at configure time; the shipped viewport uses OpenGL) |
+| A C++23 compiler | GCC 13, Clang 17, or Visual Studio 2022 (17.8) |
+| CMake | 3.25 or newer |
+| Ninja | 1.10 or newer |
+| Qt 6 (Core, Gui, Widgets) | 6.4 or newer |
+| Vulkan loader and headers | 1.3 or newer (needed to configure; the program itself draws with OpenGL) |
 
-On Debian or Ubuntu:
+On Debian or Ubuntu, one command installs them:
 
 ```sh
 sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev libvulkan-dev
 ```
 
-Everything else the build needs it fetches itself (Catch2 for the tests).
+Everything else (such as the test framework) is downloaded by the build itself.
 
-## Build
+## Build it
 
 ```sh
 git clone https://github.com/MusaCAD/MusaCAD.git
@@ -39,16 +41,18 @@ cmake --preset release
 cmake --build --preset release
 ```
 
-The application lands at `build/release/bin/musacad_app`. The `dev` preset builds Debug with AddressSanitizer and UndefinedBehaviorSanitizer and the unit tests; `ctest --preset dev` runs them.
+The program is then at `build/release/bin/musacad_app`. Check it:
 
 ```sh
 ./build/release/bin/musacad_app --version
 ```
 
-## DWG
+For development, the `dev` preset builds a debug version with memory checks and the unit tests. Run the tests with `ctest --preset dev`.
 
-DWG support is not built in and adds no build dependency: the application runs an external converter (ODA File Converter or LibreDWG's `dwg2dxf`) as a separate process. A fresh build handles DXF; DWG Setup in the application menu downloads the converter.
+## DWG support
+
+DWG support is not compiled in, and needs nothing at build time. Musa CAD runs a separate converter program (the ODA File Converter, or LibreDWG's `dwg2dxf`) when you open or save a DWG file. A fresh build handles DXF straight away. For DWG, open **DWG Setup** in the application menu and let it download the converter.
 
 ## Windows and macOS
 
-Both are built by the project's GitHub workflows (`build-windows.yml`, `build-macos.yml`), and BUILD.md describes the Visual Studio and Qt setup for a local Windows build. The macOS build produces a working command line and a viewport that cannot open; see [Install on macOS](/get-started/install-macos/).
+Both are built by the project's GitHub workflows. BUILD.md explains how to set up Visual Studio and Qt for a Windows build on your own PC. A Mac build gives you a working command line, but the drawing area cannot open yet (see [Install on macOS](/get-started/install-macos/)).
