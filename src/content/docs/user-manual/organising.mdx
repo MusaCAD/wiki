@@ -1,0 +1,95 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Organising a drawing
+description: Keeping a Musa CAD drawing tidy and easy to change. Layers and their settings, colours, linetypes and lineweights, blocks and attributes, external references, groups, and cleaning up unused items.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Organising a drawing
+  order: 6
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+A well-organised drawing is quick to change and easy for someone else to read. Musa CAD gives you the same tools drafters have always used: layers to sort objects, blocks for parts you draw again and again, and references to other drawings.
+
+## Layers
+
+A **layer** is like a sheet of tracing paper. Put each kind of object on its own layer, such as outlines, centre lines, hatching, dimensions and notes. Then you can show, hide, lock or recolour a whole kind at once.
+
+Every drawing has layer `0`, which cannot be deleted or renamed. New objects go on the **current layer**, shown on the ribbon's Layers panel. Pick another layer there to make it current.
+
+Open the Layer Properties Manager with `LA`. Each layer has:
+
+| Setting | What it does |
+|---|---|
+| On / Off | An off layer is hidden and not plotted. |
+| Freeze / Thaw | A frozen layer is hidden and left out entirely, which keeps big drawings fast. |
+| Lock / Unlock | Objects on a locked layer show, but cannot be changed. |
+| Color, Linetype, Lineweight | What objects on the layer look like when they are set to ByLayer. |
+| Transparency | How see-through the layer's objects are, from 0 to 90 percent. |
+| Plot | Whether the layer prints. Turn it off for construction lines and notes to yourself. |
+| Description | A note about what the layer is for. |
+
+In the ribbon's layer list, you can click a layer's bulb, sun or padlock to turn it off, freeze it or lock it without opening the manager.
+
+The layer tools work by picking objects instead of typing layer names: LAYISO shows only the layers of what you pick, LAYOFF turns off the layer of what you pick, and so on. LAYERP undoes the last layer change.
+
+<CommandList label="Layer commands" names={['LAYER', '-LAYER', 'LAYISO', 'LAYUNISO', 'LAYOFF', 'LAYON', 'LAYFRZ', 'LAYTHW', 'LAYLCK', 'LAYULK', 'LAYMCUR', 'LAYCUR', 'LAYMCH', 'LAYMRG', 'LAYDEL', 'LAYWALK', 'LAYERP', 'LAYERSTATE']} />
+
+## Colour, linetype and lineweight
+
+Each object has a colour, a linetype and a lineweight. Leave them as **ByLayer** and they follow the layer, which is the easiest drawing to change later. Set them on an object only when it must differ from its layer.
+
+- **Linetypes:** Continuous, Dashed, Center and Hidden are always there. Load more from a `.lin` file in the Linetype Manager. How long the dashes are is set by the linetype scale (`LTSCALE`), and by each object's own scale (`CELTSCALE` for new objects).
+- **Lineweights** are line thicknesses, in millimetres. They plot when the Plot window's **Plot object lineweights** is ticked. The **LWT** button on the status bar shows them on screen too.
+
+<CommandList label="Colour, linetype and lineweight commands" names={['COLOR', 'LINETYPE', 'LTSCALE', 'LWEIGHT']} />
+
+## Blocks
+
+A **block** is a named group of objects you can place many times, such as a bolt, a door or a title block. Each placement is a **block reference**. Change the block's definition and every reference changes with it.
+
+1. Draw the part once.
+2. Type `B` for BLOCK, give it a name and a base point, and select the objects.
+3. Place it with `I` for INSERT, at any scale and rotation.
+
+A block can hold lines, circles, arcs, polylines, text, multiline text, attribute definitions and other blocks. If you select other kinds of objects when making a block, Musa CAD leaves them in place and says how many.
+
+To change a block, open it in the Block Editor with `BE`, or edit it in place with REFEDIT. WBLOCK writes a block, or a whole drawing, to its own `.musa` file for use in other drawings.
+
+<CommandList label="Block commands" names={['BLOCK', 'INSERT', 'BEDIT', 'REFEDIT', 'WBLOCK', 'BASE', 'BLOCKREPLACE', 'EXPLODE', 'BURST', 'NCOPY', 'XLIST']} />
+
+### Attributes
+
+**Attributes** are fill-in fields inside a block, such as a part number or a drawing title. Define them with ATTDEF before you make the block. Each time you insert the block, Musa CAD asks for the values. Change them later with ATTEDIT or EATTEDIT. DATAEXTRACTION can count blocks and list their attribute values in a table or a CSV file.
+
+<CommandList label="Attribute commands" names={['ATTDEF', 'ATTEDIT', 'EATTEDIT', 'BATTMAN', 'ATTSYNC', 'ATTDISP']} />
+
+## External references
+
+An **external reference** (xref) shows another drawing inside yours, without copying it. When the other drawing changes, yours shows the change the next time it opens, or when you reload it. Use xrefs for a site plan under several building drawings, or a shared title block.
+
+Type `XR` for XREF, choose **Attach**, and pick a `.musa` or `.dxf` file. Keep referenced files together with the drawing, so the references still work when you move the project.
+
+<CommandList label="Reference commands" names={['XREF', 'IMAGEATTACH']} />
+
+## Groups
+
+A **group** is a named set of objects that are selected together when you click any one of them. Unlike a block, the objects stay ordinary objects in the drawing. Press <kbd>Ctrl</kbd>+<kbd>H</kbd> to switch group selection off and on.
+
+<CommandList label="Group commands" names={['GROUP', 'UNGROUP', 'GROUPEDIT']} />
+
+## Clean up
+
+<CommandList label="Clean-up commands" names={['PURGE', 'RENAME', 'OVERKILL', 'AUDIT']} />
+
+PURGE removes layers, blocks, styles and other items nothing uses. AUDIT checks the drawing for broken references and can fix them.
+
+## Next
+
+- Lay out sheets and print in [Layouts, viewports and plotting](/user-manual/layouts-and-plotting/).

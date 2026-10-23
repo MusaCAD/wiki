@@ -1,15 +1,83 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "ARC"
-description: "The ARC (A) command in Musa CAD: Draw an arc by three points, or from a start, centre or end with an angle, chord, direction or radius. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The ARC (A) command in Musa CAD draws an arc, most simply through three points. How to build one from a start, centre and end with an angle, chord length, direction or radius, continue from the last line, and switch direction with Ctrl."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "ARC"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+ARC draws an arc, which is part of a circle. The quickest way is to give three points on it: where it starts, a point it passes through, and where it ends.
+
+## How it works
+
+Type `A` and press <kbd>Enter</kbd>. Give the start point, a second point on the arc, and the end point. Musa CAD draws the arc through all three and the command ends.
+
+```musacad
+Command: A
+Specify start point of arc or [Center]: 0,0
+Specify second point of arc or [Center/End]: 30,20
+Specify end point of arc: 60,0
+```
+
+<Figure id="cmd-arc" alt="Two blue arcs. On the left, an arc through three numbered points: 1 at its left end, 2 at its top and 3 at its right end. On the right, an arc drawn by Start, Center, End: 1 is the start point on the right, 2 is the centre, and 3 is the end point, picked further out along a thin line from the centre. The arc runs counter-clockwise from 1 and stops where that line crosses it." caption="Three points, or a start, a centre and an end." />
+
+If the three points lie in a straight line, no arc passes through them. Musa CAD says `*Invalid*` and asks for the end point again.
+
+## Options
+
+Besides three points, you can build an arc from its start, its centre and its end, and finish it with an angle, a chord length, a direction or a radius. The **Arc** list on the ribbon starts each of these ways for you, such as **Start, Center, End** or **Start, End, Radius**.
+
+| Option | What it does |
+|---|---|
+| **Center** (`C`) | At the first prompt, give the centre first: `Specify center point of arc:`, then `Specify start point of arc:`. At the second prompt, give the centre after the start point. Either way, Musa CAD then asks `Specify end point of arc (hold Ctrl to switch direction) or [Angle/chord Length]:`. |
+| **End** (`E`) | At the second prompt, give the end point next. Musa CAD then asks `Specify center point of arc (hold Ctrl to switch direction) or [Angle/Direction/Radius]:`. |
+| **Angle** (`A`) | After the centre or the end: the included angle, which is how far the arc sweeps, in degrees. A positive angle goes counter-clockwise, a negative one clockwise. |
+| **chord Length** (`L`) | After the centre: the straight distance from the start to the end. A positive length draws the shorter arc, a negative one the longer arc. |
+| **Direction** (`D`) | After the end: the direction the arc leaves the start point in. Type an angle, or click a point to aim it. |
+| **Radius** (`R`) | After the end: the radius. A positive radius draws the shorter arc, a negative one the longer arc. |
+| <kbd>Enter</kbd> at **Specify start point of arc** | Continues from the end of the last line or arc you drew, carrying on smoothly in its direction. Musa CAD asks only `Specify end point of arc (hold Ctrl to switch direction):`. |
+
+## Start, centre and end
+
+With a centre, the start point sets the radius. The end point you give only says where the arc stops: the arc ends where the line from the centre through that point crosses it.
+
+```musacad
+Command: A
+Specify start point of arc or [Center]: 130,0
+Specify second point of arc or [Center/End]: C
+Specify center point of arc: 110,0
+Specify end point of arc (hold Ctrl to switch direction) or [Angle/chord Length]: @28<120
+```
+
+Here `@28<120` is a point 28 from the centre at 120 degrees, so the arc sweeps 120 degrees.
+
+## Which way the arc goes
+
+Arcs run counter-clockwise from the start point, unless you say otherwise. Where a prompt says `(hold Ctrl to switch direction)`, hold <kbd>Ctrl</kbd> as you click to draw the arc clockwise instead. While you move the cursor, the rubber band shows the arc the click will make.
+
+A three-point arc always goes from the first point, through the second, to the third, whichever way round that is.
+
+## Good to know
+
+- `*Invalid*` means no arc fits what you gave: three points in a line, a chord longer than the circle is wide, or a radius shorter than half the distance from start to end. Musa CAD stays at the same prompt, so try another value.
+- **Direction** and Continue already fix which way the arc leaves, so holding <kbd>Ctrl</kbd> changes nothing there, even though the prompt mentions it.
+- Pressing <kbd>Enter</kbd> at the first prompt when you have not drawn a line or arc yet does nothing. The prompt stays.
+- Each arc is a separate object. To draw lines and arcs as one object, use the arc mode of [PLINE](/reference/commands/pline/).
+- <kbd>Esc</kbd> cancels the command. Nothing is drawn.
+
+## Compared with AutoCAD
+
+ARC offers AutoCAD's methods: three points, the Center and End branches, the centre first, and Continue with <kbd>Enter</kbd>. The **Arc** list on the ribbon starts each of its eleven ways.
+
+## Next
+
+- Draw a whole circle with [CIRCLE](/reference/commands/circle/).
+- Round a corner with an arc of a set radius using [FILLET](/reference/commands/fillet/).
+- Draw lines and arcs as one object with [PLINE](/reference/commands/pline/).

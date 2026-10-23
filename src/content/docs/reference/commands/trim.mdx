@@ -1,15 +1,81 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "TRIM"
-description: "The TRIM (TR) command in Musa CAD: Trim objects to meet the edges of other objects. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The TRIM (TR) command in Musa CAD cuts objects back to where other objects cross them. Quick mode trims what you click, Standard mode trims to edges you choose; drag or fence across several, or Shift-click to extend instead."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "TRIM"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+TRIM cuts away the part of an object that runs past another object. Click the piece you want to remove, and Musa CAD cuts it at the nearest crossing on each side.
+
+## How it works
+
+Type `TR` and press <kbd>Enter</kbd>. Musa CAD shows the current settings, then waits for you to click what to remove. The piece that will go is highlighted under the cursor before you click. Press <kbd>Enter</kbd> when you are done.
+
+```musacad
+Command: TR
+Current settings: Projection=UCS, Edge=None, Mode=Quick
+Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/Project/eRase]: (click an end)
+Trimmed 1 object.
+Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/Project/eRase/Undo]: ↵
+```
+
+<Figure id="cmd-trim" alt="Two copies of a rectangle crossed by a horizontal and a vertical line that stick out past its sides. On the left, before: the lines overshoot on all four sides. On the right, after: the lines stop at the rectangle, and the four removed ends are shown dashed in grey." caption="Clicking each of the four ends trims them back to the rectangle." />
+
+To trim many objects at once, drag across them with the mouse button held down. Everything the path crosses is trimmed. In Quick mode you can also click on empty space and then a second point; in Standard mode that click starts a crossing window instead.
+
+Hold <kbd>Shift</kbd> while you click to extend an object to the next edge instead, as [EXTEND](/reference/commands/extend/) does.
+
+## Quick and Standard mode
+
+TRIM has two modes. Musa CAD starts in **Quick** mode.
+
+- **Quick:** every object in the drawing is a cutting edge. You only click what to remove. If what you click has nothing to trim it to, it is deleted, and Musa CAD says `Deleted: nothing to trim it to.`
+- **Standard:** you first choose the cutting edges, then click what to trim. Objects that do not cross a chosen edge are left alone.
+
+```musacad
+Command: TR
+Current settings: Projection=UCS, Edge=None, Mode=Standard
+Select cutting edges ...
+Select objects or <select all>: (pick the edges) ↵
+Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Project/Edge/eRase]:
+```
+
+In Standard mode, objects you selected before starting TRIM become the cutting edges, and pressing <kbd>Enter</kbd> at **Select objects** makes every object an edge. Switch modes with the **mOde** option. The mode is kept for next time, and is the [TRIMEXTENDMODE](/reference/system-variables/trimextendmode/) setting.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **cuTting edges** (`T`) | Choose which objects to cut against, instead of all of them. |
+| **Fence** (`F`) | Standard mode. Click points to draw a line; everything it crosses is trimmed. Press <kbd>Enter</kbd> to finish. |
+| **Crossing** (`C`) | Click two corners. Everything the window crosses is trimmed. |
+| **mOde** (`O`) | Switch between Quick and Standard. |
+| **Project** (`P`) | None, Ucs or View. Kept for AutoCAD habits; in a 2D drawing it changes nothing. |
+| **Edge** (`E`) | Standard mode. **Extend** cuts against where an edge would reach if it went on, even if it stops short. **No extend** cuts only where edges really cross. |
+| **eRase** (`R`) | Select objects to delete without leaving TRIM. |
+| **Undo** (`U`) | Puts back what the last click or path trimmed. It appears after your first trim. |
+
+## Good to know
+
+- Lines, arcs, circles, ellipses, splines, polylines, construction lines and rays can be trimmed. Clicking anything else says so.
+- Each click, drag or fence is a separate undo step, both inside TRIM and with [U](/reference/commands/u/) afterwards.
+- `Trim: no crossing edge found.` means nothing crosses the object near where you clicked. In Standard mode, check that the edge you need is selected, or turn on **Edge** Extend.
+- A circle needs two crossings to be trimmed, because it has no ends.
+
+## Compared with AutoCAD
+
+TRIM follows AutoCAD's newer behaviour: Quick mode by default, the highlighted preview, and Standard mode with the classic cutting edges. Projection is accepted but has no effect, because Musa CAD is 2D.
+
+## Next
+
+- Lengthen objects to meet an edge with [EXTEND](/reference/commands/extend/).
+- Round or bevel a corner and trim it in one step with [FILLET](/reference/commands/fillet/) or [CHAMFER](/reference/commands/chamfer/).
+- Remove a piece between two points with [BREAK](/reference/commands/break/).

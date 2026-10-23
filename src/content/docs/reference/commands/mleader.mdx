@@ -1,15 +1,104 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "MLEADER"
-description: "The MLEADER (MLD) command in Musa CAD: Draw a multileader: an arrowhead, a leader line and a landing, and its text. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The MLEADER (MLD) command in Musa CAD draws a multileader: an arrowhead, a leader line, a short landing and a note. How to place it starting from the arrowhead, the landing or the text, and change its options."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "MLEADER"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+MLEADER draws a note with an arrow pointing at something. A multileader has four parts: the arrowhead, the leader line, a short horizontal landing, and the text beside the landing. They stay together as one object.
+
+## How it works
+
+Type `MLD` (or `MLEADER`) and press <kbd>Enter</kbd>. Click where the arrowhead should point. Then click where the leader should end: this is the landing location. Type the note and press <kbd>Enter</kbd>. The multileader is drawn and the command ends.
+
+The landing and the text go to the right if the landing location is to the right of the point before it, and to the left if it is to the left.
+
+```musacad
+Command: MLD
+Specify leader arrowhead location or [leader Landing first/Content first/Options] <Options>: (click the edge of the hole)
+Specify leader landing location: (click up and to the right)
+Enter annotation text: DRILL THROUGH
+Multileader placed.
+```
+
+<Figure id="cmd-mleader" alt="A rectangular plate with a round hole. A blue multileader has its arrowhead on the edge of the hole, marked 1. Its leader line runs up and to the right, outside the plate, to point 2. From there a short horizontal landing leads to the text DRILL THROUGH." caption="Click the arrowhead (1) and the landing location (2), then type the text." />
+
+### Start from the landing or the text
+
+You can place the parts in another order. Type `L` at the first prompt to click the landing first, or `C` to place the text first. Musa CAD then asks for the arrowhead last.
+
+```musacad
+Command: MLD
+Specify leader arrowhead location or [leader Landing first/Content first/Options] <Options>: C
+Specify location of the text or [leader arrowHead first/leader Landing first/Options] <Options>: (click where the note goes)
+Enter annotation text: SEE NOTE 3
+Specify leader arrowhead location: (click what the note points at)
+Multileader placed.
+```
+
+With **leader Landing first**, the prompts are `Specify leader landing location or [leader arrowHead first/Content first/Options] <Options>:`, then `Specify leader arrowhead location:`, then the text.
+
+## Options
+
+These are offered at the first prompt.
+
+| Option | What it does |
+|---|---|
+| **leader arrowHead first** (`H`) | Click the arrowhead first, then the landing. This is how MLEADER starts. |
+| **leader Landing first** (`L`) | Click the landing location first, then the arrowhead. |
+| **Content first** (`C`) | Click where the text goes and type it first, then click the arrowhead. |
+| **Options** (`O`) | Opens more settings for this leader (see below). <kbd>Enter</kbd> at the first prompt does the same. |
+
+## More settings
+
+**Options** asks `Enter an option [Leader type/leader lAnding/Content type/Maxpoints/First angle/Second angle/eXit options] <eXit options>:`. After each setting it asks again, until you choose **eXit options**.
+
+| Option | What it does |
+|---|---|
+| **Leader type** (`L`) | `Select a leader type [Straight/sPline/None] <Straight>:`. **Straight** draws straight segments, **sPline** a smooth curve, and **None** no leader line at all. <kbd>Enter</kbd> keeps the type you have. |
+| **leader lAnding** (`A`) | `Use landing [Yes/No] <Yes>:`. **No** leaves out the short horizontal landing. |
+| **Content type** (`C`) | `Select a content type [Mtext/None] <Mtext>:`. **None** draws the leader with no text, so Musa CAD does not ask for any. |
+| **Maxpoints** (`M`) | `Enter the maximum points for leader line <2>:`. How many points the leader has, counting the arrowhead and the landing location. With 3 or more, Musa CAD asks `Specify next point:` for the bends between them; press <kbd>Enter</kbd> there to use the last point as the landing. |
+| **First angle** (`F`), **Second angle** (`S`) | Not available yet. Musa CAD says `Angle constraints are not available yet.` |
+| **eXit options** (`X`) | Goes back to the first prompt. <kbd>Enter</kbd> does the same. |
+
+For example, this draws a leader with one bend:
+
+```musacad
+Command: MLD
+Specify leader arrowhead location or [leader Landing first/Content first/Options] <Options>: ↵
+Enter an option [Leader type/leader lAnding/Content type/Maxpoints/First angle/Second angle/eXit options] <eXit options>: M
+Enter the maximum points for leader line <2>: 3
+Enter an option [Leader type/leader lAnding/Content type/Maxpoints/First angle/Second angle/eXit options] <eXit options>: X
+Specify leader arrowhead location or [leader Landing first/Content first/Options] <Options>: (click)
+Specify next point: (click the bend)
+Specify leader landing location: (click)
+Enter annotation text: CHAMFER ALL EDGES
+Multileader placed.
+```
+
+## Good to know
+
+- MLEADER starts with the settings of the current multileader style: its arrowhead, landing, text height, number of points and leader type. Changes made with **Options** apply to this one leader only. To change them for every new leader, use [MLEADERSTYLE](/reference/commands/mleaderstyle/).
+- A multileader keeps following the multileader style it was drawn with. Modify that style, and its arrowhead, text height, landing and leader type change too.
+- **Maxpoints** takes a whole number from 2 to 99. Anything else is refused with `Requires a whole number from 2 to 99.`
+- Block content is not available yet: typing `B` at **Content type** says `Block content is not available yet.`
+- The whole multileader is one object and one undo step. <kbd>Esc</kbd> cancels without drawing anything.
+
+## Compared with AutoCAD
+
+MLEADER has AutoCAD's prompts and options. Block content and the **First angle** and **Second angle** settings are not available yet, and there is no MLEADERCOLLECT.
+
+## Next
+
+- Add or remove leader lines on a multileader with [MLEADEREDIT](/reference/commands/mleaderedit/).
+- Line up the text of several multileaders with [MLEADERALIGN](/reference/commands/mleaderalign/).
+- Set the arrowhead, landing and text for new multileaders with [MLEADERSTYLE](/reference/commands/mleaderstyle/).

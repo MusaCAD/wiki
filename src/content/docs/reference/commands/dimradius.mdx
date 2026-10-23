@@ -1,15 +1,60 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "DIMRADIUS"
-description: "The DIMRADIUS (DRA) command in Musa CAD: Create a radius dimension for a circle or arc. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The DIMRADIUS (DRA) command in Musa CAD dimensions the radius of a circle or an arc, with an R in front of the value. How to pick the curve, place the text inside or outside it, and change the text."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "DIMRADIUS"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+DIMRADIUS dimensions the radius of a circle or an arc: the distance from its centre to its edge. The value is shown with an R in front, such as `R15.00`.
+
+## How it works
+
+Type `DRA` and press <kbd>Enter</kbd>. Pick the circle or arc anywhere on it. Then move the cursor and click where the text should go. The dimension points from the centre towards the place you click, with its arrow on the curve. The dimension is drawn and the command ends.
+
+Click outside the curve to put the text outside, on a short leader. Click inside to keep the text inside, on the dimension line.
+
+```musacad
+Command: DRA
+Select arc or circle: (pick the circle)
+Specify dimension line location or [Mtext/Text/Angle]: (click up and to the right, outside the circle)
+Dimension placed.
+Dimension created from object.
+```
+
+<Figure id="cmd-dimradius" alt="Two blue radius dimensions. On the left, a circle: pick 1 is on the circle at the lower right, and pick 2 is outside it at the upper right, where the text R15.00 sits on a short landing with an arrow pointing to the circle. On the right, an arc dimensioned the same way reads R20.00." caption="Pick the curve (1), then click where the text goes (2)." />
+
+## Options
+
+These options are offered while you place the dimension. After you choose one, Musa CAD asks for the dimension line location again.
+
+| Option | What it does |
+|---|---|
+| **Mtext** (`M`) or **Text** (`T`) | Type your own text at `Enter dimension text (<> for the measurement):`. `<>` stands for the measured value, so `<> TYP` reads `R15.00 TYP`. Text without `<>` replaces the value. Press <kbd>Enter</kbd> without typing to use the measurement. |
+| **Angle** (`A`) | Turns the text. At `Specify angle of dimension text:` type an angle in degrees. `0` or <kbd>Enter</kbd> puts it back the normal way. |
+
+## Good to know
+
+- You can pick a circle, an arc, or a curved segment of a polyline, such as a corner rounded with [FILLET](/reference/commands/fillet/).
+- The value comes from the curve itself, not from where you picked it.
+- Musa CAD checks what you picked as you place the dimension. If there was no circle or arc under the pick, it says `Could not dimension that object -- select a line, circle, or arc.` and draws nothing.
+- With the text outside, a small cross also marks the centre.
+- The R and the number of decimal places come from the current dimension style. A **Prefix** set in [DIMSTYLE](/reference/commands/dimstyle/) takes the place of the R.
+- <kbd>Esc</kbd> cancels without drawing anything. [U](/reference/commands/u/) removes the dimension in one step.
+
+## Compared with AutoCAD
+
+DIMRADIUS uses the same prompts and options AutoCAD users know.
+
+## Next
+
+- Dimension the full width of a circle with [DIMDIAMETER](/reference/commands/dimdiameter/).
+- For a very large arc whose centre is far away, use [DIMJOGGED](/reference/commands/dimjogged/).
+- Mark a centre without a dimension with [DIMCENTER](/reference/commands/dimcenter/).

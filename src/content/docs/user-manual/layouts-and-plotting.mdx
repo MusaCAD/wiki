@@ -1,0 +1,78 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Layouts, viewports and plotting
+description: Turning a Musa CAD drawing into sheets. Model space and layouts, viewports at a scale, per-viewport layers, page setups, the Plot window, PDF output, batch plotting to one PDF, and plotting from the command line.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Layouts and plotting
+  order: 7
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+You draw at full size, then put the drawing on paper. Musa CAD keeps the two apart, the way most CAD programs do: the drawing lives in **model space**, and each sheet is a **layout**.
+
+## Model space and layouts
+
+**Model space** is where you draw, at real size: a 4 metre wall is 4000 units long in a millimetre drawing. You can plot straight from model space, which is fine for simple drawings.
+
+A **layout** is a sheet of paper, with a border, a title block and notes drawn at paper size. Layouts are also called paper space. The tabs below the drawing switch between model space and each layout. Right-click a layout tab to add, rename or delete a layout.
+
+## Viewports
+
+A **viewport** is a window on a layout that shows model space at a scale you choose, such as 1:50. A layout can have several viewports, each showing a different part of the model at its own scale.
+
+1. On a layout, type `MV` for MVIEW and click two corners. The viewport shows the whole model.
+2. Double-click inside the viewport to work in model space through it. Zoom and pan until the right part shows, or set its scale with MVIEW's **Scale** option.
+3. Type `PS` for PSPACE to go back to the sheet. The viewport keeps the view you left it with.
+
+Each viewport can hide layers of its own with VPLAYER, or with the **VP Freeze** column of the Layer Properties Manager while you work inside it. Use it to show dimensions in one viewport but not another.
+
+In model space itself, VPORTS splits the window into tiles that each show the drawing from their own view. That is for working, not for plotting.
+
+<CommandList label="Layout and viewport commands" names={['LAYOUT', 'MODEL', 'MVIEW', 'MSPACE', 'PSPACE', 'VPLAYER', 'VPSCALE', 'VPSYNC', 'VPORTS', 'VIEW']} />
+
+## Plotting
+
+Type `PLOT`, or press <kbd>Ctrl</kbd>+<kbd>P</kbd>. The Plot window sets:
+
+| Setting | Choices |
+|---|---|
+| **Printer/plotter** | PDF, or a printer on your computer. |
+| **Paper size** | ISO A4, A3, A2, A1 and A0, ANSI A (Letter) and ANSI B (Tabloid). |
+| **Plot area** | **Display** (what is on screen), **Extents** (everything), or **Window** (a rectangle you pick). A layout plots its sheet. |
+| **Scale** | **Fit to paper**, or an exact scale such as 1 mm to 5 units. **Center the plot**, or an **Offset**. |
+| **Plot style (CTB)** | In colour, **Monochrome (all black)**, or **Grayscale**. |
+| **Plot object lineweights** | Lines plot at their lineweights. Untick it for thin lines everywhere. |
+| **Orientation** | **Portrait** or **Landscape**. |
+
+Click **Preview…** to see the page before you plot. PDFs are real vector files, so lines stay sharp at any zoom.
+
+A **page setup** saves these settings under a name, so every plot of a layout comes out the same. PAGESETUP manages them.
+
+If a plot comes out wrong, see [A plot or PDF looks wrong](/troubleshooting/plot-looks-wrong/).
+
+<CommandList label="Plot commands" names={['PLOT', 'PREVIEW', 'PAGESETUP', 'EXPORTPDF', 'PUBLISH']} />
+
+## Many sheets at once
+
+PUBLISH plots the model and any layouts you choose into one PDF, one page each. To plot a whole folder of drawings, use the command line instead:
+
+```sh
+for f in *.musa; do musacad --plot "$f" "${f%.musa}.pdf" --paper A3; done
+```
+
+[The command line](/scripting/command-line/) lists every plot option, such as `--scale 1:50`, `--window` and `--monochrome`.
+
+## Dashes in viewports
+
+With `PSLTSCALE` at 1, the default, dashed lines seen through a viewport are scaled by the viewport's scale. Dashes then look the same length on paper in every viewport, whatever its scale.
+
+## Next
+
+- Save, share and exchange drawings in [Working with files](/user-manual/files/).

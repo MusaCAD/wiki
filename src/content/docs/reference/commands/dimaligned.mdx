@@ -1,15 +1,71 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "DIMALIGNED"
-description: "The DIMALIGNED (DAL) command in Musa CAD: Create a dimension aligned with two points. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The DIMALIGNED (DAL) command in Musa CAD draws a dimension parallel to the two points it measures, so a slanted edge shows its true length. How to pick points or an object, place the line and change the text."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "DIMALIGNED"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+DIMALIGNED measures the true distance between two points. Its dimension line runs parallel to the line between them, so a slanted edge shows its real length, not just how far it goes across or up.
+
+## How it works
+
+Type `DAL` and press <kbd>Enter</kbd>. Click the first point, then the second. Then move the cursor to one side and click where the dimension line should go. The line always stays parallel to the two points; moving the cursor only sets how far away it sits. The dimension is drawn and the command ends.
+
+```musacad
+Command: DAL
+Specify first extension line origin or <select object>: 50,45
+Specify second extension line origin: 80,25
+Specify dimension line location or [Mtext/Text/Angle]: (click beside the slanted edge)
+Dimension placed.
+```
+
+<Figure id="cmd-dimaligned" alt="A five-sided plate with its top right corner cut off by a slanted edge. A blue dimension runs parallel to the slanted edge, just outside it, and reads 36.06. Pick 1 is the top end of the edge, pick 2 its lower end, and pick 3 a point on the dimension line." caption="The slanted edge is 36.06 long. DIMLINEAR would give only its 30.00 across." />
+
+### Dimension an object
+
+Press <kbd>Enter</kbd> at the first prompt and pick an object instead of clicking two points. DIMALIGNED takes the two ends of a line or of one polyline segment, or the two ends of an arc.
+
+```musacad
+Command: DAL
+Specify first extension line origin or <select object>: ↵
+Select object to dimension: (pick the slanted line)
+Specify dimension line location or [Mtext/Text/Angle]: (click beside it)
+Dimension placed from object.
+Dimension created from object.
+```
+
+## Options
+
+These options are offered while you place the dimension line. After you choose one, Musa CAD asks for the dimension line location again.
+
+| Option | What it does |
+|---|---|
+| **Mtext** (`M`) or **Text** (`T`) | Type your own text. Musa CAD shows the measurement as the default, for example `Enter dimension text <36.0555>:`; after you picked an object it asks `Enter dimension text (<> for the measurement):`. Type `<>` where the measured value should go. Text without `<>` replaces the value. Press <kbd>Enter</kbd> without typing to use the measurement. |
+| **Angle** (`A`) | Turns the text. At `Specify angle of dimension text:` type an angle in degrees. `0` or <kbd>Enter</kbd> puts it back along the dimension line. |
+
+## Good to know
+
+- For a horizontal or vertical edge, DIMALIGNED and [DIMLINEAR](/reference/commands/dimlinear/) give the same value. They differ only on a slant.
+- A circle cannot be picked here. To dimension a circle's diameter, use [DIMDIAMETER](/reference/commands/dimdiameter/) or DIMLINEAR.
+- When you pick an object, Musa CAD checks it as you place the dimension. If nothing usable was under the pick, it says `Could not dimension that object -- select a line, circle, or arc.` and draws nothing.
+- The value follows the current dimension style: two decimal places in the Standard style. Change it with [DIMSTYLE](/reference/commands/dimstyle/).
+- New dimensions go on the current layer, or on the layer named in [DIMLAYER](/reference/system-variables/dimlayer/).
+- <kbd>Esc</kbd> cancels without drawing anything. [U](/reference/commands/u/) removes the dimension in one step.
+
+## Compared with AutoCAD
+
+DIMALIGNED asks the same questions as AutoCAD's, including <kbd>Enter</kbd> at the first prompt to select an object.
+
+## Next
+
+- Dimension straight across or up with [DIMLINEAR](/reference/commands/dimlinear/).
+- Chain more dimensions from this one with [DIMCONTINUE](/reference/commands/dimcontinue/).
+- Read about dimensions and notes in [Annotation](/user-manual/annotation/).

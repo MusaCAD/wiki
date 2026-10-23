@@ -1,15 +1,65 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "BREAK"
-description: "The BREAK (BR) command in Musa CAD: Break a curve between two points. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The BREAK (BR) command in Musa CAD cuts a piece out of a line, arc, circle, polyline, ellipse or spline between two points you click. How the two clicks work, how to split at one point, and which part of a circle goes."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "BREAK"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+BREAK removes the part of an object between two points, leaving a gap. Use it to open a line for a door, cut a circle into an arc, or split one object into two.
+
+## How it works
+
+Type `BR` and press <kbd>Enter</kbd>. Click the object at the point where the gap should start. That one click both selects the object and gives the first break point. Then click where the gap should end. The piece between the two points is removed and the command ends.
+
+```musacad
+Command: BR
+Select object: (click the line at point 1)
+Specify second break point or [First point]: (click point 2)
+Broke 1 object into 2.
+```
+
+<Figure id="cmd-break" alt="Before, on the left: a horizontal line with points 1 and 2 marked on it, and below it a circle with point 1 at its right and point 2 at its top. After, on the right: the line is now two blue pieces with a grey dashed gap between where 1 and 2 were, and the circle is a blue three-quarter arc; the quarter running counter-clockwise from 1 to 2 is shown dashed in grey." caption="Two clicks remove the piece between them. On a circle, the piece counter-clockwise from 1 to 2 goes." />
+
+Use object snaps to break at exact points, such as the end or the middle of another object.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **First point** (`F`) | Use this when the click that selected the object was not where the gap should start. Musa CAD asks `Specify first break point:`, then `Specify second break point:`. |
+| `@` at **Specify second break point** | Breaks at the first point with no gap, so the object is split in two where you clicked. Musa CAD says `Split into 2 objects.` |
+
+## Closed shapes
+
+A circle, an ellipse and a closed polyline or spline have no ends, so which part goes depends on the order of the clicks.
+
+- A circle loses the piece that runs counter-clockwise from the first point to the second, and becomes an arc. An ellipse works the same way. Swap the order of your clicks to keep the other part.
+- A closed polyline or a closed spline opens up and becomes one open object.
+
+## Good to know
+
+- Lines, arcs, circles, open and closed polylines, ellipses, elliptical arcs and splines can be broken.
+- Construction lines and rays cannot be broken: `Break: a construction line cannot be broken.` Other objects, such as text, say `Break: that entity kind cannot be broken.`
+- A second point past the end of a line or arc cuts that end off, leaving one piece.
+- A break that would leave nothing at all is refused with `Break: that would remove the whole object -- use ERASE.`
+- A circle needs two different points, so `@` on a circle is refused with `Break: a circle needs two different break points.`
+- The pieces keep the original's layer, colour and linetype.
+- The whole break is one undo step.
+
+## Compared with AutoCAD
+
+BREAK keeps AutoCAD's flow: the click that selects the object is also the first break point, so most breaks take just two clicks. As in AutoCAD, a circle loses the piece running counter-clockwise from the first point to the second.
+
+## Next
+
+- Split an object at one point in a single step with [BREAKATPOINT](/reference/commands/breakatpoint/).
+- Cut objects back to an edge instead with [TRIM](/reference/commands/trim/).
+- Join pieces back into one object with [JOIN](/reference/commands/join/).

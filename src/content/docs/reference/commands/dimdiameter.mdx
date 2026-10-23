@@ -1,15 +1,60 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "DIMDIAMETER"
-description: "The DIMDIAMETER (DDI) command in Musa CAD: Create a diameter dimension for a circle or arc. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The DIMDIAMETER (DDI) command in Musa CAD dimensions the diameter of a circle or an arc, with the diameter sign in front of the value. How to pick the curve, place the text inside or outside it, and change the text."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "DIMDIAMETER"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+DIMDIAMETER dimensions the diameter of a circle or an arc: its full width through the centre. The value is shown with the diameter sign in front, such as `⌀40.00`.
+
+## How it works
+
+Type `DDI` and press <kbd>Enter</kbd>. Pick the circle or arc anywhere on it. Then move the cursor and click where the text should go. The dimension runs through the centre towards the place you click. The dimension is drawn and the command ends.
+
+Click outside the curve to put the text outside, on a short leader with one arrow touching the curve. Click inside to draw the dimension line right across, with an arrow at each side and the text on the line.
+
+```musacad
+Command: DDI
+Select arc or circle: (pick the circle)
+Specify dimension line location or [Mtext/Text/Angle]: (click up and to the right, outside the circle)
+Dimension placed.
+Dimension created from object.
+```
+
+<Figure id="cmd-dimdiameter" alt="Two circles of the same size, each with a blue diameter dimension reading ⌀40.00. On the left, placed outside: the text sits on a short landing at the upper right, with one arrow pointing to the circle and a small cross at the centre. On the right, placed inside: the dimension line crosses the circle through its centre, with an arrow at each end and the text on the line." caption="Where you click decides whether the text sits outside or inside." />
+
+## Options
+
+These options are offered while you place the dimension. After you choose one, Musa CAD asks for the dimension line location again.
+
+| Option | What it does |
+|---|---|
+| **Mtext** (`M`) or **Text** (`T`) | Type your own text at `Enter dimension text (<> for the measurement):`. `<>` stands for the measured value, so `4 HOLES <>` reads `4 HOLES ⌀40.00`. Text without `<>` replaces the value. Press <kbd>Enter</kbd> without typing to use the measurement. |
+| **Angle** (`A`) | Turns the text. At `Specify angle of dimension text:` type an angle in degrees. `0` or <kbd>Enter</kbd> puts it back the normal way. |
+
+## Good to know
+
+- You can pick a circle, an arc, or a curved segment of a polyline.
+- The value comes from the curve itself: twice its radius, wherever you picked it.
+- Musa CAD checks what you picked as you place the dimension. If there was no circle or arc under the pick, it says `Could not dimension that object -- select a line, circle, or arc.` and draws nothing.
+- To type the diameter sign in your own text, use `%%c`.
+- The sign and the number of decimal places come from the current dimension style. A **Prefix** set in [DIMSTYLE](/reference/commands/dimstyle/) takes the place of the sign.
+- <kbd>Esc</kbd> cancels without drawing anything. [U](/reference/commands/u/) removes the dimension in one step.
+
+## Compared with AutoCAD
+
+DIMDIAMETER uses the same prompts and options AutoCAD users know.
+
+## Next
+
+- Dimension the radius instead with [DIMRADIUS](/reference/commands/dimradius/).
+- Dimension a circle straight across or up, with extension lines, with [DIMLINEAR](/reference/commands/dimlinear/).
+- Change the sign, decimals and arrows with [DIMSTYLE](/reference/commands/dimstyle/).

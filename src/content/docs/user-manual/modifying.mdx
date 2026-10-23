@@ -1,0 +1,81 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Modifying
+description: How to select objects and change them in Musa CAD. Clicking, windows, crossings and lasso, grips, moving and copying, trimming and filleting, the Properties palette, and undo.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Modifying
+  order: 2
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+Most of the time in CAD is spent changing what is already there. This chapter covers how to choose objects, then the tools that move, copy and reshape them.
+
+## Selecting objects
+
+You can select first and then start a command, or start a command and select when it asks `Select objects:`. Both work the same.
+
+| To select | Do this |
+|---|---|
+| One object | Click it. Each click adds to the selection. |
+| Everything inside an area | Click an empty spot, then click a second corner to the **right**. Only objects completely inside the box are selected (a **window**). |
+| Everything the area touches | Click an empty spot, then click a second corner to the **left**. Objects inside the box or crossing its edge are selected (a **crossing**). |
+| Inside a freehand shape | Press the mouse button on an empty spot and drag around the objects. This draws a **lasso**: dragged to the right it selects like a window, to the left like a crossing. Press <kbd>Space</kbd> while dragging to switch between window, crossing and fence. |
+| Everything | <kbd>Ctrl</kbd>+<kbd>A</kbd> with no command running. |
+| Less | <kbd>Shift</kbd>+click a selected object to remove it. |
+| Nothing | <kbd>Esc</kbd>. |
+
+As the cursor passes over an object, it is highlighted, so you can see what a click will pick. If you prefer to drag boxes instead of clicking two corners, set [PICKDRAG](/reference/system-variables/pickdrag/) to `1`. In version 0.8.0 it goes back to `2` the next time Musa CAD starts.
+
+When a command asks `Select objects:`, keep selecting, then press <kbd>Enter</kbd> or right-click to finish. You can also type a selection keyword there, such as `ALL`, `L` for the last object drawn, `P` for the previous selection, or `F` for a fence. [SELECT](/reference/commands/select/) lists them all.
+
+To select by kind and property, such as every circle on one layer, use these:
+
+<CommandList label="Selection commands" names={['SELECT', 'QSELECT', 'SELECTSIMILAR', 'FILTER']} />
+
+## Grips
+
+Selected objects show small squares called **grips** at their key points: the ends and middle of a line, the centre and quadrants of a circle, each vertex of a polyline.
+
+Click a grip and move the cursor to stretch the object from that point. Click again, or type a point, to place it. While a grip is active, press <kbd>Enter</kbd> or <kbd>Space</kbd> to step through the other grip modes: **STRETCH**, **MOVE**, **ROTATE**, **SCALE** and **MIRROR**. Type `C` to make copies instead of moving the original, `B` to choose another base point, and `X` to stop.
+
+Right-click a polyline's grip for a menu of what that grip can do, such as adding or removing a vertex.
+
+## Move, copy and transform
+
+These commands select objects, then ask for a base point and a second point. The objects move or copy by the distance and direction between the two.
+
+<CommandList label="Commands that move and copy" names={['MOVE', 'COPY', 'ROTATE', 'SCALE', 'MIRROR', 'STRETCH', 'ARRAY', 'ALIGN', 'MOCORO', 'ERASE', 'OOPS']} />
+
+## Change shapes
+
+<CommandList label="Commands that change shapes" names={['TRIM', 'EXTEND', 'OFFSET', 'FILLET', 'CHAMFER', 'BREAK', 'BREAKATPOINT', 'JOIN', 'LENGTHEN', 'EXPLODE', 'PEDIT', 'SPLINEDIT', 'REVERSE', 'OVERKILL']} />
+
+TRIM and EXTEND are the two you will use most. Both start in **Quick** mode, where every object is an edge and you just click the part to cut off or lengthen. Hold <kbd>Shift</kbd> to switch between them while you work.
+
+## Change properties
+
+Every object has a layer, a colour, a linetype, a lineweight and more. Usually these come from its layer ("ByLayer").
+
+- The **Properties** palette (`PR`) shows the properties of the selection and lets you change any of them.
+- **Match Properties** (`MA`) copies properties from one object to others.
+- To move objects to another layer, select them and change **Layer** in the Properties palette, or use [LAYMCH](/reference/commands/laymch/) to match the layer of an object you pick.
+
+<CommandList label="Property commands" names={['PROPERTIES', 'MATCHPROP', 'CHPROP', 'CHANGE', 'COPYTOLAYER', 'DRAWORDER']} />
+
+## Undo and redo
+
+<kbd>Ctrl</kbd>+<kbd>Z</kbd> or `U` undoes the last command. Redo puts it back. Inside many commands, such as LINE and TRIM, the **Undo** option takes back just the last step without leaving the command.
+
+<CommandList label="Undo commands" names={['U', 'REDO', 'MREDO']} />
+
+## Next
+
+- Place points exactly while you edit with [Precision and drafting aids](/user-manual/precision/).
+- Keep a drawing tidy with layers and blocks in [Organising a drawing](/user-manual/organising/).

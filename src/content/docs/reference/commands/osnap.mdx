@@ -1,15 +1,136 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "OSNAP"
-description: "The OSNAP (OS, DDOSNAP, DS, DSETTINGS, SE, DDRMODES, RM) command in Musa CAD: Open the Drafting Settings: snap and grid, polar tracking, object snaps, dynamic input. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The OSNAP (OS) command in Musa CAD opens the Drafting Settings window, where you choose the object snaps that catch exact points such as ends, midpoints and centres. Every snap, its keyword, and every tab."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "OSNAP"
-tableOfContents: false
 ---
+
+OSNAP opens the **Drafting Settings** window. Its main job is choosing your object snaps. An object snap pulls the cursor onto an exact point of an object, such as the end of a line or the centre of a circle, so a click lands there exactly. The same window also holds the snap and grid, polar tracking and Dynamic Input settings.
+
+## How it works
+
+Type `OS` and press <kbd>Enter</kbd>. The **Drafting Settings** window opens on the **Object Snap** tab. Tick the snaps you want, make sure **Object Snap On (F3)** is ticked, and click **OK**. **Cancel** closes the window without changing anything.
+
+```musacad
+Command: OS
+(tick Endpoint, Midpoint and Center on the Object Snap tab, then click OK)
+```
+
+`DS`, `DSETTINGS`, `SE`, `DDRMODES`, `RM` and `DDOSNAP` open the same window. After the first time, it opens on the tab you last used.
+
+The snaps you tick are the running snaps: they work at every point prompt while object snap is on. Press <kbd>F3</kbd>, or click the **OSNAP** button on the status bar, to turn them all on or off. The menu on that button lists the snaps, so you can tick one without opening this window, and its **Settings…** opens this window.
+
+## The object snaps
+
+When a running snap finds its point near the cursor, a marker shows there. Click and the point is used exactly.
+
+| Snap | Keyword | Finds | OSMODE |
+|---|---|---|---|
+| **Endpoint** | `END` | The ends of lines, arcs and elliptical arcs, and every corner of a polyline. | 1 |
+| **Midpoint** | `MID` | The middle of a line, an arc or a polyline segment. | 2 |
+| **Center** | `CEN` | The centre of a circle, an arc, an ellipse, or an arc segment of a polyline. | 4 |
+| **Node** | `NOD` | A point object, as drawn by [POINT](/reference/commands/point/). | 8 |
+| **Quadrant** | `QUA` | The points at 0, 90, 180 and 270 degrees on a circle or arc, and the ends of an ellipse's axes. | 16 |
+| **Intersection** | `INT` | Where two objects cross. | 32 |
+| **Insertion** | `INS` | The insertion point of a block, a text, a multiline text or an attribute definition. | 64 |
+| **Perpendicular** | `PER` | The point on a line, circle or arc that makes a right angle with the last point you gave. | 128 |
+| **Tangent** | `TAN` | The point where a line from the last point just touches a circle or arc. | 256 |
+| **Nearest** | `NEA` | The point on an object closest to the cursor. | 512 |
+| **Geometric Center** | `GCEN` | The centre of a closed polyline's area. | 1024 |
+| **Apparent Intersection** | `APP` | Where two lines, arcs or circles would cross if they went on. | 2048 |
+| **Extension** | `EXT` | A point along a line or arc carried on past its end. Rest the cursor on the end first; a small cross marks it, and a dashed path shows the extension. | 4096 |
+| **Parallel** | `PAR` | A point on the line through the last point that runs parallel to a line you hover over. | 8192 |
+
+The last column is the value each snap adds to the [OSMODE](/reference/system-variables/osmode/) system variable. Musa CAD starts with **Endpoint**, **Center**, **Intersection** and **Extension** on, which is OSMODE 4133.
+
+## A snap for one pick
+
+At any prompt that asks for a point, type a snap's keyword instead of the point. That snap alone is used for the next click, even if it is not a running snap and even with object snap off. The prompt shows the snap you chose.
+
+```musacad
+Command: L
+Specify first point: END
+Specify first point: _end of (click near the end of a line)
+Specify next point or [Undo]: PER
+Specify next point or [Undo]: _per to (click on another line)
+Specify next point or [Undo]: ↵
+```
+
+- You can give several at once, such as `END,MID`.
+- `NON` means no snap at all for the next click.
+- Longer spellings work too, such as `ENDP`, `ENDPOINT` or `PERP`.
+- If nothing of that kind is under the cursor, Musa CAD says `No Endpoint found for specified point.` (with the snap's name) and `Invalid point.`, and asks for the point again.
+- Hold <kbd>Shift</kbd> and right-click in the drawing for the same list as a menu. It also has **Osnap Settings…**, which opens this window.
+
+The same menu and prompt also take four point helpers that are not snaps:
+
+| Type | What it does |
+|---|---|
+| `FROM` | Asks `Base point:`, then `<Offset>:`. The point is the offset, such as `@20,0`, from the base point. |
+| `M2P` | Asks `First point of mid:` and `Second point of mid:`. The point is half way between them. |
+| `TT` | Asks `Specify temporary OTRACK point:`. The cursor then tracks along the horizontal and vertical through that point. |
+| `TK` | Asks `First tracking point:`, then `Next point (Press ENTER to end tracking):` for each move along one axis. <kbd>Enter</kbd> gives the point reached. |
+
+## The Drafting Settings window
+
+### Object Snap tab
+
+| Part | What it does |
+|---|---|
+| **Object Snap On (F3)** | Turns the running snaps on or off. |
+| **Object Snap Tracking On (F11)** | Turns object snap tracking on or off: rest the cursor on a snap point, then move away along the horizontal or vertical through it. |
+| **Object Snap modes** | One check box for each snap in the table above. |
+| **Select All** | Ticks every snap. |
+| **Clear All** | Unticks every snap. |
+
+### Snap and Grid tab
+
+| Part | What it does |
+|---|---|
+| **Snap On (F9)** | Turns grid snap on or off. The cursor then jumps in steps. |
+| **Snap X spacing:**, **Snap Y spacing:** | The size of the steps. With **Equal X and Y spacing** ticked, Y follows X. |
+| **Polar distance:** | The step along a polar tracking line, used with **PolarSnap**. |
+| **Grid snap**, **PolarSnap** | Under **Snap type**: snap to the grid, or to steps along the polar tracking lines. |
+| **Grid On (F7)** | Shows or hides the grid. |
+| **Grid X spacing:**, **Grid Y spacing:** | The grid spacing. A spacing of 0 follows the zoom. |
+| **Major line every:** | How many grid lines between the darker major lines. |
+| **Adaptive grid** | Thins out the grid when you zoom out. **Allow subdivision below grid spacing** adds finer lines when you zoom in. |
+| **Display grid beyond Limits** | Draws the grid outside the drawing [LIMITS](/reference/commands/limits/) too. |
+
+### Polar Tracking tab
+
+| Part | What it does |
+|---|---|
+| **Polar Tracking On (F10)** | Turns polar tracking on or off. The cursor then locks onto every step of the increment angle. |
+| **Increment angle:** | The step between tracking angles. Pick 90, 45, 30, 22.5, 18, 15, 10 or 5, or type your own. |
+| **Additional angles:** | Tick it and type extra angles, separated by commas, such as `12, 75`. |
+| **Track orthogonally only**, **Track using all polar angle settings** | Whether object snap tracking runs only horizontally and vertically, or along every polar angle. |
+| **Absolute**, **Relative to last segment** | Whether polar angles are measured from the X axis or from the line you drew last. |
+
+### Dynamic Input tab
+
+**Enable Dynamic Input (F12)** turns on input at the cursor: the prompt, the coordinates, and the lengths and angles of what you are drawing. See [Dynamic Input](/user-manual/dynamic-input/).
+
+## Good to know
+
+- When several snap points are near the cursor, Musa CAD prefers them in this order: Endpoint, Midpoint, Center, Node, Quadrant, Intersection, Perpendicular, Tangent, Geometric Center, Insertion, Apparent Intersection, Parallel, Extension, Nearest. Turn off the snaps you do not need if the wrong point keeps winning.
+- Hold <kbd>Shift</kbd>+<kbd>A</kbd> at a point prompt to turn object snap on or off for the moment. Hold <kbd>Shift</kbd>+<kbd>E</kbd> for Endpoint alone, <kbd>Shift</kbd>+<kbd>V</kbd> for Midpoint alone, or <kbd>Shift</kbd>+<kbd>C</kbd> for Center alone.
+- Splines, dimensions, leaders, hatches, images and tables have no snap points of their own.
+- The **Dynamic Input** tab only turns Dynamic Input on or off. Its other settings are system variables such as [DYNMODE](/reference/system-variables/dynmode/) and [DYNPROMPT](/reference/system-variables/dynprompt/).
+- To set the running snaps by typing at the command line, use [-OSNAP](/reference/commands/dash-osnap/) or [OSMODE](/reference/system-variables/osmode/).
+
+## Compared with AutoCAD
+
+Musa CAD starts with AutoCAD's default running snaps: Endpoint, Center, Intersection and Extension. The one-pick keywords are AutoCAD's, the prompt shows them the way AutoCAD does (`_end of`), and AutoCAD's older spellings `CENTROID` and `INSERT` are taken too.
+
+## Next
+
+- Learn every way to place exact points in [Precision and drafting aids](/user-manual/precision/).
+- Set the running snaps at the command line with [-OSNAP](/reference/commands/dash-osnap/).
+- Draw with exact lengths and angles at the cursor with [Dynamic Input](/user-manual/dynamic-input/).

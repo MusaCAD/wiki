@@ -1,15 +1,51 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "QSAVE"
-description: "The QSAVE command in Musa CAD: Save the drawing under its name (Save As the first time). How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The QSAVE command in Musa CAD saves the drawing under its own file name, the same as Ctrl+S. What happens the first time, which file format it writes, and the messages you may see."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "QSAVE"
-tableOfContents: false
 ---
+
+QSAVE saves the drawing you are working on, under the file name it already has. It is the same as pressing <kbd>Ctrl</kbd>+<kbd>S</kbd> or clicking **Save** on the Quick Access Toolbar.
+
+## How it works
+
+Type `QSAVE` and press <kbd>Enter</kbd>. Musa CAD writes the drawing to its file and says how many objects it saved. QSAVE has no options and asks nothing more.
+
+```musacad
+Command: QSAVE
+Saved 128 entities.
+```
+
+If the drawing has never been saved, it has no file name yet, so QSAVE asks for one in the **Save Drawing As** window, just as [SAVEAS](/reference/commands/saveas/) does. Type a name, choose a folder and click **Save**. Musa CAD adds `.musa` if you leave it off. Every later QSAVE uses that name without asking.
+
+```musacad
+Command: QSAVE
+(type a name in the Save Drawing As window and click Save)
+Saved 128 entities.
+```
+
+## Good to know
+
+- QSAVE always writes Musa CAD's own format, a `.musa` file. To make a DXF file, use [EXPORT](/reference/commands/export/). For DWG, use [DWGOUT](/reference/commands/dwgout/).
+- A drawing you brought in from a DXF file has no `.musa` name yet, so the first QSAVE asks for one. The DXF file itself is not changed.
+- QSAVE writes over the file and keeps no backup copy. To keep the old version, save under a new name with [SAVEAS](/reference/commands/saveas/) first.
+- With the Block Editor open, saving is refused: `Close the Block Editor (BCLOSE) before saving: the drawing's other objects are hidden while it is open.` Close it with [BCLOSE](/reference/commands/bclose/) and save again.
+- If the file cannot be written, for example in a folder you may not write to, Musa CAD says `Cannot write file:` or `Write failed:` with the file's path.
+- In the Flatpak version, if you type a name without `.musa`, Musa CAD saves under exactly the name you typed and says why: the sandbox lets it write only the name chosen in the window.
+- Each save also stores the total editing time and the time of the save, which [TIME](/reference/commands/time/) shows.
+
+## Compared with AutoCAD
+
+QSAVE works as it does in AutoCAD: it saves under the drawing's name and asks for a name only the first time. The file it writes is Musa CAD's `.musa` format, not DWG.
+
+## Next
+
+- Save under a new name with [SAVEAS](/reference/commands/saveas/).
+- Open a saved drawing with [OPEN](/reference/commands/open/).
+- Read about drawing files, DXF and DWG in [Working with files](/user-manual/files/) and [The .musa format](/file-formats/musa-format/).

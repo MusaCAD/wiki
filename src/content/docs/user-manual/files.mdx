@@ -1,0 +1,69 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Working with files
+description: Opening, saving and closing drawings in Musa CAD, working with several drawings in tabs, copying between drawings, and exchanging files with AutoCAD and other programs through DXF, DWG and PDF.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Working with files
+  order: 8
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+Musa CAD saves drawings as `.musa` files. It reads and writes DXF itself, and DWG with the help of a free converter. This chapter covers the everyday file work. The [File formats](/file-formats/) section has the details of each format.
+
+## Open, save and close
+
+| To | Press | Or type |
+|---|---|---|
+| Start a new drawing | <kbd>Ctrl</kbd>+<kbd>N</kbd> | `NEW` |
+| Open a drawing | <kbd>Ctrl</kbd>+<kbd>O</kbd> | `OPEN` |
+| Save | <kbd>Ctrl</kbd>+<kbd>S</kbd> | `QSAVE` |
+| Save under a new name | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> | `SAVEAS` |
+| Close the drawing | <kbd>Ctrl</kbd>+<kbd>W</kbd> | `CLOSE` |
+
+When you close a drawing or quit with changes not saved, Musa CAD asks whether to save them first.
+
+Musa CAD 0.8.0 does not save automatically. Save often, and keep backups of drawings that matter.
+
+<CommandList label="File commands" names={['NEW', 'OPEN', 'QSAVE', 'SAVEAS', 'CLOSE', 'CLOSEALL', 'QUIT', 'DWGPROPS']} />
+
+## Several drawings at once
+
+Each drawing opens in its own tab. Opening or importing a file always makes a new tab, so the drawing you were working on is never replaced. Switch tabs with <kbd>Ctrl</kbd>+<kbd>Tab</kbd> and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Tab</kbd>.
+
+## Copy between drawings
+
+<kbd>Ctrl</kbd>+<kbd>C</kbd> and <kbd>Ctrl</kbd>+<kbd>V</kbd> copy objects from one drawing to another, or within one drawing. Pasting text copied from another program makes a multiline text, and pasting an image places it in the drawing.
+
+To paste in exactly the same place, use PASTEORIG. To choose the point you paste by, copy with COPYBASE.
+
+<CommandList label="Clipboard commands" names={['COPYCLIP', 'CUTCLIP', 'PASTECLIP', 'COPYBASE', 'PASTEORIG', 'PASTEBLOCK']} />
+
+## Exchange with other CAD programs
+
+| Format | Open | Save |
+|---|---|---|
+| DXF | **Import ▸ DXF…** in the application menu, or `IMPORT` | **Export ▸ DXF…**, or `EXPORT` |
+| DWG | **Import ▸ DWG…**, or `DWGIN` | **Export ▸ DWG…**, or `DWGOUT` |
+| PDF | Not read | `EXPORTPDF`, or plot to PDF |
+
+When Musa CAD imports a file, it tells you anything it could not bring across. Read that message: it is the list of what to check. Keep your working copy as `.musa`, because DXF and DWG cannot hold everything Musa CAD can.
+
+DWG needs the free ODA File Converter, which Musa CAD downloads for you from **DWG Setup…** in the application menu. See [DWG files](/file-formats/dwg/).
+
+<CommandList label="Import and export commands" names={['IMPORT', 'EXPORT', 'DWGIN', 'DWGOUT', 'EXPORTPDF', 'WBLOCK']} />
+
+## Files from newer versions
+
+Each Musa CAD release can open drawings from itself and from every older release. A drawing saved by a newer release needs that release or newer. To send a drawing to someone with an older version, export it as DXF. [The .musa format](/file-formats/musa-format/) lists which release writes which version.
+
+## Next
+
+- Moving a whole project from AutoCAD? See [Moving projects from AutoCAD](/file-formats/from-autocad/).
+- Change how Musa CAD works in [Settings and system variables](/user-manual/settings/).

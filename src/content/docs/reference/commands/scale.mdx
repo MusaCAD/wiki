@@ -1,15 +1,95 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "SCALE"
-description: "The SCALE (SC) command in Musa CAD: Resize selected objects uniformly about a base point. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The SCALE (SC) command in Musa CAD makes selected objects larger or smaller about a base point. How to type a scale factor, keep the original with Copy, and scale to an exact length with Reference."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "SCALE"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+SCALE makes objects larger or smaller. Everything grows or shrinks by the same amount, toward or away from a base point you choose.
+
+## How it works
+
+Type `SC` and press <kbd>Enter</kbd>. Select the objects and press <kbd>Enter</kbd>. Click the base point, the one point that stays where it is. Then type a scale factor and press <kbd>Enter</kbd>.
+
+```musacad
+Command: SC
+Select objects: (pick the plate)
+1 found.
+Select objects: (pick the hole)
+1 found, 2 total.
+Select objects: ↵
+Specify base point: (click the lower-left corner)
+Specify scale factor or [Copy/Reference]: 2
+Scaled.
+```
+
+<Figure id="cmd-scale" alt="A small rectangle with a circle in it, drawn dashed in grey, and the same shape in blue at twice the size. Both share the lower-left corner, which is marked as point 1, the base point. A label says factor 2." caption="A factor of 2 doubles the plate and its hole; the base point stays put." />
+
+The scale factor multiplies every size. `2` makes the objects twice as big, `0.5` half as big. Before you type, the objects grow and shrink with the cursor, and the factor shows beside it. If you click instead, the factor is the distance from the base point to the click, in drawing units: a click 3 units away scales by 3.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Copy** (`C`) | Scales a copy and leaves the originals as they are. Musa CAD says `Scaling a copy of the selected objects.` and asks for the factor again. |
+| **Reference** (`R`) | Scales so that a length you show becomes a length you type. See below. |
+
+There is no default factor. Pressing <kbd>Enter</kbd> at **Specify scale factor** says `Requires numeric distance or second point.` and asks again.
+
+## Scaling to an exact length with Reference
+
+Reference is useful when you know how long something should be, but not the factor. Musa CAD works out the factor as the new length divided by the reference length.
+
+```musacad
+Specify scale factor or [Copy/Reference]: R
+Specify reference length <1.0000>: (click one end of an edge)
+Specify second point: (click its other end)
+Specify new length or [Points] <1.0000>: 50
+Scaled.
+```
+
+- At **Specify reference length**, type the length the objects have now, or click two points, such as the two ends of an edge.
+- At **Specify new length**, type the length it should have, or click a point: its distance from the base point is the new length.
+- **Points** (`P`) lets you give the new length with two points of your own, for example the ends of another object.
+
+In the example, the edge you clicked becomes exactly 50 long, and everything else scales with it.
+
+## Selecting objects
+
+At `Select objects:` you build up the set of objects to scale. Each pick or window adds to it, and Musa CAD says how many it found, such as `1 found.` or `2 found, 5 total.`
+
+- **Click** an object to add it.
+- **Click an empty spot, then click again** to draw a box. Going from left to right makes a window: it takes only objects that lie completely inside. Going from right to left makes a crossing window: it also takes objects that only touch it.
+- **Press and drag** to draw a free shape, called a lasso. Start dragging to the right for a window, to the left for a crossing.
+- Hold <kbd>Shift</kbd> and **click** a selected object to take it out again.
+- Press <kbd>Enter</kbd>, or right-click, when the set is complete. If nothing is selected, SCALE ends.
+
+If objects are already selected when you start SCALE, it uses them and goes straight to the base point. You can also type a keyword at `Select objects:`, such as `ALL` for everything or `P` for the objects the last edit worked on. [SELECT](/reference/commands/select/) lists them all.
+
+## Good to know
+
+- A factor of zero or less is refused with `Value must be positive and nonzero.` The same goes for a reference length of zero.
+- SCALE always scales the same amount in every direction. It cannot stretch objects in one direction only; for that, use [STRETCH](/reference/commands/stretch/).
+- Polyline widths scale too.
+- When it is done, Musa CAD says `Scaled.`, or `Scaled a copy.` with **Copy**. The scaled objects stay selected.
+- Associative dimensions and hatches that are attached to the scaled objects go with them, even if you did not select them.
+- One SCALE is one undo step. <kbd>Esc</kbd> cancels, and nothing changes.
+- Objects on layers that are off, frozen or locked cannot be selected.
+
+## Compared with AutoCAD
+
+SCALE follows AutoCAD's prompts and its rule for a clicked factor: a point one unit from the base point is a factor of 1. **Copy** and **Reference** work as AutoCAD users expect.
+
+## Next
+
+- Scale text, each piece about its own insertion point, with [SCALETEXT](/reference/commands/scaletext/).
+- Turn objects around a point with [ROTATE](/reference/commands/rotate/).
+- Read more about changing drawings in [Modifying objects](/user-manual/modifying/).

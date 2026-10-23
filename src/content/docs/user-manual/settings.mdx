@@ -1,0 +1,61 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Settings and system variables
+description: How Musa CAD is set up and how to change it. The Options window, drafting settings, drawing units, system variables typed by name, which settings travel with a drawing, and where your own settings are kept.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Settings
+  order: 9
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+Most of Musa CAD's settings have sensible starting values, so you can draw without touching any of them. This chapter shows where to find them when you want something different.
+
+## The main settings windows
+
+| Window | Open with | What it holds |
+|---|---|---|
+| **Options** | `OP` | Whether Musa CAD checks for updates, and the performance overlay. |
+| **Drafting Settings** | `DS` or `OS` | Snap and grid, polar tracking, object snaps, and Dynamic Input. |
+| **Drawing Units** | `UN` | How lengths and angles are shown, their precision, and the drawing's unit. |
+| **Dimension Style Manager** | `D` | How dimensions look. |
+| **Text Style** | `ST` | Fonts and text sizes. |
+
+## System variables
+
+A **system variable** is a single named setting, such as `PICKBOX` for the size of the pick box or `FILLETRAD` for the fillet radius. Type its name and press <kbd>Enter</kbd>. Musa CAD shows the current value in angle brackets; type a new one, or press <kbd>Enter</kbd> to keep it:
+
+```musacad
+Command: PICKBOX
+Enter new value for PICKBOX <10>: 15
+```
+
+SETVAR does the same and can list them. The [system variable reference](/reference/system-variables/) has a page for every variable Musa CAD has, with its starting value.
+
+## What travels with a drawing
+
+Some settings belong to the drawing and are saved in the `.musa` file, so anyone who opens it sees the same thing. These include the drawing units, the limits, the linetype scale, the layers, and the text, dimension, table and multileader styles.
+
+Other settings belong to you and stay the same in every drawing you open, such as your keyboard shortcuts, your command aliases, the Dynamic Input settings and the update check.
+
+## Where your own settings are kept
+
+| System | Settings | Command aliases |
+|---|---|---|
+| Linux (AppImage or built from source) | `~/.config/Musa-CAD/musa_cad.conf` | `~/.config/Musa-CAD/musa_cad/musacaduser.pgp` |
+| Linux (Flatpak) | `~/.var/app/org.musacad.MusaCAD/config/Musa-CAD/musa_cad.conf` | `~/.var/app/org.musacad.MusaCAD/config/Musa-CAD/musa_cad/musacaduser.pgp` |
+| Windows | the registry, under `HKEY_CURRENT_USER\Software\Musa-CAD\musa_cad` | `%LOCALAPPDATA%\Musa-CAD\musa_cad\musacaduser.pgp` |
+
+To start again with every setting at its starting value, close Musa CAD and delete or rename the settings file.
+
+<CommandList label="Settings commands" names={['OPTIONS', 'OSNAP', 'UNITS', 'SETVAR', 'LIMITS']} />
+
+## Next
+
+- Make Musa CAD fit your hands in [Customising](/user-manual/customising/).

@@ -1,15 +1,75 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "MIRROR"
-description: "The MIRROR (MI) command in Musa CAD: Create a mirror-image copy of objects across an axis. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The MIRROR (MI) command in Musa CAD makes a mirror image of selected objects across a line you pick. How to choose the mirror line, keep or erase the originals, and keep text readable with MIRRTEXT."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "MIRROR"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+MIRROR makes a mirror image of objects, flipped across a line you choose. It is the quick way to draw a symmetrical part: draw one half, then mirror it.
+
+## How it works
+
+Type `MI` and press <kbd>Enter</kbd>. Select the objects and press <kbd>Enter</kbd>. Click two points on the mirror line. Then say whether to erase the originals; press <kbd>Enter</kbd> to keep them.
+
+```musacad
+Command: MI
+Select objects: (click an empty spot left of the bracket, then click right of it)
+2 found.
+Select objects: ↵
+Specify first point of mirror line: (click point 1)
+Specify second point of mirror line: (click point 2)
+Erase source objects? [Yes/No] <No>: ↵
+Mirrored.
+```
+
+<Figure id="cmd-mirror" alt="On the left, a black L-shaped bracket with a small hole, labelled original. In the middle, a vertical grey line from point 1 at the bottom to point 2 at the top. On the right, the same bracket in blue, flipped left to right, labelled mirror image." caption="Two points on a vertical line, and the bracket is mirrored across it." />
+
+The mirror line is not drawn; it only says where the flip happens. After the first point, the mirror image follows the cursor, so you can see it before you click the second point. Turn on Ortho to get an exactly vertical or horizontal line.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Yes** (`Y`) | Erases the originals, so only the mirror image is left. Musa CAD says `Mirrored (source erased).` |
+| **No** (`N`) | Keeps the originals. Any other answer, or <kbd>Enter</kbd>, means No too. Musa CAD says `Mirrored.` |
+
+## Text in a mirror image
+
+By default, mirrored text stays readable: it moves to its mirrored place, but it is not turned back to front. This is the [MIRRTEXT](/reference/system-variables/mirrtext/) setting, 0 by default. Set it to 1 and text is flipped like everything else.
+
+## Selecting objects
+
+At `Select objects:` you build up the set of objects to mirror. Each pick or window adds to it, and Musa CAD says how many it found, such as `1 found.` or `2 found, 5 total.`
+
+- **Click** an object to add it.
+- **Click an empty spot, then click again** to draw a box. Going from left to right makes a window: it takes only objects that lie completely inside. Going from right to left makes a crossing window: it also takes objects that only touch it.
+- **Press and drag** to draw a free shape, called a lasso. Start dragging to the right for a window, to the left for a crossing.
+- Hold <kbd>Shift</kbd> and **click** a selected object to take it out again.
+- Press <kbd>Enter</kbd>, or right-click, when the set is complete. If nothing is selected, MIRROR ends.
+
+If objects are already selected when you start MIRROR, it uses them and goes straight to the mirror line. You can also type a keyword at `Select objects:`, such as `ALL` for everything or `P` for the objects the last edit worked on. [SELECT](/reference/commands/select/) lists them all.
+
+## Good to know
+
+- When you keep the originals, the mirror image is drawn on top of other objects, like newly drawn ones.
+- With **Yes**, the originals are replaced, and associative dimensions and hatches attached to them follow to the mirrored place.
+- One MIRROR is one undo step. <kbd>Esc</kbd> before the last answer cancels, and nothing is made.
+- Objects on layers that are off, frozen or locked cannot be selected.
+
+## Compared with AutoCAD
+
+MIRROR asks the same questions as in AutoCAD. Mirrored text stays readable by default, as with AutoCAD's default MIRRTEXT of 0.
+
+## Next
+
+- Choose whether mirrored text is flipped with [MIRRTEXT](/reference/system-variables/mirrtext/).
+- Turn objects instead of flipping them with [ROTATE](/reference/commands/rotate/).
+- Make plain copies with [COPY](/reference/commands/copy/).

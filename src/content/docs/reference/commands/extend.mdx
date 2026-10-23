@@ -1,15 +1,83 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "EXTEND"
-description: "The EXTEND (EX) command in Musa CAD: Extend objects to meet the edges of other objects. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The EXTEND (EX) command in Musa CAD lengthens lines, arcs, polylines and curves until they meet another object. Quick mode extends what you click, Standard mode extends to edges you choose; drag across several, or Shift-click to trim instead."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "EXTEND"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+EXTEND makes an object longer so that it reaches the next object in its way. Click near the end you want to grow, and Musa CAD carries it on until it meets an edge.
+
+## How it works
+
+Type `EX` and press <kbd>Enter</kbd>. Musa CAD shows the current settings, then waits for you to click what to extend. Click near the end that should grow. The part that will be added is shown under the cursor before you click. Press <kbd>Enter</kbd> when you are done.
+
+```musacad
+Command: EX
+Current settings: Projection=UCS, Edge=None, Mode=Quick
+Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde/Project]: (click near an end)
+Extended.
+Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde/Project/Undo]: ↵
+```
+
+<Figure id="cmd-extend" alt="On the left, before: a vertical line, and to its left three lines that stop short of it, two level and one sloping up. Each has a click mark near its right end, numbered 1 to 3. On the right, after: all three lines, now blue, run on until they touch the vertical line." caption="Clicking near each right end carries the lines on to the edge." />
+
+To extend many objects at once, drag across them with the mouse button held down. Everything the path crosses is extended, at the end nearer the crossing. Musa CAD then says how many, for example `Extended 3 objects.`, or `Extend: nothing along the path reaches a boundary.` In Quick mode you can also click on empty space and then a second point; in Standard mode that click starts a crossing window instead.
+
+Hold <kbd>Shift</kbd> while you click or drag to trim instead, as [TRIM](/reference/commands/trim/) does.
+
+## Quick and Standard mode
+
+EXTEND has the same two modes as TRIM. Musa CAD starts in **Quick** mode.
+
+- **Quick:** every object in the drawing is a boundary. You only click what to extend.
+- **Standard:** you first choose the boundary edges, then click what to extend. Only the chosen edges stop an object.
+
+```musacad
+Command: EX
+Current settings: Projection=UCS, Edge=None, Mode=Standard
+Select boundary edges ...
+Select objects or <select all>: (pick the edges) ↵
+Select object to extend or shift-select to trim or [Boundary edges/Fence/Crossing/mOde/Project/Edge]:
+```
+
+In Standard mode, objects you selected before starting EXTEND become the boundary edges, and pressing <kbd>Enter</kbd> at **Select objects** makes every object an edge. Switch modes with the **mOde** option, which asks `Enter an extend mode option [Quick/Standard] <Quick>:`. The mode is kept for next time. It is the [TRIMEXTENDMODE](/reference/system-variables/trimextendmode/) setting, so it changes TRIM's mode too.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Boundary edges** (`B`) | Choose which objects to extend to, instead of all of them. |
+| **Fence** (`F`) | Standard mode. Click points to draw a line; everything it crosses is extended. Press <kbd>Enter</kbd> to finish. |
+| **Crossing** (`C`) | Click two corners. Everything the window crosses is extended. |
+| **mOde** (`O`) | Switch between Quick and Standard. |
+| **Project** (`P`) | None, Ucs or View. Kept for AutoCAD habits; in a 2D drawing it changes nothing. |
+| **Edge** (`E`) | Standard mode. **Extend** lets an object grow to where an edge would reach if it went on: a line along its whole length, an arc round its full circle. **No extend** uses only the edges as drawn. |
+| **Undo** (`U`) | Takes back what the last click or path extended. It appears after your first extend. |
+
+## Good to know
+
+- Lines, arcs, elliptical arcs, splines and open polylines can be extended. Anything else says `Extend: only lines, arcs, elliptical arcs, splines and open polylines can be extended.`
+- A line grows straight on. An arc grows round its own circle. A polyline grows along its end segment, round the circle if that segment is an arc. A spline goes on straight in the direction its end is pointing.
+- `Extend: no boundary ahead of that end.` means nothing lies in the way of the end you clicked. Check that you clicked near the end you meant. In Standard mode, check the edges you chose, or turn on **Edge** Extend.
+- A closed polyline, a whole ellipse and a closed spline have no free end, and are refused with a message that says so.
+- EXTEND never deletes anything. An object with nothing ahead of it stays as it is. Only when you hold <kbd>Shift</kbd> does it trim, and then TRIM's rules apply.
+- The extended object keeps its layer, colour and linetype.
+- Each click, drag or fence is a separate undo step, both inside EXTEND and with [U](/reference/commands/u/) afterwards.
+
+## Compared with AutoCAD
+
+EXTEND follows AutoCAD's newer behaviour: Quick mode by default, the highlighted preview, and Standard mode with the classic boundary edges. As in AutoCAD, a spline is extended straight on along the direction its end leaves by. Projection is accepted but has no effect, because Musa CAD is 2D.
+
+## Next
+
+- Cut objects back to an edge with [TRIM](/reference/commands/trim/).
+- Change a length by an exact amount with [LENGTHEN](/reference/commands/lengthen/).
+- Make two lines meet in a corner with [FILLET](/reference/commands/fillet/) at radius 0.

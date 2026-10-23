@@ -1,15 +1,71 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "LENGTHEN"
-description: "The LENGTHEN (LEN) command in Musa CAD: Change the length of a line or arc. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The LENGTHEN (LEN) command in Musa CAD measures or changes the length of lines, arcs, open polylines, elliptical arcs and splines. How to add a length, set a total, scale by a percentage, drag an end, or change an arc's angle."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "LENGTHEN"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+LENGTHEN makes an object longer or shorter by an exact amount, without needing another object to reach. It can also tell you how long an object is.
+
+## How it works
+
+Type `LEN` and press <kbd>Enter</kbd>. First choose how to change the length: **DElta**, **Percent**, **Total** or **DYnamic**. Then give the amount. Then click each object near the end that should move. The other end stays where it is. Press <kbd>Enter</kbd> when you are done.
+
+If you click an object at the first prompt instead, Musa CAD tells you its length and asks again.
+
+```musacad
+Command: LEN
+Select an object to measure or [DElta/Percent/Total/DYnamic] <Total>: (pick the line)
+Current length: 60.0000
+Select an object to measure or [DElta/Percent/Total/DYnamic] <Total>: DE
+Enter delta length or [Angle] <0.0000>: 20
+Select an object to change: (pick near the right end)
+Length changed from 60.0000 to 80.0000.
+Select an object to change or [Undo]: ↵
+```
+
+<Figure id="cmd-lengthen" alt="Before, on the left: a black line marked 60 long, with a pick mark near its right end. After, on the right: the same line in blue, now 80 long; the first 60 is marked as before and the last 20 is labelled plus 20." caption="DElta 20, picked near the right end: that end moves 20 further out." />
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **DElta** (`DE`) | Adds a length: `Enter delta length or [Angle] <0.0000>:`. A negative number makes the object shorter. |
+| **Percent** (`P`) | Sets the new length as a percentage of the old one: `Enter percentage length <100.0000>:`. `50` halves the object, `200` doubles it. |
+| **Total** (`T`) | Sets the whole length: `Specify total length or [Angle] <1.0000>:`. |
+| **DYnamic** (`DY`) | Pick an object, then click where its end should go: `Specify new end point:`. A line keeps its direction, and an arc keeps its circle. |
+| **Angle** (`A`) | For arcs, after **DElta** or **Total**. Changes the arc's included angle instead of its length: `Enter delta angle <0>:` or `Specify total angle <0>:`, in degrees. |
+| **Undo** (`U`) | Puts back the last change. It appears after your first change. |
+| <kbd>Enter</kbd> at the first prompt | Uses the method shown in `<>`. |
+| <kbd>Enter</kbd> at **Select an object to change** | Ends the command. |
+
+## Good to know
+
+- Lines, arcs, open polylines, elliptical arcs and splines can be changed. Anything else says `Lengthen: only lines, arcs, polylines, elliptical arcs and splines have an end to move.` A construction line says `Lengthen: a construction line is already infinite.`
+- On an arc, a length is measured along the curve, in drawing units. Measuring an arc also shows its angle, for example `Current length: 31.4159, included angle: 90`.
+- On a polyline, only the end segment you click near changes, straight on or round its arc. **Total** and **Percent** still count the whole polyline.
+- A spline is made longer straight on from its end, and shorter along its curve.
+- A change that would leave nothing is refused with `Lengthen: that would leave nothing of the object.`
+- **Angle** is only for arcs. On a line it says `Lengthen: Angle is for arcs; a line has a length.`
+- A closed polyline has no end to move: `Lengthen: a closed polyline has no end to move.`
+- **Percent** and **Total** need a number greater than 0, or Musa CAD says `Enter a value greater than zero.`
+- The method and the amounts are kept for the next time, for as long as Musa CAD stays open.
+- Each change is its own undo step, both inside LENGTHEN and with [U](/reference/commands/u/) afterwards.
+
+## Compared with AutoCAD
+
+LENGTHEN follows AutoCAD's order: choose the method, then the amount, then the objects, and the end nearer your pick is the one that moves. As in AutoCAD, a spline is lengthened straight on along the direction its end leaves by.
+
+## Next
+
+- Lengthen objects until they meet an edge with [EXTEND](/reference/commands/extend/).
+- Shorten objects back to an edge with [TRIM](/reference/commands/trim/).
+- Check a length or a distance with [DIST](/reference/commands/dist/) or [LIST](/reference/commands/list/).

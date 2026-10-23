@@ -57,6 +57,16 @@ export function componentText(name, data, origins, site) {
     }
     return out.join('\n');
   }
+  if (name.startsWith('CommandList:')) {
+    const { byName } = indexData(data);
+    return name
+      .slice('CommandList:'.length)
+      .split(',')
+      .map((n) => byName.get(n))
+      .filter(Boolean)
+      .map((c) => `- [${c.name}](${site}${pathOf(c)})${c.aliases.length > 1 ? ` (${c.aliases.filter((a) => a !== c.name).join(', ')})` : ''}: ${c.description}`)
+      .join('\n');
+  }
   if (name === 'CliHelp-help') return '```\n' + data.cli.help.trimEnd() + '\n```';
   if (name === 'CliHelp-exit-codes') return exitCodes(data.cli.help).map((e) => `- ${e.code}: ${e.meaning}`).join('\n');
   return '';
@@ -71,6 +81,9 @@ export function mdxToText(body, { data, origins, site, rendered = {}, raw = {} }
   s = s.replace(/<LinkCard\s+title="([^"]*)"\s+description="([^"]*)"\s+href="([^"]*)"\s*\/>/gs, (_, t, d, h) => `- [${t}](${h.startsWith('/') ? site + h : h}): ${d}`);
   s = s.replace(/<Card\s+title="([^"]*)"\s*>/g, (_, t) => `**${t}.** `);
   s = s.replace(/<CommandIndex\s+kind="(command|sysvar)"\s*\/>/g, (_, k) => componentText(`CommandIndex-${k}`, data, origins, site));
+  s = s.replace(/<CommandList\s+label="[^"]*"\s+names=\{\[([^\]]*)\]\}\s*\/>/g, (_, names) =>
+    componentText(`CommandList:${names.replace(/['"\s]/g, '')}`, data, origins, site)
+  );
   s = s.replace(/<ShortcutTable\s*\/>/g, () => componentText('ShortcutTable', data, origins, site));
   s = s.replace(/<RibbonMap\s*\/>/g, () => componentText('RibbonMap', data, origins, site));
   s = s.replace(/<CliHelp\s+show="exit-codes"\s*\/>/g, () => componentText('CliHelp-exit-codes', data, origins, site));

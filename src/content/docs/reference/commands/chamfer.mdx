@@ -1,15 +1,87 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "CHAMFER"
-description: "The CHAMFER (CHA) command in Musa CAD: Bevel corners between two intersecting lines. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The CHAMFER (CHA) command in Musa CAD cuts a straight bevel across the corner between two lines or polyline segments. How to set two distances or a length and an angle, bevel a whole polyline, keep the originals, and chamfer many corners."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "CHAMFER"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+CHAMFER cuts a corner off with a short straight line, called a bevel. You say how far back from the corner to cut on each line, and Musa CAD trims both lines and draws the bevel between them.
+
+## How it works
+
+Type `CHA` and press <kbd>Enter</kbd>. Musa CAD shows the mode and the current distances. Set new distances with **Distance** if you need them. Then pick the first line and the second. Pick each one on the part you want to keep. The corner is bevelled and the command ends.
+
+```musacad
+Command: CHA
+(TRIM mode) Current chamfer Dist1 = 0.0000, Dist2 = 0.0000
+Select first line or [Undo/Polyline/Distance/Angle/Trim/mEthod/Multiple]: D
+Specify first chamfer distance <0.0000>: 16
+Specify second chamfer distance <16.0000>: 10
+Select first line or [Undo/Polyline/Distance/Angle/Trim/mEthod/Multiple]: (pick the first line)
+Select second line or shift-select to apply corner or [Distance/Angle/Method]: (pick the second line)
+Chamfered.
+```
+
+<Figure id="cmd-chamfer" alt="On the left, before: a horizontal and a vertical line that cross and stick out past each other, with pick marks 1 on the horizontal line and 2 on the vertical line. On the right, after: a blue bevel joins the two lines; it starts 16 back from the corner on the horizontal line and 10 back on the vertical line. The cut-off ends are shown dashed in grey." caption="Pick 1, then 2, with Dist1 = 16 and Dist2 = 10." />
+
+The first distance is measured along the first line you pick, the second along the second line, both from the point where the lines meet or would meet.
+
+While you move over the second line, Musa CAD shows the result a click would make. Hold <kbd>Shift</kbd> as you pick the second line to make a clean, sharp corner with no bevel this once.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Undo** (`U`) | Takes back the last chamfer made in this run. Useful with **Multiple**. |
+| **Polyline** (`P`) | Bevels every corner of a 2D polyline at once. Asks `Select 2D polyline or [Distance/Angle/mEthod]:`, then reports how many corners it cut, such as `4 lines were chamfered.` |
+| **Distance** (`D`) | Asks `Specify first chamfer distance <0.0000>:`, then asks for the second distance, offering the first one as its default. Switches to the Distance method. |
+| **Angle** (`A`) | Asks `Specify chamfer length on the first line <0.0000>:`, then `Specify chamfer angle from the first line <0>:`. Switches to the Angle method. |
+| **Trim** (`T`) | Asks `Enter Trim mode option [Trim/No trim] <Trim>:`. **Trim** cuts the lines back to the bevel. **No trim** leaves them as they are and only adds the bevel. |
+| **mEthod** (`E`) | Asks `Enter trim method [Distance/Angle] <Distance>:` and switches between the two methods without changing any values. At the second-line prompt this option is **Method** (`M`). |
+| **Multiple** (`M`) | Keeps asking for pairs, so you can bevel many corners. Press <kbd>Enter</kbd> to stop. Each corner is its own undo step. |
+| <kbd>Enter</kbd> at **Select first line** | Ends the command. |
+
+## Distance and Angle methods
+
+CHAMFER can size the bevel in two ways.
+
+- **Distance:** two distances, one along each line. Equal distances give a 45 degree bevel on a square corner.
+- **Angle:** a length along the first line, and an angle measured from the first line.
+
+The first line of each run shows the method in use. With the Angle method it reads, for example, `(TRIM mode) Current chamfer Length = 10.0000, Angle = 30`.
+
+## Settings CHAMFER remembers
+
+The distances, the length and angle, the method and the Trim mode are kept for the next time, for as long as Musa CAD stays open.
+
+- The two distances are [CHAMFERA](/reference/system-variables/chamfera/) and [CHAMFERB](/reference/system-variables/chamferb/).
+- The length and angle are [CHAMFERC](/reference/system-variables/chamferc/) and [CHAMFERD](/reference/system-variables/chamferd/).
+- The Trim mode is [TRIMMODE](/reference/system-variables/trimmode/), which [FILLET](/reference/commands/fillet/) uses too. Changing it in one changes it in the other.
+
+## Good to know
+
+- CHAMFER works on two lines, on two segments of one polyline that meet, and on a whole polyline with **Polyline**. Anything else says `Chamfer: pick two lines, or two adjacent edges of one polyline.`
+- Parallel lines are refused with `Chamfer: the two lines are parallel.`
+- With both distances 0 and Trim on, the lines are trimmed or extended to meet in a sharp corner, the same as a <kbd>Shift</kbd> pick. With **No trim**, there is nothing to add: `Chamfer: nothing to add with zero distances in No trim mode.`
+- On a polyline corner, distances longer than the segments are refused with `Chamfer: distances too large for that corner.` With **Polyline**, corners that are too short are skipped and counted at the end of the message.
+- The trimmed lines keep their layer, colour and linetype. The bevel takes the lines' properties when both are on the same layer; otherwise it goes on the current layer.
+- At the Trim mode prompt, <kbd>Enter</kbd> chooses **Trim**, even when the default shown is **No trim**. Type `N` to keep No trim.
+- **Undo** takes back only the most recent chamfer. After that it says `Nothing to undo.`
+
+## Compared with AutoCAD
+
+CHAMFER uses AutoCAD's prompts, its Distance and Angle methods, and offers the first distance as the default for the second, as AutoCAD does. In Musa CAD it works on lines and polylines.
+
+## Next
+
+- Round a corner with an arc instead with [FILLET](/reference/commands/fillet/).
+- Draw a rectangle with bevelled corners in one go with [RECTANG](/reference/commands/rectang/).
+- See all the editing commands together in [Modifying objects](/user-manual/modifying/).

@@ -1,15 +1,92 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "ROTATE"
-description: "The ROTATE (RO) command in Musa CAD: Rotate selected objects around a base point. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The ROTATE (RO) command in Musa CAD turns selected objects around a base point. How to type or pick an angle, keep the original with Copy, and turn objects to match a direction with Reference."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "ROTATE"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+ROTATE turns objects around a point you choose. Type the angle, or turn them with the cursor and click.
+
+## How it works
+
+Type `RO` and press <kbd>Enter</kbd>. Select the objects and press <kbd>Enter</kbd>. Click the base point, the point the objects turn around. Then type an angle in degrees and press <kbd>Enter</kbd>.
+
+```musacad
+Command: RO
+Select objects: (pick the L shape)
+1 found.
+Select objects: ↵
+Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
+Specify base point: (click the lower-left corner)
+Specify rotation angle or [Copy/Reference] <0>: 30
+Rotated.
+```
+
+<Figure id="cmd-rotate" alt="An L shape drawn dashed in grey, and the same shape in blue turned 30 degrees counter-clockwise about its lower-left corner, which is marked as point 1, the base point. An arc between the two bottom edges is labelled 30." caption="A rotation angle of 30 turns the shape counter-clockwise about the base point." />
+
+A positive angle turns the objects counter-clockwise, and a negative angle turns them clockwise. Before you type, the objects turn with the cursor and the angle shows beside it. Click instead of typing, and the angle is the direction from the base point to where you clicked.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Copy** (`C`) | Turns a copy and leaves the originals where they are. Musa CAD says `Rotating a copy of the selected objects.` and asks for the angle again. |
+| **Reference** (`R`) | Turns the objects from a direction they have now to a new one. See below. |
+| <kbd>Enter</kbd> at **Specify rotation angle** | Uses the default, 0, so nothing turns. |
+
+## Turning to match a direction with Reference
+
+Reference is useful when you do not know the angle to turn by, only where the objects should point. Musa CAD turns them by the new angle minus the reference angle.
+
+```musacad
+Specify rotation angle or [Copy/Reference] <0>: R
+Specify the reference angle <0>: (click one end of an edge)
+Specify second point: (click its other end)
+Specify the new angle or [Points] <0>: 90
+Rotated.
+```
+
+- At **Specify the reference angle**, type the angle the objects point at now, or click two points along an edge.
+- At **Specify the new angle**, type the angle they should point at, or click a point: the direction from the base point to it is the new angle.
+- **Points** (`P`) lets you give the new angle with two points of your own, for example along another object.
+
+In the example, the edge you clicked ends up pointing straight up, at 90 degrees.
+
+## Selecting objects
+
+At `Select objects:` you build up the set of objects to turn. Each pick or window adds to it, and Musa CAD says how many it found, such as `1 found.` or `2 found, 5 total.`
+
+- **Click** an object to add it.
+- **Click an empty spot, then click again** to draw a box. Going from left to right makes a window: it takes only objects that lie completely inside. Going from right to left makes a crossing window: it also takes objects that only touch it.
+- **Press and drag** to draw a free shape, called a lasso. Start dragging to the right for a window, to the left for a crossing.
+- Hold <kbd>Shift</kbd> and **click** a selected object to take it out again.
+- Press <kbd>Enter</kbd>, or right-click, when the set is complete. If nothing is selected, ROTATE ends.
+
+If objects are already selected when you start ROTATE, it uses them and goes straight to the base point. You can also type a keyword at `Select objects:`, such as `ALL` for everything or `P` for the objects the last edit worked on. [SELECT](/reference/commands/select/) lists them all.
+
+## Good to know
+
+- A number you type is always taken as degrees. Anything that is neither a number nor a point is refused with `Requires valid numeric angle or second point.`
+- The angle is not remembered. The default is always 0.
+- When it is done, Musa CAD says `Rotated.`, or `Rotated a copy.` with **Copy**. The turned objects stay selected.
+- Associative dimensions and hatches that are attached to the turned objects go with them, even if you did not select them.
+- One ROTATE is one undo step. <kbd>Esc</kbd> cancels, and nothing turns.
+- Objects on layers that are off, frozen or locked cannot be selected.
+
+## Compared with AutoCAD
+
+ROTATE follows AutoCAD's prompts: the base point, then the angle with **Copy** and **Reference**, and **Points** for a new angle from two points.
+
+## Next
+
+- Move, turn and scale objects onto other objects in one step with [ALIGN](/reference/commands/align/).
+- Make objects larger or smaller with [SCALE](/reference/commands/scale/).
+- Read more about changing drawings in [Modifying objects](/user-manual/modifying/).

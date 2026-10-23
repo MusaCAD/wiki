@@ -1,15 +1,84 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "MTEXT"
-description: "The MTEXT (MT, T) command in Musa CAD: Create a multiline (paragraph) text object. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The MTEXT (MT, T) command in Musa CAD places a paragraph of text that wraps inside a box you draw. How to set its height, justification, line spacing and width, type symbols, and edit the text afterwards."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "MTEXT"
-tableOfContents: false
 ---
+
+MTEXT writes a paragraph of text, such as a general note on a drawing. You draw a box with two corners, and the text wraps to fit the box's width. The whole paragraph is one object.
+
+## How it works
+
+Type `MT` (or `T`) and press <kbd>Enter</kbd>. Musa CAD shows the current text style and height. Click the first corner of the box, then the opposite corner. Then type the text and press <kbd>Enter</kbd>.
+
+```musacad
+Command: MT
+Current text style:  "Standard"  Text height:  2.5000  Annotative:  No
+Specify first corner: (click a point)
+Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width/Columns]: H
+Specify height <2.5000>: 3.5
+Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width/Columns]: (click the opposite corner)
+Enter text: ALL DIMENSIONS IN MM. REMOVE ALL SHARP EDGES.
+MText placed.
+```
+
+While you choose the opposite corner, a rectangle follows the cursor. An arrow inside it shows which way the text will grow: down from a top justification, up from a bottom one, and both ways from the middle.
+
+Only the width of the box really matters. The text wraps at the box's width and takes as many lines as it needs, even if that runs past the box's bottom edge. The box's height only helps place the text when you choose a middle or bottom justification.
+
+After each option, Musa CAD asks for the opposite corner again, so you can set several options before you click.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Height** (`H`) | Asks `Specify height <2.5000>:`. The height of the capital letters. <kbd>Enter</kbd> keeps the value shown. |
+| **Justify** (`J`) | Asks `Enter justification [TL/TC/TR/ML/MC/MR/BL/BC/BR] <TL>:`. The point of the box the text hangs from: top, middle or bottom (`T`, `M`, `B`), then left, center or right (`L`, `C`, `R`). `TL`, top left, is where Musa CAD starts. |
+| **Line spacing** (`L`) | Asks `Enter line spacing type [At least/Exactly] <At least>:`, then `Enter line spacing factor or distance <1.0000x>:`. Type a factor with an `x`, such as `1.5x`, or type a distance from one line to the next. Both types give the same result in Musa CAD. |
+| **Rotation** (`R`) | Asks `Specify rotation angle <0.0000>:`. The angle of the whole paragraph, in degrees. |
+| **Style** (`S`) | Asks `Enter style name or [?] <Standard>:`. Uses that text style's font, and its height if it has one, for this text. `?` lists the styles. It does not change the current style. |
+| **Width** (`W`) | Asks `Specify width:`. Type the width, or click a point to give it, instead of clicking the opposite corner. The text hangs from the first corner. A width of `0` means the text does not wrap. |
+| **Columns** (`C`) | Asks `Enter column type [Dynamic/Static/No columns] <Dynamic>:`. Columns are not available yet: any answer but `N` or <kbd>Enter</kbd> gets `Columns are not available yet; the text is one column.` |
+
+## Typing the text
+
+At `Enter text:` type the whole paragraph on one line. Musa CAD wraps it to the width of the box. Press <kbd>Enter</kbd> to place it.
+
+The same text codes work as in single-line text: `%%d` for °, `%%p` for ±, `%%c` for ⌀, `\U+XXXX` for any character by its Unicode number, and the rest listed under [Text codes](/reference/commands/text/#text-codes) on the TEXT page. In MTEXT, `%%o` and `%%u` are taken out, but no overline or underline is drawn yet.
+
+Text that comes from an AutoCAD drawing keeps its MTEXT formatting codes, such as `\H` for height, `\C` for colour and `\S` for stacked fractions, and Musa CAD draws them.
+
+## Editing the text afterwards
+
+Double-click the text when no command is running. The **Edit MText** window opens with the text in a box, codes and all. Here <kbd>Enter</kbd> starts a new line, so this is where you split the text into separate paragraphs. Click **OK** to save the change, or **Cancel** to leave the text as it was. The change is one undo step, and the text keeps its layer, position and other properties.
+
+You can also:
+
+- Drag the text's grips. One moves the text; the width grip changes the width, and the text wraps again as you drag.
+- Use [TEXTEDIT](/reference/commands/textedit/) to type new words at the command line.
+- Change the height, justification, line spacing and more in the [PROPERTIES](/reference/commands/properties/) palette.
+
+## Good to know
+
+- MTEXT starts each time with the current text style's height, or `2.5000` if the style has no height of its own. It does not remember the height you typed last time.
+- A height or line spacing of 0 or less is refused with `Requires a positive value.` A rotation that is not a number gets `Requires an angle.`
+- A wrong justification gets `Enter TL, TC, TR, ML, MC, MR, BL, BC or BR.`
+- A style name that does not exist gets `Cannot find text style "NAME".` (with the name you typed).
+- <kbd>Esc</kbd> cancels the command and nothing is placed.
+- To type the text line by line at the command line instead, use [-MTEXT](/reference/commands/dash-mtext/). To turn single-line texts into one MTEXT, use [TXT2MTXT](/reference/commands/txt2mtxt/).
+
+## Compared with AutoCAD
+
+MTEXT uses the prompts AutoCAD users know, with AutoCAD's single line spacing of 5/3 of the text height. Columns are not available yet, and formatting only some of the words (another height or colour) cannot be done from MTEXT's prompts; the developers list it as planned, and text from AutoCAD drawings keeps such formatting.
+
+## Next
+
+- Write labels one line at a time with [TEXT](/reference/commands/text/).
+- Point a note at a feature with [QLEADER](/reference/commands/qleader/) or [MLEADER](/reference/commands/mleader/).
+- Read about notes, dimensions and leaders in [Annotation](/user-manual/annotation/).

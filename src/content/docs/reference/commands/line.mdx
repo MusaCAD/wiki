@@ -1,15 +1,73 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "LINE"
-description: "The LINE (L) command in Musa CAD: Create a series of straight-line segments (Close, Undo; Enter continues the last line or arc). How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The LINE (L) command in Musa CAD draws straight lines, one segment after another, from points you click or type. How to give exact lengths, close a shape, undo a segment, and continue from the last line or arc."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "LINE"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+LINE draws straight lines. Each segment starts where the last one ended, so you can draw a whole outline without stopping. Each segment is a separate line object.
+
+## How it works
+
+Type `L` and press <kbd>Enter</kbd>. Give the first point, then keep giving points. Press <kbd>Enter</kbd> when you are done.
+
+```musacad
+Command: L
+Specify first point: 0,0
+Specify next point or [Undo]: @100,0
+Specify next point or [Undo]: @0,60
+Specify next point or [Close/Undo]: @-100,0
+Specify next point or [Close/Undo]: C
+```
+
+<Figure id="cmd-line" alt="A blue rectangle 100 wide and 60 high. Its corners are numbered 1 to 4 with the point typed for each: 0,0, then @100,0, @0,60 and @-100,0. A note in the middle says C closes back to 1." caption="Four points and Close draw this outline." />
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Undo** (`U`) | Removes the last segment and goes back to the point before it. With no segments left, it forgets the first point and asks for it again. |
+| **Close** (`C`) | Draws a segment back to the first point and ends the command. It appears once you have drawn two segments. |
+| <kbd>Enter</kbd> at **Specify first point** | Continues from the end of the last line or arc you drew. After an arc, the new line runs on along the arc's direction and Musa CAD asks only `Specify length of line:`. |
+| <kbd>Enter</kbd> at **Specify next point** | Ends the command. |
+
+## Giving exact points
+
+Every point prompt accepts the same kinds of input:
+
+| You type | Meaning |
+|---|---|
+| `40,25` | The point at X 40, Y 25. |
+| `@100,0` | 100 to the right of the last point, 0 up. |
+| `@50<30` | 50 away from the last point, at 30 degrees. |
+| `50` | 50 along the direction the cursor is pointing. Good with Ortho or Polar tracking on. |
+| `@` | The last point itself. |
+
+You can also click, and snap to objects. After a typed point, Musa CAD repeats the point it understood on the next line, so you can check it.
+
+With [Dynamic Input](/user-manual/dynamic-input/) on, boxes for the length and angle appear beside the cursor. Type the length, press <kbd>Tab</kbd>, type the angle, and press <kbd>Enter</kbd>.
+
+## Good to know
+
+- Each segment is its own object. To make one object of connected segments, draw with [PLINE](/reference/commands/pline/) instead, or join the lines afterwards with [JOIN](/reference/commands/join/).
+- A length of 0, or a negative length at **Specify length of line**, is refused with `Value must be positive and nonzero.`
+- If [LIMITS](/reference/commands/limits/) checking is on, a point outside the limits is refused with `**Outside limits`.
+- <kbd>Esc</kbd> ends the command. The segments you already drew stay.
+
+## Compared with AutoCAD
+
+LINE works the way AutoCAD users expect: the same prompts, Close and Undo, and <kbd>Enter</kbd> to continue from the last line or arc.
+
+## Next
+
+- Draw lines and arcs as one object with [PLINE](/reference/commands/pline/).
+- Cut lines back to an edge with [TRIM](/reference/commands/trim/).
+- Learn every way to place points exactly in [Precision and drafting aids](/user-manual/precision/).

@@ -112,7 +112,7 @@ export default defineConfig({
         },
         {
           label: 'User manual',
-          items: [{ slug: 'user-manual' }, { slug: 'user-manual/dynamic-input' }],
+          items: [{ autogenerate: { directory: 'user-manual' } }],
         },
         {
           label: 'Command reference',

@@ -1,15 +1,82 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "DIMLINEAR"
-description: "The DIMLINEAR (DLI) command in Musa CAD: Create a horizontal or vertical linear dimension. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The DIMLINEAR (DLI) command in Musa CAD draws a horizontal, vertical or rotated dimension between two points or across an object. How to place it, fix its direction and change its text."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "DIMLINEAR"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+DIMLINEAR measures the distance between two points, straight across or straight up. It draws two extension lines, a dimension line with an arrow at each end, and the measured value.
+
+## How it works
+
+Type `DLI` and press <kbd>Enter</kbd>. Click the first point, then the second. These are the extension line origins: the two places you are measuring between. Then move the cursor away and click where the dimension line should go. The dimension is drawn and the command ends.
+
+Where you click decides the direction. Above or below the two points, the dimension runs across and measures the horizontal distance. To the left or right of them, it stands up and measures the vertical distance. The preview turns as you move the cursor round.
+
+```musacad
+Command: DLI
+Specify first extension line origin or <select object>: 0,0
+Specify second extension line origin: 80,0
+Specify dimension line location or [Mtext/Text/Angle/Horizontal/Vertical/Rotated]: (click below the part)
+Dimension placed.
+```
+
+<Figure id="cmd-dimlinear" alt="A five-sided plate 80 wide and 45 high, with its top right corner cut off by a slanted edge. Below it, a blue dimension reads 80.00: pick 1 is the bottom left corner, pick 2 the bottom right corner, and pick 3 a point on the dimension line. A vertical dimension on the left side reads 45.00. Above the slanted edge, a horizontal dimension reads 30.00, how far the slant runs across." caption="Picks 1 and 2 are the points measured. Pick 3 places the dimension line." />
+
+### Dimension an object
+
+Instead of clicking two points, press <kbd>Enter</kbd> at the first prompt and pick an object. Musa CAD finds the two ends for you:
+
+- a line, or one segment of a polyline: its two ends;
+- an arc: the distance between its two ends;
+- a circle: its diameter, across or up depending on where you place the line.
+
+```musacad
+Command: DLI
+Specify first extension line origin or <select object>: ↵
+Select object to dimension: (pick a line)
+Specify dimension line location or [Mtext/Text/Angle/Horizontal/Vertical/Rotated]: (click where the dimension line goes)
+Dimension placed from object.
+Dimension created from object.
+```
+
+## Options
+
+These options are offered while you place the dimension line. After you choose one, Musa CAD asks for the dimension line location again.
+
+| Option | What it does |
+|---|---|
+| **Mtext** (`M`) or **Text** (`T`) | Type your own text. Musa CAD shows the measurement as the default, for example `Enter dimension text <80.0000>:`; after you picked an object it asks `Enter dimension text (<> for the measurement):`. Type `<>` where the measured value should go, so `<> TYP` reads `80.00 TYP`. Text without `<>` replaces the value. Press <kbd>Enter</kbd> without typing to use the measurement. Both keywords do the same thing. |
+| **Angle** (`A`) | Turns the text. At `Specify angle of dimension text:` type an angle in degrees. `0` or <kbd>Enter</kbd> puts it back the normal way. |
+| **Horizontal** (`H`) | Always measures straight across, wherever you place the line. |
+| **Vertical** (`V`) | Always measures straight up. |
+| **Rotated** (`R`) | Measures along a direction you choose. At `Specify angle of dimension line <0>:` type the angle in degrees, or click two points to show the direction (Musa CAD asks `Specify second point:`). |
+
+Once you choose **Horizontal**, **Vertical** or **Rotated**, the direction is fixed and the prompt offers only `[Mtext/Text/Angle]`.
+
+## Good to know
+
+- The value on the dimension follows the current dimension style, not the drawing units. The Standard style shows two decimal places, so 80 reads `80.00`. Change this with [DIMSTYLE](/reference/commands/dimstyle/).
+- When you pick an object, Musa CAD checks it as you place the dimension. If there was no line, arc, circle or polyline under the pick, it says `Could not dimension that object -- select a line, circle, or arc.` and draws nothing.
+- Typing `O` (or `Object`) at the first prompt also asks you to select an object, the same as <kbd>Enter</kbd>.
+- New dimensions go on the current layer, or on the layer named in [DIMLAYER](/reference/system-variables/dimlayer/).
+- With [DIMASSOC](/reference/system-variables/dimassoc/) at its default of 2, a dimension follows the objects its points are on when you move or change them.
+- <kbd>Esc</kbd> cancels without drawing anything. [U](/reference/commands/u/) removes the whole dimension in one step.
+
+## Compared with AutoCAD
+
+DIMLINEAR asks the same questions as AutoCAD's. As in AutoCAD, <kbd>Enter</kbd> at the first prompt selects an object, and where you place the line makes the dimension horizontal or vertical.
+
+## Next
+
+- Measure the true length of a slanted edge with [DIMALIGNED](/reference/commands/dimaligned/).
+- Add more dimensions end to end with [DIMCONTINUE](/reference/commands/dimcontinue/), or all from one base with [DIMBASELINE](/reference/commands/dimbaseline/).
+- Change how dimensions look with [DIMSTYLE](/reference/commands/dimstyle/).

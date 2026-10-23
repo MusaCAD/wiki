@@ -1,15 +1,60 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "EXPLODE"
-description: "The EXPLODE (X) command in Musa CAD: Break compound objects into their components. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The EXPLODE (X) command in Musa CAD breaks a polyline, block, dimension, hatch, table or other compound object into the simple objects it is made of. What each kind becomes, and what is lost on the way."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "EXPLODE"
-tableOfContents: false
 ---
+
+EXPLODE takes an object that is made of several parts and turns it into those parts. A polyline becomes separate lines and arcs, a block becomes the objects inside it, and a dimension becomes lines and text you can edit one by one.
+
+## How it works
+
+Type `X` and press <kbd>Enter</kbd>. Select the objects to explode, then press <kbd>Enter</kbd>. If you select the objects first and then type `X`, Musa CAD explodes them straight away.
+
+```musacad
+Command: X
+Select objects: (pick the polyline)
+Select objects: ↵
+Exploded 1 object into 4.
+```
+
+The message tells you how many objects were exploded and how many parts they became. The parts are left selected, so you can move or change them at once.
+
+## What each object becomes
+
+| Object | Becomes |
+|---|---|
+| Polyline | One line or arc for each segment. Any width is lost. |
+| Block reference | The objects inside the block, placed where the block was. Only one level: a block inside the block stays a block reference. Attributes turn back into attribute definitions, which show the tag; the values are dropped. |
+| Dimension | Lines, the arrowheads as filled solid hatches, and text. |
+| Leader and multileader | Lines, the arrowhead, and the text. A multileader's text becomes multiline text. |
+| Hatch | A pattern becomes its lines. A solid fill becomes its boundary, as closed polylines. A wipeout becomes the lines of its frame. |
+| Multiline text | One single-line text for each line. |
+| Table | Lines for the grid and text for the cells. |
+| Multiline | Lines and arcs. |
+
+Lines, circles, arcs, ellipses, splines, points, single-line text and other simple objects are already as simple as they get, so EXPLODE leaves them alone.
+
+## Good to know
+
+- If the selection also holds simple objects, the message counts them at the end, for example `Exploded 1 object into 4. 2 could not be exploded.`
+- If everything selected is already simple, Musa CAD says `Nothing to explode: the selection holds only simple objects.`
+- Exploding a polyline with width warns you: `Exploding this polyline has lost width information. The UNDO command will restore it.` is added to the message.
+- To explode a block and keep its attribute values as plain text, use [BURST](/reference/commands/burst/) instead.
+- The whole explode is one undo step. [U](/reference/commands/u/) puts the original objects back.
+
+## Compared with AutoCAD
+
+As in AutoCAD, a block explodes one level at a time, its attributes go back to their definitions, and a polyline's width is dropped with a warning. Where AutoCAD makes 2D solids of filled arrowheads, Musa CAD makes solid hatches, which look and plot the same.
+
+## Next
+
+- Explode blocks but keep their attribute values with [BURST](/reference/commands/burst/).
+- Join lines and arcs back into one polyline with [JOIN](/reference/commands/join/).
+- Make your own blocks with [BLOCK](/reference/commands/block/).

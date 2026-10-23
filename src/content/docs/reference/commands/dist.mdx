@@ -1,15 +1,82 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "DIST"
-description: "The DIST (DI) command in Musa CAD: Measure the distance and angle between two points, or along several (Multiple points). How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The DIST (DI) command in Musa CAD measures the distance and angle between two points, with the X and Y differences. How to read its report and add up a path of several points with Multiple points."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "DIST"
-tableOfContents: false
 ---
+
+DIST measures how far apart two points are. It also tells you the angle between them and how far apart they are along X and along Y. It only reports; nothing in the drawing changes.
+
+## How it works
+
+Type `DI` and press <kbd>Enter</kbd>. Give the first point, then the second. Click them, snap to objects, or type coordinates. Musa CAD prints the result and the command ends.
+
+```musacad
+Command: DI
+Specify first point or [Multiple points]: 20,10
+Specify second point or [Multiple points]: @30,40
+Distance = 50.0000,  Angle in XY Plane = 53,  Angle from XY Plane = 0
+Delta X = 30.0000,  Delta Y = 40.0000,  Delta Z = 0.0000
+```
+
+What the report means:
+
+| Item | Meaning |
+|---|---|
+| **Distance** | The straight distance from the first point to the second. |
+| **Angle in XY Plane** | The direction from the first point to the second. By default 0 points right and angles go anticlockwise, so 90 is straight up. |
+| **Angle from XY Plane** | Always 0, because Musa CAD drawings are flat. |
+| **Delta X**, **Delta Y** | How far the second point is from the first along X and along Y. Negative means left or down. |
+| **Delta Z** | Always 0. |
+
+The numbers use the drawing's units. By default, lengths show four decimals and angles show whole degrees. Change this with [UNITS](/reference/commands/units/).
+
+## Measuring along several points
+
+Type `M` at either prompt to add up the lengths along a path of points. After each point, Musa CAD prints the total so far. Press <kbd>Enter</kbd> to finish.
+
+```musacad
+Command: DI
+Specify first point or [Multiple points]: M
+Specify first point: 0,0
+Specify next point or [Length/Undo/Total] <Total>: @40,0
+Distance = 40.0000
+Specify next point or [Length/Undo/Total] <Total>: @0,30
+Distance = 70.0000
+Specify next point or [Length/Undo/Total] <Total>: ↵
+Distance = 70.0000
+```
+
+If you type `M` at the second prompt instead, the point you already gave is the start of the path.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Multiple points** (`M`) | Measures along a path of points and keeps a running total. |
+| **Length** (`L`) | Asks `Specify length of line:`. Type a length, and the next point is that far along the direction the cursor points. Good with Ortho or Polar tracking on. |
+| **Undo** (`U`) | Takes away the last point, and its length from the total. |
+| **Total** (`T`) | Prints the total and ends. <kbd>Enter</kbd> does the same. |
+
+## Good to know
+
+- DIST works only from the points you give. It does not look at objects, so use object snaps to measure exactly between ends, centres or crossings.
+- DIST changes nothing, so it adds no undo step.
+- A typed point is echoed back on the next line, so you can check what Musa CAD understood.
+- <kbd>Esc</kbd> ends the command.
+
+## Compared with AutoCAD
+
+DIST prints the same report as AutoCAD, the Z figures included. They are always zero because Musa CAD is 2D.
+
+## Next
+
+- Find the coordinates of a single point with [ID](/reference/commands/id/).
+- Measure an area and its perimeter with [AREA](/reference/commands/area/).
+- Measure distances, radii, angles and areas in one command with [MEASUREGEOM](/reference/commands/measuregeom/).

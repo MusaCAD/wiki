@@ -1,15 +1,91 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "INSERT"
-description: "The INSERT (I, -INSERT) command in Musa CAD: Insert a block by name with scale and rotation. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The INSERT (I) command in Musa CAD places a copy of a block, or of another drawing, at a point you choose, at any scale and angle. How to set the scale, the rotation, a corner, and attribute values."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "INSERT"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+INSERT places a block in the drawing. A block is a named symbol made with [BLOCK](/reference/commands/block/), such as a door or a bolt. Each copy you insert is one object, called a block reference, and can be larger, smaller or turned compared with the original.
+
+## How it works
+
+Type `I` and press <kbd>Enter</kbd>. Type the block's name. The block then follows the cursor. Click where its base point should go, then give the scale and the angle, or press <kbd>Enter</kbd> to keep the values in brackets.
+
+```musacad
+Command: I
+Enter block name or [?]: HOUSE
+Specify insertion point or [Scale/X/Y/Z/Rotate]: (click where the base point goes)
+Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>: 1.5
+Enter Y scale factor <use X scale factor>: ↵
+Specify rotation angle <0>: ↵
+Inserted "HOUSE".
+```
+
+<Figure id="cmd-insert" alt="Four copies of a simple house symbol, a rectangle with a door and a pointed roof, in a row. From left to right: at scale 1; at scale 1.5, larger; at scale 1 turned 30 degrees counter-clockwise; and with X scale 2 and Y scale 1, twice as wide but the same height. A small circle marks each insertion point at the lower-left corner of the house." caption="One block inserted four times at different scales and angles." />
+
+While you give the scale, the block grows and shrinks with the cursor; while you give the angle, it turns with the cursor. You can click instead of typing at either step. The angle is in degrees, counter-clockwise from the X axis.
+
+After the first insert, the name prompt offers the last block you inserted, such as `Enter block name or [?] <HOUSE>:`, so <kbd>Enter</kbd> inserts it again.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| `?` | At the name prompt, lists the blocks in the drawing, such as `Blocks: "DOOR" "HOUSE"`. |
+| **Scale** (`S`) | Before you click the point: asks `Specify scale factor for XYZ axes <1>:` and uses it for both X and Y. You are not asked for the scale again. |
+| **X**, **Y** (`X`, `Y`) | Before you click the point: asks `Specify X scale factor <1>:` (or Y) for that direction only. The other stays 1, and you are not asked for the scale again. |
+| **Z** (`Z`) | Asks `Specify Z scale factor <1>:`. A 2D block has no depth, so it changes nothing. |
+| **Rotate** (`R`) | Before you click the point: asks `Specify rotation angle <0>:`. You are not asked for the angle again. |
+| **Corner** (`C`) | At the X scale prompt: asks `Specify opposite corner:`. The distance from the insertion point to that corner across becomes the X scale, and the distance up becomes the Y scale. Clicking a point at the X scale prompt does the same. |
+| **XYZ** | At the X scale prompt: asks `Specify X scale factor or [Corner] <1>:`, then `Specify Y scale factor or <use X scale factor>:` and `Specify Z scale factor or <use X scale factor>:`. |
+| <kbd>Enter</kbd> | Keeps the value in brackets: 1 for the X scale, the X scale for Y, and 0 degrees for the angle. |
+
+A negative scale factor flips the block over, as a mirror does.
+
+## Inserting another drawing
+
+Instead of a block name, type `~` to choose a drawing file in a window, or type the path of a `.musa` or `.dxf` file. Musa CAD reads that drawing in as a block named after the file, and you place it like any block. Its base point is the one set in that drawing with [BASE](/reference/commands/base/).
+
+If the drawing already has a block with that name, Musa CAD asks `Block "HOUSE" already exists. Redefine it? [Yes/No] <N>:`. **Yes** replaces the block with the file's contents, which changes every copy already in the drawing. **No** keeps the block you have.
+
+On the ribbon, **From Drawing...** in the **Insert** menu does the same as typing `~`.
+
+## Attributes
+
+If the block has attributes, made with [ATTDEF](/reference/commands/attdef/), Musa CAD asks for each value after the angle. Each question is the attribute's prompt, with its default value in brackets.
+
+```musacad
+Specify rotation angle <0>: ↵
+Enter attribute values
+Part number <P-001>: P-117
+Inserted "TAG".
+```
+
+Press <kbd>Enter</kbd> to keep the default. Attributes set as Constant or Preset are not asked. Change the values later with [ATTEDIT](/reference/commands/attedit/) or [EATTEDIT](/reference/commands/eattedit/).
+
+## Good to know
+
+- Block names must match exactly, capitals and all. A name that does not match says `Block "house" not found.` Type `?` to see the names.
+- With no name and no earlier insert, Musa CAD says `A block name is required.`
+- A scale of 0 is refused with `Enter a non-zero scale factor.` A corner level with the insertion point, or straight above or below it, is refused with `The corner is in line with the insertion point: a scale of 0.`
+- A block made in other units is scaled to the drawing's units as it goes in. A block in millimetres placed in a drawing in inches comes in at 1/25.4. See [INSUNITS](/reference/system-variables/insunits/).
+- The inserted block is one object. To edit its pieces in place, use [REFEDIT](/reference/commands/refedit/); to break it back into separate objects, use [EXPLODE](/reference/commands/explode/).
+- `-INSERT` is the same command.
+
+## Compared with AutoCAD
+
+INSERT and -INSERT are the same command here, and both ask at the command line. Attribute values are asked for at the command line, as AutoCAD does with ATTDIA off. A block drawn in other units is scaled the way AutoCAD's block unit scales it, and a drawing inserted as a block sits at its base point, as in AutoCAD.
+
+## Next
+
+- Make a block from objects with [BLOCK](/reference/commands/block/).
+- Swap every copy of one block for another with [BLOCKREPLACE](/reference/commands/blockreplace/).
+- Edit a block's definition with [BEDIT](/reference/commands/bedit/).

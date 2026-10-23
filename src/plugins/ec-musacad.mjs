@@ -8,6 +8,7 @@
 //   Specify next point or [Close/Undo]: @100,0 prompt, [options], typed input
 //   Specify radius of circle or [Diameter] <12.0000>: ↵    <default>, Enter
 //   12 found                                   an echo from the application
+//   Select objects: (pick the two lines) ↵     an action in brackets, not typed
 //
 // Colouring is done here, not by a syntax theme, so the block looks like the application's
 // command line in both wiki themes (dark field, green prompt). The grammar registered with
@@ -52,10 +53,13 @@ function renderLine(line) {
   return [span('mc-echo', [text(line)])];
 }
 
-/** What was typed at the prompt. `↵` is shown as the Enter key, `⎋` as Esc. */
+/**
+ * What was typed at the prompt. `↵` is shown as the Enter key, `⎋` as Esc, and words in
+ * round brackets, such as `(click an end)`, as something you do rather than type.
+ */
 function renderInput(s) {
   if (s === '') return [];
-  const parts = s.split(/(↵|⎋)/);
+  const parts = s.split(/(↵|⎋|\([^)]*\))/);
   return parts
     .filter((p) => p !== '')
     .map((p) =>
@@ -63,7 +67,9 @@ function renderInput(s) {
         ? span('mc-key', [text('Enter')])
         : p === '⎋'
           ? span('mc-key', [text('Esc')])
-          : span('mc-input', [text(p)])
+          : /^\(.*\)$/.test(p)
+            ? span('mc-action', [text(p)])
+            : span('mc-input', [text(p)])
     );
 }
 

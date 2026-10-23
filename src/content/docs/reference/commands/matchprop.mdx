@@ -1,15 +1,82 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "MATCHPROP"
-description: "The MATCHPROP (MA, PAINTER) command in Musa CAD: Copy properties from a source object to one or more target objects. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The MATCHPROP (MA, PAINTER) command in Musa CAD copies the layer, colour, linetype, lineweight and other properties of one object onto others. What it copies between which kinds of object, and how to choose with Settings."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "MATCHPROP"
-tableOfContents: false
 ---
+
+MATCHPROP copies properties from one object to others, like a paintbrush. Pick the object that looks right, then click the objects that should look the same. Their layer, colour, linetype and more change to match.
+
+## How it works
+
+Type `MA` and press <kbd>Enter</kbd>. Click the source object, the one to copy from. Musa CAD lists the properties it will copy, and the cursor becomes a paintbrush. Then click each object to change, or drag a window over several. Press <kbd>Enter</kbd> when you are done.
+
+```musacad
+Command: MA
+Select source object: (click the source object)
+Current active settings: Color Layer Ltype Ltscale Lineweight Transparency Thickness PlotStyle Dim Text Hatch Polyline Viewport Table Material Shadow display Multileader Center object
+MATCHPROP: source selected -- pick destination objects.
+Select destination object(s) or [Settings]: (click an object)
+Properties matched to 1 object(s).
+Select destination object(s) or [Settings]: (drag a window over three objects)
+Properties matched to 3 object(s).
+Select destination object(s) or [Settings]: ↵
+```
+
+If an object is already selected when you start MATCHPROP, it becomes the source straight away, and Musa CAD says `MATCHPROP: source = selection -- pick destination objects.` With several selected, the first one is the source.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Settings** (`S`) | Opens the **Property Settings** window, where you choose which properties are copied. Afterwards Musa CAD shows the new `Current active settings:` line. |
+| <kbd>Enter</kbd> at **Select destination object(s)** | Ends the command. |
+
+## What is copied
+
+Some properties are copied between any two objects. Others are copied only between objects of the same family, for example from one text to another, and only where both objects have that property.
+
+| Kind of property | What it covers | Copied between |
+|---|---|---|
+| Basic | Colour, layer, linetype, linetype scale, lineweight and transparency. A ByLayer setting is copied as ByLayer. | Any objects |
+| Text | Height, justification, font, text style, width factor, line spacing and attachment; for leaders, the arrowhead type and size and the label colour. | Single-line text, MTEXT, leaders and multileaders |
+| Dimension | Arrowhead type and size, dimension line colour, extension line colour, text height, text colour, text placement, precision and text fit. | Dimensions |
+| Hatch | Pattern, scale and angle. | Hatches |
+| Polyline | The width of all segments. | Polylines |
+
+The words of a text, its rotation and the width of an MTEXT box are never copied, and neither is the shape or position of anything.
+
+## The Property Settings window
+
+Type `S` at **Select destination object(s)** to open it. Every box is ticked at first. Untick a property to stop it being copied, then click **OK**. **Cancel** keeps the settings as they were. Musa CAD remembers your choice for next time.
+
+- **Basic Properties:** **Color**, **Layer**, **Lineweight**, **Linetype**, **Linetype Scale**, **Plot Style**, **Transparency**, **Thickness**.
+- **Special Properties:** **Dimension**, **Text**, **Hatch**, **Polyline**, **Viewport**, **Table**, **Material**, **Shadow display**, **Multileader**, **Center object**.
+
+Some boxes are greyed out, with the tip `Not yet applicable in Musa CAD`: **Plot Style**, **Transparency**, **Thickness**, **Polyline**, **Viewport**, **Material**, **Shadow display** and **Center object**.
+
+## Good to know
+
+- Each click or window is one undo step, so [U](/reference/commands/u/) takes back the last one.
+- Objects on locked, frozen or turned-off layers are skipped. Clicking the source object itself does nothing.
+- If nothing you picked could take any of the ticked properties, Musa CAD says `Nothing to match.`
+- A click on empty space as the source says `MATCHPROP: no source object found.`
+- Transparency and a polyline's width are copied even though their boxes are greyed out, because those boxes stay ticked.
+- The **Table** and **Multileader** boxes do not change anything yet. A multileader's text properties follow the **Text** box.
+- <kbd>Esc</kbd> ends the command. The changes you already made stay.
+
+## Compared with AutoCAD
+
+MATCHPROP shows AutoCAD's `Current active settings:` line and the same Basic and Special Properties in its Settings window. The ones Musa CAD does not have yet, such as Plot Style, Material and Viewport, are shown but greyed out.
+
+## Next
+
+- Change properties directly in the [PROPERTIES](/reference/commands/properties/) palette.
+- Change a property at the command line with [CHPROP](/reference/commands/chprop/).
+- Organise objects on layers with [LAYER](/reference/commands/layer/), and read [Organising your drawing](/user-manual/organising/).

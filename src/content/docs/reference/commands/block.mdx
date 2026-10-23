@@ -1,15 +1,66 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "BLOCK"
-description: "The BLOCK (B, -BLOCK) command in Musa CAD: Make the selection a block definition (replaced by an insert). How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The BLOCK (B) command in Musa CAD turns selected objects into a named block that you can insert again and again. How to name it, choose its base point, which objects it can hold, and what replaces the originals."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "BLOCK"
-tableOfContents: false
 ---
+
+BLOCK turns a group of objects into a block: a named, reusable symbol such as a door, a bolt or a title block. Once a block exists, you can place copies of it anywhere with [INSERT](/reference/commands/insert/). Each copy is a single object, and changing the block's definition changes every copy.
+
+## How it works
+
+Type `B` and press <kbd>Enter</kbd>. Give the block a name, click its base point, then select the objects and press <kbd>Enter</kbd>.
+
+```musacad
+Command: B
+Enter block name or [?]: HOUSE
+Specify insertion base point: (click the lower-left corner)
+Select objects: (pick the objects) ↵
+Block "HOUSE" defined with 3 objects.
+```
+
+The selected objects are taken into the block, and one block reference takes their place, exactly where they were. That reference is left selected. The drawing looks the same, but the objects now move, copy and erase as one.
+
+The base point is the point of the block that lands on the spot you click when you insert it later. A corner or a centre is usually the easiest to place.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| `?` | At the name prompt, lists the blocks in the drawing, such as `Blocks: "DOOR" "HOUSE"`, or says `No blocks defined.` |
+| `ALL` | At **Select objects**, selects every object. |
+| <kbd>Enter</kbd> at **Select objects** | Makes the block from what is selected. If you selected objects before starting BLOCK, they are still selected, so <kbd>Enter</kbd> uses them. |
+
+At **Select objects** you can click objects one by one or drag a window around them, as at any selection prompt.
+
+## What a block can hold
+
+Lines, circles, arcs, polylines, text, multiline text, other blocks and attribute definitions can go into a block. An attribute definition made with [ATTDEF](/reference/commands/attdef/) becomes an attribute: INSERT asks for its value each time.
+
+Points, ellipses, splines, hatches, dimensions, leaders, multileaders, tables, images, construction lines, multilines and geometric tolerances cannot go into a block yet. If your selection has some, they stay in the drawing as they are, and the message adds how many, such as `(2 unsupported left in place)`.
+
+## Good to know
+
+- With no name, Musa CAD says `A block name is required.` and asks again.
+- With nothing selected when you press <kbd>Enter</kbd>, Musa CAD says `Nothing selected.` and the command ends.
+- If none of the selected objects can go into a block, Musa CAD says `Block: none of the selected objects can go into a block yet (lines, circles, arcs, polylines, text, mtext and inserts can).`
+- A name that is already a block is redefined without asking first: Musa CAD says `Block "HOUSE" redefined with 3 objects.`, and every copy of that block in the drawing changes to the new objects.
+- Block names are case-sensitive: `HOUSE` and `house` are two different blocks.
+- The block takes the drawing's units. When it is inserted into a drawing in other units, it is scaled to match.
+- `-BLOCK` is the same command.
+
+## Compared with AutoCAD
+
+In Musa CAD, BLOCK and -BLOCK are the same command and both ask at the command line. The selected objects are always replaced by a block reference in place, and a name already in use is redefined without asking. Some kinds of object, such as hatches and dimensions, cannot go into a block yet.
+
+## Next
+
+- Place copies of the block with [INSERT](/reference/commands/insert/).
+- Change a block's objects with [BEDIT](/reference/commands/bedit/), or save it as a drawing file of its own with [WBLOCK](/reference/commands/wblock/).
+- Add text that changes from copy to copy with [ATTDEF](/reference/commands/attdef/).

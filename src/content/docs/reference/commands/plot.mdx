@@ -1,15 +1,89 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "PLOT"
-description: "The PLOT (PRINT) command in Musa CAD: Plot or print the drawing to paper or PDF. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The PLOT (PRINT) command in Musa CAD prints the drawing to a printer or a PDF file. How to choose the paper, the area, the scale or Fit to paper, lineweights and black-and-white plot styles, and preview first."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "PLOT"
-tableOfContents: false
 ---
+
+PLOT prints your drawing, on paper or into a PDF file. In CAD, printing is called plotting. You choose the sheet, which part of the drawing to print, and at what scale, then send it.
+
+## How it works
+
+Type `PLOT`, or `PRINT`, and press <kbd>Enter</kbd>. <kbd>Ctrl</kbd>+<kbd>P</kbd> does the same. The **Plot** window opens and the command ends.
+
+1. Choose a **Printer/plotter**: **PDF File…** or one of your printers.
+2. Choose the **Paper size** and **Orientation**.
+3. Choose the **Plot area** and the **Scale**.
+4. Click **Preview…** to check the page.
+5. Click **Plot**. For a PDF, Musa CAD asks where to save the file.
+
+```musacad
+Command: PLOT
+(click Plot, then choose a name for the PDF)
+Plotted to PDF: /home/you/drawings/bracket.pdf
+```
+
+When you plot to a printer, Musa CAD says `Sent to printer:` and the printer's name instead.
+
+## The Plot window
+
+| Part | What it does |
+|---|---|
+| **Printer/plotter** | **PDF File…** writes a PDF. The other entries are the printers installed on your computer. |
+| **Paper size** | **ISO A4**, **ISO A3**, **ISO A2**, **ISO A1**, **ISO A0**, **ANSI A (Letter)** or **ANSI B (Tabloid)**. |
+| **Orientation** | **Landscape** or **Portrait**. Musa CAD picks the one that suits the drawing's shape when the window opens. |
+| **Plot area** | Which part of the drawing to plot. **Display** is what you see on screen now. **Extents** is everything in the drawing. **Window** is a rectangle you choose. |
+| **Pick Window &lt;** | Closes the window so you can drag a rectangle in the drawing. The Plot window then comes back with **Window** chosen. Press <kbd>Esc</kbd> to come back without changing anything. |
+| **Fit to paper** | Scales the plot area so it fills the sheet. Quick, but not to any scale. Untick it to set a scale. |
+| **Scale** | How many millimetres (or inches) on paper equal how many drawing units. `1` mm = `5` units plots at 1:5. Musa CAD switches to inches for the ANSI sheets. |
+| **Center the plot** | Puts the plot in the middle of the sheet. |
+| **Offset** | With **Center the plot** unticked, the plot starts at the top-left corner of the sheet, moved right by **X** and down by **Y**. |
+| **Plot object lineweights** | Ticked, each line plots at its lineweight in millimetres on the paper, whatever the scale. Unticked, every line plots as a thin hairline. |
+| **Plot style (CTB)** | **None** plots the colours as they are. **Monochrome (all black)** plots everything black. **Grayscale** turns each colour into a shade of grey. |
+| **Copies** | How many copies to print. It is used only for printers. |
+| **Page setup** | Pick a saved page setup to fill in all these settings at once. **Save As…** saves the settings you have now under a name, kept in the drawing. |
+| **Preview…** | Shows the page as it will come out. |
+| **Plot** | Plots, and closes the window. |
+| **Cancel** | Closes the window without plotting. |
+
+## Preview
+
+**Preview…** opens the **Plot Preview** window with a picture of the sheet. **Zoom In**, **Zoom Out** and **Fit** change how big it looks, and you can drag to move around. **Close** shuts it.
+
+[PREVIEW](/reference/commands/preview/) opens the same window from the command line, with the settings of your last plot.
+
+## Plotting to PDF
+
+Choose **PDF File…** as the **Printer/plotter** and click **Plot**. Musa CAD asks for a file name in the **Plot to PDF** window and adds `.pdf` if you leave it off. The PDF is real vector output, not a picture, so it stays sharp when you zoom in.
+
+To make a PDF without opening the Plot window, use [EXPORTPDF](/reference/commands/exportpdf/). To put several layouts into one PDF, use [PUBLISH](/reference/commands/publish/). To plot from a script or a server, with no window at all, run `musacad --plot`; see [The command line](/scripting/command-line/).
+
+## Plotting a layout
+
+In a layout, PLOT starts from the layout's own sheet: its paper size, the whole sheet as the plot area, at 1:1. Whatever the layout's viewports show is plotted with it. Set up a layout's paper with [PAGESETUP](/reference/commands/pagesetup/).
+
+## Good to know
+
+- Layers that are off or frozen are not plotted. Neither are layers with **Plot** unticked in [LAYER](/reference/commands/layer/).
+- Lines that are white or nearly white plot black, so they show on white paper.
+- The Plot window starts from the settings of your last plot, until you close Musa CAD. Save them as a page setup to keep them with the drawing.
+- With **Extents** and an empty drawing, Musa CAD says `Nothing to plot.`
+- If the chosen area is empty or off the drawing, Musa CAD says `Plot: the chosen area was empty or off the drawing -- using Extents instead.` and plots everything.
+- Before each plot, Musa CAD prints a line that starts with `[plot-spec]` and lists the settings used. It helps if you ever need to report a plotting problem.
+- If the plot does not look the way you expect, see [A plot or PDF looks wrong](/troubleshooting/plot-looks-wrong/).
+
+## Compared with AutoCAD
+
+The **Plot style (CTB)** list has three built-in styles instead of CTB files that you load or edit. Like AutoCAD, Musa CAD sets the scale in inches for the ANSI sheets and in millimetres for the ISO ones.
+
+## Next
+
+- Save named plot settings with [PAGESETUP](/reference/commands/pagesetup/).
+- Lay out sheets with title blocks and scaled viewports in [Layouts, viewports and plotting](/user-manual/layouts-and-plotting/).
+- Plot from a script or a build server with [The command line](/scripting/command-line/).

@@ -1,15 +1,177 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "ARRAY"
-description: "The ARRAY (AR) command in Musa CAD: Create a rectangular, path or polar pattern of copies. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The ARRAY (AR) command in Musa CAD makes many copies of selected objects in a pattern: rows and columns, around a centre, or along a path. How to choose the type, change counts and spacing, and finish the array."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "ARRAY"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+ARRAY makes many copies of objects in a regular pattern. It has three types: **Rectangular** puts copies in rows and columns, **Polar** puts them around a centre, and **Path** spaces them along a line or curve.
+
+## How it works
+
+Type `AR` and press <kbd>Enter</kbd>. Select the objects and press <kbd>Enter</kbd>. Choose the type; <kbd>Enter</kbd> means Rectangular. Musa CAD draws the array straight away with default settings, as a preview. Answer the `Select grip to edit array` question by typing an option to change the array, and the preview follows each change. Press <kbd>Enter</kbd> to make the array.
+
+```musacad
+Command: AR
+Select objects: (pick the circle)
+1 found.
+Select objects: ↵
+Enter array type [Rectangular/PAth/POlar] <Rectangular>: ↵
+Type = Rectangular  Associative = No
+Select grip to edit array or [ASsociative/Base point/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: ↵
+Array created: 11 copies.
+```
+
+<Figure id="cmd-array" alt="Three examples side by side. Rectangular: twelve circles in 4 columns and 3 rows, the lower-left one black and the rest blue. Polar: six small rectangles evenly spaced around a centre cross, each turned to face outward, the top one black. Path: a black arc with five blue circles spread evenly along it from end to end, and the original black circle off to the left, labelled original." caption="A rectangular array with its defaults, a polar array with its default six items, and a path array set to Divide with five items." />
+
+The original objects stay where they are. In rectangular and polar arrays they are the first item, so 4 columns and 3 rows make 11 copies. The copies are ordinary, separate objects.
+
+You can also start each type directly, without the type question, with [ARRAYRECT](/reference/commands/arrayrect/), [ARRAYPOLAR](/reference/commands/arraypolar/) or [ARRAYPATH](/reference/commands/arraypath/). They ask the same questions as the matching type here.
+
+## Options
+
+These are the answers to the type question, and the options all three types share.
+
+| Option | What it does |
+|---|---|
+| **Rectangular** (`R`) | Rows and columns. <kbd>Enter</kbd> at the type question picks this. |
+| **PAth** (`PA`) | Copies along a path you pick. A plain `P` is refused with `Ambiguous: enter PA for path or PO for polar.` |
+| **POlar** (`PO`) | Copies around a centre point. |
+| **ASsociative** (`AS`) | Asks `Create associative array [Yes/No] <No>:`. Musa CAD always makes separate copies; answering Yes says `Associative arrays are not made yet: the items are separate copies.` |
+| **Base point** (`B`) | Asks for the point on the selected objects that the pattern is placed by. See [Path arrays](#path-arrays). **Key point** (`K`) asks you to click a point on the objects. |
+| **Levels** (`L`) | Asks for the number of levels and the distance between them. Levels stack copies upward in 3D, so a 2D drawing keeps one; a number above 1 says `Levels stack the array in Z: a 2D drawing keeps one level.` |
+| **eXit** (`X`) | Makes the array and ends the command. <kbd>Enter</kbd> does the same. |
+
+Type at least the capital letters of an option, such as `COU` for **COUnt**. Anything Musa CAD does not recognise is answered with `Pick an option, or Enter to make the array.`
+
+## Rectangular arrays
+
+The default is 4 columns and 3 rows. The space between them is one and a half times the size of what you selected: for a circle 8 across, 12 from one centre to the next.
+
+```musacad
+Select grip to edit array or [ASsociative/Base point/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: COU
+Enter the number of columns or [Expression] <4>: 5
+Enter the number of rows or [Expression] <3>: 2
+Select grip to edit array or [ASsociative/Base point/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: S
+Specify the distance between columns or [Unit cell] <12.0000>: 20
+Specify the distance between rows <12.0000>: 15
+Select grip to edit array or [ASsociative/Base point/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: ↵
+Array created: 9 copies.
+```
+
+| Option | What it does |
+|---|---|
+| **COUnt** (`COU`) | Asks for the number of columns, then the number of rows. |
+| **Spacing** (`S`) | Asks for the distance between columns, then between rows. **Unit cell** (`U`) at the first question asks for two corners of a box instead: its width and height become the two distances. |
+| **COLumns** (`COL`) | Asks for the number of columns, then the distance between them. **Total** (`T`) lets you give the distance from the first column to the last instead. |
+| **Rows** (`R`) | Asks for the number of rows, the distance between them (or **Total**), and then an elevation between rows. The elevation is a 3D height, so it changes nothing in a 2D drawing. |
+
+Columns run to the right and rows go up. Give a negative distance to build the array to the left or downward.
+
+## Polar arrays
+
+A polar array asks for the centre first. By default it makes 6 items, counting the original, evenly spaced around a full circle, and each copy is turned as it goes round.
+
+```musacad
+Command: AR
+Select objects: (pick the small rectangle)
+1 found.
+Select objects: ↵
+Enter array type [Rectangular/PAth/POlar] <Rectangular>: PO
+Type = Polar  Associative = No
+Specify center point of array or [Base point/Axis of rotation]: (click the centre)
+Select grip to edit array or [ASsociative/Base point/Items/Angle between/Fill angle/ROWs/Levels/ROTate items/eXit]<eXit>: I
+Enter number of items in array or [Expression] <6>: 8
+Select grip to edit array or [ASsociative/Base point/Items/Angle between/Fill angle/ROWs/Levels/ROTate items/eXit]<eXit>: ↵
+Polar array created: 7 copies.
+```
+
+| Option | What it does |
+|---|---|
+| **Items** (`I`) | The number of items, counting the original. |
+| **Angle between** (`A`) | The angle from one item to the next. Musa CAD works out how far round the array goes from it. |
+| **Fill angle** (`F`) | How far round the items go: 360 for a full circle, less for part of one. A positive angle goes counter-clockwise, a negative one clockwise. On a full circle the items are spread evenly with no item doubled at the end; on part of a circle, the first and last items sit at the two ends. |
+| **ROWs** (`ROW`) | More rings of copies, each one further out from the centre. Asks for the number of rows, the distance between them (or **Total**), and an elevation that a 2D drawing ignores. |
+| **ROTate items** (`ROT`) | **Yes**, the default, turns each copy as it goes round, so it faces the centre the same way the original does. **No** keeps every copy facing the way the original is drawn. |
+| **Axis of rotation** (`A`) at the centre question | Not used in 2D. Musa CAD says `An axis of rotation is for 3D: a 2D array turns about a centre point.` |
+
+## Path arrays
+
+A path array asks you to click the path: a line, arc, circle, polyline or other curve. The path stays in the drawing and must not be one of the selected objects.
+
+```musacad
+Command: AR
+Select objects: (pick the circle)
+1 found.
+Select objects: ↵
+Enter array type [Rectangular/PAth/POlar] <Rectangular>: PA
+Type = Path  Associative = No
+Select path curve: (click the arc)
+Select grip to edit array or [ASsociative/Method/Base point/Tangent direction/Items/Rows/Levels/Align items/Z direction/eXit]<eXit>: M
+Enter path method [Divide/Measure] <Measure>: D
+Select grip to edit array or [ASsociative/Method/Base point/Tangent direction/Items/Rows/Levels/Align items/Z direction/eXit]<eXit>: I
+Enter number of items along path or [Expression] <2>: 5
+Select grip to edit array or [ASsociative/Method/Base point/Tangent direction/Items/Rows/Levels/Align items/Z direction/eXit]<eXit>: ↵
+Path array created: 5 copies along the path.
+```
+
+Unlike the other two types, every item along the path is a new copy, starting at the beginning of the path. The original stays where it was. By default the middle of the selected objects goes onto the path; use **Base point** to choose another point.
+
+| Option | What it does |
+|---|---|
+| **Method** (`M`) | **Measure**, the default, places an item at every set distance from the start of the path. **Divide** spreads a number of items evenly over the whole path; on an open path the first and last items sit on its two ends. |
+| **Items** (`I`) | With Measure: asks for the distance between items, then how many, or **Fill entire path** (`F`) for as many as fit. With Divide: asks how many items, at least 2. |
+| **Align items** (`A`) | **Yes**, the default, turns each copy to follow the curve. The first copy keeps the direction you drew. **No** keeps every copy as drawn. |
+| **Base point** (`B`) | The point on the selected objects that goes onto the path. <kbd>Enter</kbd> keeps the middle of the objects. |
+| **Tangent direction** (`T`) | Accepted, but the items keep the direction they have at the start of the path. |
+| **Rows** (`R`) | Not available: Musa CAD says `A path array here has one row.` |
+| **Z direction** (`Z`) | A 3D setting. It changes nothing in a 2D drawing. |
+
+The default distance in Measure is one and a half times the width of what you selected.
+
+## Typing values with Expression
+
+Every question that asks for a number, a distance or an angle also takes **Expression** (`E`). Musa CAD asks `Enter an expression:`, and you can type a sum such as `2*3` or `100/4`.
+
+## Selecting objects
+
+At `Select objects:` you build up the set of objects to copy. Each pick or window adds to it, and Musa CAD says how many it found, such as `1 found.` or `2 found, 5 total.`
+
+- **Click** an object to add it.
+- **Click an empty spot, then click again** to draw a box. Going from left to right makes a window: it takes only objects that lie completely inside. Going from right to left makes a crossing window: it also takes objects that only touch it.
+- **Press and drag** to draw a free shape, called a lasso. Start dragging to the right for a window, to the left for a crossing.
+- Hold <kbd>Shift</kbd> and **click** a selected object to take it out again.
+- Press <kbd>Enter</kbd>, or right-click, when the set is complete. If nothing is selected, ARRAY ends.
+
+If objects are already selected when you start ARRAY, it uses them and goes straight to the type question. You can also type a keyword at `Select objects:`, such as `ALL` for everything or `P` for the objects the last edit worked on. [SELECT](/reference/commands/select/) lists them all.
+
+## Good to know
+
+- A count must be a whole number of 1 or more, or Musa CAD says `Requires a positive integer.` A distance that is not a number says `Requires a number.`
+- A fill angle of 0, or more than 360 either way, is refused with `Requires an angle between -360 and 360, not 0.`
+- On a full circle, the **Fill angle** question shows the default as `<0>`. Pressing <kbd>Enter</kbd> there keeps the full circle.
+- In Measure, a distance of 0 or less says `Requires a positive distance.` In Divide, fewer than 2 items says `Requires an integer of 2 or more.`
+- **Base point** is asked for all three types, but in version 0.8.0 it only changes path arrays.
+- Nothing is remembered between runs. Every array starts from the defaults.
+- A 1 by 1 rectangular array adds nothing and says `Array: a 1x1 array adds nothing.` A polar array of 1 item says `Polar array: need at least two items.`
+- For a path array, clicking where there is no curve says `Path array: no curve under the pick.` Selecting the path itself says `Path array: the path curve is part of the selection. Deselect it first.`
+- One array is one undo step. <kbd>Esc</kbd> removes the preview and makes nothing.
+- Objects on layers that are off, frozen or locked cannot be selected.
+
+## Compared with AutoCAD
+
+ARRAY asks AutoCAD's questions, including `PA` for Path and `PO` for Polar. Musa CAD's arrays are not associative: they are ordinary separate copies, as AutoCAD's own -ARRAY makes, so there is no ARRAYEDIT or ARRAYCLOSE. Levels, row elevation and Z direction are accepted for AutoCAD habits but do nothing in 2D.
+
+## Next
+
+- Ask the classic array questions at the command line, without a preview, with [-ARRAY](/reference/commands/dash-array/).
+- Start a type directly with [ARRAYRECT](/reference/commands/arrayrect/), [ARRAYPOLAR](/reference/commands/arraypolar/) or [ARRAYPATH](/reference/commands/arraypath/).
+- Place a few copies in a row by hand with the **Array** option of [COPY](/reference/commands/copy/).

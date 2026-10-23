@@ -1,15 +1,72 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "TEXTEDIT"
-description: "The TEXTEDIT (ED, DDEDIT) command in Musa CAD: Edit the contents of an existing text object. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The TEXTEDIT (ED, DDEDIT) command in Musa CAD replaces the words of text you already placed: single-line text, MTEXT, leader labels and table cells. How to edit one or many, undo an edit, and edit by double-click."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "TEXTEDIT"
-tableOfContents: false
 ---
+
+TEXTEDIT changes the words of text that is already in the drawing. It works on single-line text, paragraph text (MTEXT), the label of a leader or multileader, and a cell of a table. Only the words change; the text keeps its layer, position, height and other properties.
+
+## How it works
+
+Type `ED` and press <kbd>Enter</kbd>. Musa CAD shows the edit mode. Click the text you want to change, type the new words and press <kbd>Enter</kbd>. The new words replace all of the old ones. In Multiple mode, which is where Musa CAD starts, it then asks for the next text. Press <kbd>Enter</kbd> when you are done.
+
+```musacad
+Command: ED
+Current settings: Edit mode = Multiple
+Select an annotation object or [Undo/Mode]: (click the text)
+Enter new text: SCALE 1:10
+Text edited.
+Select an annotation object or [Undo/Mode]: (click another text)
+Enter new text: DRAWN BY P. KIRAN
+Text edited.
+Select an annotation object or [Undo/Mode]: ↵
+```
+
+The text codes work here too, such as `%%c` for ⌀ and `%%d` for °. See [Text codes](/reference/commands/text/#text-codes) on the TEXT page.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Undo** (`U`) | Takes back the last edit made in this TEXTEDIT. If there is none, Musa CAD says `Nothing to undo.` |
+| **Mode** (`M`) | Asks `Enter a text edit mode option [Single/Multiple] <Multiple>:`. **Single** edits one text and ends the command. **Multiple** keeps asking for the next text until you press <kbd>Enter</kbd>. |
+| <kbd>Enter</kbd> at **Select an annotation object** | Ends the command. |
+
+The mode is kept for next time. It is the [TEXTEDITMODE](/reference/system-variables/texteditmode/) setting: `0` for Multiple, `1` for Single.
+
+## Editing by double-click
+
+When no command is running, double-click a text. A small window opens with the current words already in it, codes and all.
+
+- For single-line text and table cells, the window is called **Edit Text**. It has one line; press <kbd>Enter</kbd> or click **OK** to save.
+- For paragraph text and leader labels, the window is called **Edit MText**. It has a larger box where <kbd>Enter</kbd> starts a new line. Click **OK** to save.
+
+Click **Cancel**, or press <kbd>Esc</kbd>, to leave the text as it was. Each change is one undo step.
+
+When you select text, the ribbon also shows a **Text Editor** tab. Its **Edit Text** button starts TEXTEDIT.
+
+## Good to know
+
+- At `Enter new text:` you type one line. For paragraph text this replaces the whole paragraph with that line. To keep or add line breaks, double-click the text and use the **Edit MText** window instead.
+- Musa CAD looks for the nearest text around the point you click. If there is none there, it says `No editable text there.` and nothing changes.
+- Text on a locked, frozen or turned-off layer cannot be edited.
+- In a table, the click picks the cell under it. Musa CAD says `Table cell edited.` If the click lands on a border rather than in a cell, it says `Pick inside a cell to edit it.`
+- Each edit is its own undo step, so [U](/reference/commands/u/) after TEXTEDIT takes back one edit at a time.
+- <kbd>Esc</kbd> ends the command. Edits already made stay.
+
+## Compared with AutoCAD
+
+TEXTEDIT keeps the names AutoCAD users know: DDEDIT as an alias, the TEXTEDITMODE setting, and Single and Multiple modes. In Musa CAD the new words are typed at the command line, and double-clicking opens a small window to edit in, not an editor on the drawing itself.
+
+## Next
+
+- Place single-line text with [TEXT](/reference/commands/text/).
+- Place a paragraph with [MTEXT](/reference/commands/mtext/).
+- Find and replace words across the whole drawing with [FIND](/reference/commands/find/).

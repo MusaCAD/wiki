@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
 title: User manual
-description: How to draft with Musa CAD, organised by what you are doing, from drawing and editing to dimensions, layers, layouts and printing.
+description: How to draft with Musa CAD, organised by what you are doing. Drawing, modifying, precise input, annotation, layers and blocks, layouts and plotting, files, settings and customising.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
-status: partial
+status: complete
 kind: landing
 sidebar:
   label: Overview
@@ -17,24 +17,17 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 The user manual is organised by what you are trying to do, not by menu. Each chapter explains how the tools for one job fit together, and links to the [command reference](/reference/) for every detail of each command.
 
-The manual is being written chapter by chapter. Until a chapter exists, the command reference already has a page for every command, with its prompt, its aliases and where it is on the ribbon.
-
-## Ready now
+New to Musa CAD? Start with [Your first drawing](/get-started/first-drawing/), then read the chapters in order. Each one builds on the one before.
 
 <CardGrid>
+  <LinkCard title="Drawing" description="How commands and prompts work, and the tools for lines, polylines, circles, arcs, curves and hatches." href="/user-manual/drawing/" />
+  <LinkCard title="Modifying" description="Selecting objects, grips, moving and copying, trimming and filleting, properties, undo." href="/user-manual/modifying/" />
+  <LinkCard title="Precision and drafting aids" description="Typed coordinates, object snaps, FROM and tracking, ortho, polar, grid and snap, measuring." href="/user-manual/precision/" />
   <LinkCard title="Dynamic Input" description="Type commands, options and exact sizes right at the cursor. The fastest way to draw in Musa CAD." href="/user-manual/dynamic-input/" />
+  <LinkCard title="Annotation" description="Text and symbols, dimensions and dimension styles, leaders, tables and GD&T." href="/user-manual/annotation/" />
+  <LinkCard title="Organising a drawing" description="Layers, colours, linetypes and lineweights, blocks and attributes, external references and groups." href="/user-manual/organising/" />
+  <LinkCard title="Layouts, viewports and plotting" description="Sheets, viewports at a scale, page setups, the Plot window and PDF output." href="/user-manual/layouts-and-plotting/" />
+  <LinkCard title="Working with files" description="Opening and saving, drawing tabs, copying between drawings, DXF, DWG and PDF." href="/user-manual/files/" />
+  <LinkCard title="Settings and system variables" description="The settings windows, system variables, and where your own settings are kept." href="/user-manual/settings/" />
+  <LinkCard title="Customising" description="Your own shortcuts and aliases, your acad.pgp, workspaces and palettes." href="/user-manual/customising/" />
 </CardGrid>
-
-## Coming next
-
-<ul class="mc-planned">
-  <li>Drawing <span>lines, circles, polylines and more</span></li>
-  <li>Modifying <span>move, trim, fillet, offset, array</span></li>
-  <li>Precision and drafting aids <span>snaps, tracking, ortho</span></li>
-  <li>Annotation <span>text, dimensions, leaders, tables, GD&amp;T</span></li>
-  <li>Organising a drawing <span>layers, blocks, xrefs, groups</span></li>
-  <li>Layouts, viewports and plotting</li>
-  <li>Working with files and other CAD programs</li>
-  <li>Settings and system variables</li>
-  <li>Customising <span>shortcuts, aliases, workspaces</span></li>
-</ul>

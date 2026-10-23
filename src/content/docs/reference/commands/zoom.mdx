@@ -1,15 +1,75 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "ZOOM"
-description: "The ZOOM (Z) command in Musa CAD: Zoom in or out to change the view magnification. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The ZOOM (Z) command in Musa CAD makes the drawing look bigger or smaller on screen without changing its size. Zoom to a window, to everything, back to the last view, by a factor, and with the mouse wheel."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "ZOOM"
-tableOfContents: false
 ---
+
+ZOOM changes how much of the drawing you see. Zooming in makes things look bigger so you can work on details; zooming out shows more of the drawing. It only changes the view: nothing in the drawing moves or changes size.
+
+## How it works
+
+Most of the time you zoom with the mouse wheel, without any command. Roll the wheel forward to zoom in and back to zoom out. The point under the cursor stays where it is, so point at what you want to look at. Hold the wheel down, or the middle button, and drag to move the view.
+
+For an exact view, type `Z` and press <kbd>Enter</kbd>, then choose an option. ZOOM ends as soon as the view has changed.
+
+```musacad
+Command: Z
+Specify corner of window, enter a scale factor (nX or nXP), or [All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>: E
+Zoom extents.
+```
+
+To zoom into an area, click one corner of it at the first prompt, then the other:
+
+```musacad
+Command: Z
+Specify corner of window, enter a scale factor (nX or nXP), or [All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>: (click one corner)
+Specify opposite corner: (click the other corner)
+```
+
+## Options
+
+| Option | What it does |
+|---|---|
+| A point | Clicking, or typing a point such as `10,10`, starts a window at once. Musa CAD asks `Specify opposite corner:` and fills the screen with that rectangle. |
+| `nX` | A factor against the view you have now. `2x` makes everything look twice as big, `0.5x` half as big. Musa CAD says, for example, `Zoom 2.0000x.` `nXP` does the same. |
+| `n` | A number without X is a factor against the drawing [LIMITS](/reference/commands/limits/). `1` fits the limits to the screen, `2` shows them twice as big. |
+| **All** (`A`) | Fits everything in the drawing on screen. It does the same as **Extents**. |
+| **Center** (`C`) | Asks `Specify center point:`, then `Enter magnification or height`. Type a height in drawing units to show that much from top to bottom, or a factor such as `2x`. The brackets show the height you see now; <kbd>Enter</kbd> keeps it and just centres the view on the point. |
+| **Dynamic** (`D`) | Not available. Musa CAD says `Dynamic zoom is not available; specify a window.` and asks for a window instead. |
+| **Extents** (`E`) | Fits everything in the drawing on screen, with a margin of a tenth of its size on each side. Musa CAD says `Zoom extents.` |
+| **Previous** (`P`) | Goes back to the view before the last ZOOM or [-PAN](/reference/commands/dash-pan/). It remembers ten views. With none left, it says `No previous view saved.` |
+| **Scale** (`S`) | Asks `Enter a scale factor (nX or nXP):` and takes `nX` or `n` as above. |
+| **Window** (`W`) | Asks `Specify first corner:` and `Specify opposite corner:`, then fills the screen with that rectangle. |
+| **Object** (`O`) | Not available yet. Musa CAD says `Zoom Object is not available yet; specify a window.` and asks for a window instead. |
+| <kbd>Enter</kbd> | At the first prompt, ends the command. Use the mouse wheel to zoom freely. |
+
+## Other ways to zoom
+
+- The **View** tab of the ribbon has a **Zoom** button with **Zoom Extents**, **Zoom All**, **Zoom In**, **Zoom Out** and **Zoom Scale** in its menu.
+- [NAVBAR](/reference/commands/navbar/) shows a bar at the right edge of the drawing with **Zoom Extents**, **Zoom Window**, **Zoom Previous**, **Zoom In** and **Zoom Out**.
+- With the drawing split into tiles by [VPORTS](/reference/commands/vports/), the wheel zooms the tile under the cursor.
+
+## Good to know
+
+- Each notch of the wheel zooms by a factor of 1.2.
+- **Previous** only goes back through views set by ZOOM and -PAN. Zooming with the wheel and dragging the view are not remembered.
+- A typed factor must be more than 0. Anything ZOOM cannot read is answered with `Requires a point, a scale factor (nX or nXP), or an option keyword.`
+- In a layout, after [MSPACE](/reference/commands/mspace/) takes you into a viewport, ZOOM sets that viewport's view and so its scale.
+- Zooming is not an edit, so [U](/reference/commands/u/) does not undo it. Use **Previous**.
+
+## Compared with AutoCAD
+
+ZOOM has AutoCAD's prompt and options, but **Dynamic** and **Object** fall back to a window, and **All** fits the drawing's extents just as **Extents** does. Pressing <kbd>Enter</kbd> for `<real time>` ends the command, because the mouse wheel already zooms in real time.
+
+## Next
+
+- Move the view without zooming with [PAN](/reference/commands/pan/).
+- Save a view by name and come back to it with [VIEW](/reference/commands/view/).
+- Get to know the drawing area, the ribbon and the status bar in [A tour of the interface](/get-started/interface-tour/).

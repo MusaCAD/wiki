@@ -1,15 +1,79 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "CIRCLE"
-description: "The CIRCLE (C) command in Musa CAD: Draw a circle by centre and radius or diameter, two or three points, or tangent to objects. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The CIRCLE (C) command in Musa CAD draws a circle from a centre and a radius or diameter, through two or three points, or touching two or three objects. How each method works, with its prompts and messages."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "CIRCLE"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+CIRCLE draws a circle. Most of the time you give the centre and the radius, but you can also draw a circle through points, or one that just touches other objects.
+
+## How it works
+
+Type `C` and press <kbd>Enter</kbd>. Click the centre, or type it. Then type the radius and press <kbd>Enter</kbd>, or click a point on the circle. Musa CAD draws the circle, tells you its radius, and the command ends.
+
+```musacad
+Command: C
+Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 50,50
+Specify radius of circle or [Diameter]: 20
+Circle: radius 20.0000
+```
+
+Next time, Musa CAD offers the last radius as the default, shown in angle brackets: `Specify radius of circle or [Diameter] <20.0000>:`. Press <kbd>Enter</kbd> to use it again.
+
+<Figure id="cmd-circle" alt="Four blue circles side by side, with the points picked for each shown as small numbered circles. Center, radius: 1 at the centre and 2 on the circle. 2P: 1 and 2 at the two ends of a diameter. 3P: 1, 2 and 3 spread around the circle. Ttr, radius 12: a horizontal and a vertical line meet at a corner, and a circle of radius 12 touches both, with 1 picked on the horizontal line and 2 on the vertical one." caption="The four common ways to place a circle." />
+
+With [Dynamic Input](/user-manual/dynamic-input/) on, a box for the radius appears beside the circle as you move the cursor. Type the radius there and press <kbd>Enter</kbd>.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Diameter** (`D`) | At the radius prompt, give the diameter instead. Musa CAD asks `Specify diameter of circle:`, with twice the last radius as the default. If you click a point, its distance from the centre is the diameter. |
+| **3P** (`3P`) | Draws the circle through three points. Musa CAD asks `Specify first point on circle:`, then the second and third points. |
+| **2P** (`2P`) | Draws the circle from the two ends of a diameter: `Specify first end point of circle's diameter:`, then the second end. |
+| **Ttr** (`T`) | Tan, tan, radius. Click two objects the circle should touch, then give the radius. See below. |
+| <kbd>Enter</kbd> at the radius prompt | Uses the default, the radius of the last circle you drew. |
+
+## Circles that touch other objects
+
+A circle that just touches an object is called tangent to it. With **Ttr**, you click the two objects and then give the radius:
+
+```musacad
+Command: C
+Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: T
+Specify point on object for first tangent of circle: (click the first object)
+Specify point on object for second tangent of circle: (click the second object)
+Specify radius of circle <20.0000>: 12
+Circle: radius 12.000000
+```
+
+The objects can be lines, circles, arcs, construction lines or polyline segments. Usually more than one circle fits, so click each object near where you want the circle to touch it. Musa CAD draws the one nearest your clicks.
+
+The **Circle** list on the ribbon also has **Tan, Tan, Tan**: click three objects, and Musa CAD draws the circle that touches all three. Typing `TTT` at the first prompt does the same.
+
+## Good to know
+
+- The last radius stays as the default for the next circle until you close Musa CAD.
+- A radius of 0 or less is refused with `Value must be positive and nonzero.`
+- Pressing <kbd>Enter</kbd> at the radius prompt before you have drawn any circle says `Requires numeric distance or second point.`
+- **3P** with three points in a straight line, or **2P** with the same point twice, says `Circle does not exist.`
+- For **Ttr** and **Tan, Tan, Tan**: if no circle can touch the objects, Musa CAD says `Circle does not exist.` A click with no object under it says `No object at the pick point. Circle does not exist.` Any other kind of object says `The object must be a line, circle, arc, construction line or polyline. Circle does not exist.`
+- <kbd>Esc</kbd> cancels the command. Nothing is drawn.
+
+## Compared with AutoCAD
+
+CIRCLE has AutoCAD's methods: centre with a radius or diameter, 3P, 2P, Ttr, and Tan, Tan, Tan from the ribbon. The last radius becomes the next default, as in AutoCAD, but in Musa CAD it is not a system variable you can set.
+
+## Next
+
+- Draw part of a circle with [ARC](/reference/commands/arc/).
+- Draw an oval with [ELLIPSE](/reference/commands/ellipse/).
+- Snap to centres, tangents and quadrants in [Precision and drafting aids](/user-manual/precision/).

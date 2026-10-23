@@ -1,15 +1,75 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "MOVE"
-description: "The MOVE (M) command in Musa CAD: Move selected objects a specified distance and direction. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The MOVE (M) command in Musa CAD moves selected objects by a distance and direction. How to select objects, pick a base point and a second point, or type an exact displacement."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "MOVE"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+MOVE shifts objects to a new place without changing their size or direction. You show how far to move them with two points, or type the distance.
+
+## How it works
+
+Type `M` and press <kbd>Enter</kbd>. Select the objects and press <kbd>Enter</kbd>. Then click a base point, a point to move from, and a second point, where the base point should end up. The objects follow the cursor between the two clicks, so you can see where they will land.
+
+```musacad
+Command: M
+Select objects: (pick the plate)
+1 found.
+Select objects: (pick the hole)
+1 found, 2 total.
+Select objects: ↵
+Specify base point or [Displacement] <Displacement>: (click the lower-left corner)
+Specify second point or <use first point as displacement>: @60,0
+Moved.
+```
+
+<Figure id="cmd-move" alt="A rectangle with a circle inside, drawn dashed in grey on the left, and the same shape in blue 60 units to the right. Point 1 is the lower-left corner of the dashed shape, point 2 the lower-left corner of the blue one. An arrow between them is labelled @60,0." caption="Base point 1, second point @60,0: the objects move from the dashed place to the blue one." />
+
+The second point is measured from the base point, so `@60,0` means 60 to the right. You can also snap to an object to move something exactly onto it.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Displacement** (`D`) | Asks `Specify displacement <0.0000, 0.0000, 0.0000>:`. Type how far to move as X,Y, such as `40,10` for 40 right and 10 up. <kbd>Enter</kbd> there moves by the distance shown. |
+| <kbd>Enter</kbd> at **Specify base point** | Same as **Displacement**. |
+| <kbd>Enter</kbd> at **Specify second point** | Uses the base point's coordinates as the distance. A base point of `40,10` moves the objects 40 right and 10 up. |
+
+## Selecting objects
+
+At `Select objects:` you build up the set of objects to move. Each pick or window adds to it, and Musa CAD says how many it found, such as `1 found.` or `2 found, 5 total.`
+
+- **Click** an object to add it.
+- **Click an empty spot, then click again** to draw a box. Going from left to right makes a window: it takes only objects that lie completely inside. Going from right to left makes a crossing window: it also takes objects that only touch it.
+- **Press and drag** to draw a free shape, called a lasso. Start dragging to the right for a window, to the left for a crossing.
+- Hold <kbd>Shift</kbd> and **click** a selected object to take it out again.
+- Press <kbd>Enter</kbd>, or right-click, when the set is complete. If nothing is selected, MOVE ends.
+
+If objects are already selected when you start MOVE, it uses them and goes straight to the base point. You can also type a keyword at `Select objects:`, such as `ALL` for everything or `P` for the objects the last edit worked on. [SELECT](/reference/commands/select/) lists them all.
+
+## Good to know
+
+- MOVE remembers the last distance it moved by and offers it as the default at **Displacement**, such as `<60.0000, 0.0000, 0.0000>`. It starts at zero each time you open Musa CAD.
+- The moved objects stay selected afterwards.
+- Associative dimensions and hatches that are attached to the moved objects go with them, even if you did not select them.
+- Objects on layers that are off, frozen or locked cannot be selected.
+- One MOVE is one undo step. <kbd>Esc</kbd> before the second point cancels, and nothing moves.
+- Turn on Ortho or Polar tracking to move exactly sideways or at a set angle. You can then point the cursor and type just the distance.
+
+## Compared with AutoCAD
+
+MOVE uses the same prompts and options AutoCAD users know, including **Displacement** and <kbd>Enter</kbd> to use the first point as the distance.
+
+## Next
+
+- Leave the original in place and move a copy with [COPY](/reference/commands/copy/).
+- Move only part of an object with [STRETCH](/reference/commands/stretch/).
+- Learn every way to place points exactly in [Precision and drafting aids](/user-manual/precision/).

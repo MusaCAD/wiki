@@ -210,6 +210,7 @@ button[data-open-modal] > kbd {
 .expressive-code .frame.mc-cmd .ec-line .code span.mc-default { color: var(--mc-cmd-default) !important; }
 .expressive-code .frame.mc-cmd .ec-line .code span.mc-input { color: var(--mc-cmd-input) !important; font-weight: 600; }
 .expressive-code .frame.mc-cmd .ec-line .code span.mc-echo { color: var(--mc-cmd-echo) !important; }
+.expressive-code .frame.mc-cmd .ec-line .code span.mc-action { color: var(--mc-cmd-default) !important; font-style: italic; }
 .expressive-code .frame.mc-cmd .ec-line .code span.mc-key { color: var(--mc-cmd-default) !important; border: 1px solid var(--mc-cmd-border); border-radius: 3px; padding: 0 0.35em; font-size: 0.85em; }
 .expressive-code .frame.mc-cmd .title::before {
   content: '';

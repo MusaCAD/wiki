@@ -1,0 +1,46 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Customising
+description: Making Musa CAD work your way. Keyboard shortcuts of your own, command aliases including your AutoCAD acad.pgp, workspaces, tool palettes, and automating drawings with scripts.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Customising
+  order: 10
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+Musa CAD comes set up the way most AutoCAD users expect. When you want it closer to your own habits, these are the places to change.
+
+## Keyboard shortcuts
+
+Type `CUI` to give any command a key of your own. If the key is already used, Musa CAD tells you what uses it and asks before taking it. The [keyboard shortcuts](/reference/keyboard-shortcuts/) page lists the keys Musa CAD starts with.
+
+## Command aliases
+
+An alias is a short name that starts a command, such as `L` for LINE. Type `ALIASEDIT` to add your own, change them, or remove them.
+
+Coming from AutoCAD? Click **Load...** in that window and pick your `acad.pgp` file. Its aliases are added to yours, and your AutoCAD file is not changed. Your aliases are kept in a file of your own (see [where your settings are kept](/user-manual/settings/#where-your-own-settings-are-kept)). If you edit that file by hand, type `REINIT` to read it again.
+
+## Workspaces and palettes
+
+A **workspace** remembers how the window is arranged: the palettes, the ribbon and the Quick Access Toolbar. Save the current arrangement with WSSAVE, and switch between saved ones with WORKSPACE.
+
+The **Tool Palettes** (<kbd>Ctrl</kbd>+<kbd>3</kbd>) put commands, hatch patterns and the drawing's blocks a click away.
+
+<CommandList label="Customising commands" names={['CUI', 'ALIASEDIT', 'REINIT', 'WORKSPACE', 'WSSAVE', 'TOOLPALETTES', 'NAVBAR', 'UCSICON']} />
+
+## Automate
+
+Musa CAD has no built-in macro language yet. Instead, programs outside Musa CAD can write drawings as `.musa` files, and the `musacad` command checks and plots them without opening a window. That is enough to generate a whole drawing set from a spreadsheet or a model, and to plot hundreds of drawings in one go.
+
+See [Scripting and automation](/scripting/) for how, with working examples.
+
+## Next
+
+- Back to the [User manual](/user-manual/) overview.

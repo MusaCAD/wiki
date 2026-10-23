@@ -1,15 +1,81 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "LAYER"
-description: "The LAYER (LA) command in Musa CAD: Open the Layer Properties Manager. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The LAYER (LA) command in Musa CAD opens the Layer Properties Manager, where you add, delete and rename layers and set their colour, linetype, lineweight and visibility. Every column, button and filter."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "LAYER"
-tableOfContents: false
 ---
+
+LAYER opens the Layer Properties Manager. A layer is a named group of objects that share a colour, a linetype and a lineweight, and that you can hide, lock or leave off the plot together. In this window you make layers, choose the current one, and change how each layer looks.
+
+## How it works
+
+Type `LA` and press <kbd>Enter</kbd>. The **Layer Properties Manager** opens and the command ends at once. The window can stay open while you draw. Every change you make in it takes effect straight away, so there is no OK button. Close the window when you are done.
+
+```musacad
+Command: LA
+(click New Layer)
+Layer "Layer1" added.
+(select a layer that has objects on it, then click Delete)
+Cannot delete layer 0, the current layer, or a layer with objects.
+```
+
+To change layers by typing at the command line instead, use [-LAYER](/reference/commands/dash-layer/).
+
+## The buttons along the top
+
+| Part | What it does |
+|---|---|
+| **New Layer** | Adds a layer called `Layer1`, or the next free number. It starts white, Continuous, 0.25 mm, on and plotting. |
+| **Delete** | Deletes the layer selected in the table. Layer 0, the current layer and a layer with objects on it cannot be deleted. |
+| **Set Current** | Makes the selected layer the current layer. Everything you draw from now on goes on it. |
+| **Assign Selection** | Moves the objects selected in the drawing onto the selected layer. Musa CAD says `Moved selection to layer.` |
+| Filter list | Shows only some layers: **All**, **All Used Layers**, **Layers On**, **Layers Off**, **Frozen**, **Thawed**, **Locked** or **Unlocked**, followed by the drawing's own filters. **All Used Layers** shows the layers with objects on them, plus layer 0 and the current layer. |
+| **Invert filter** | Shows the layers the chosen filter leaves out. It has no effect with **All**. |
+| **New Property Filter** | Opens **Layer Filter Properties**. Give a **Filter name:**, a **Layer name:** pattern such as `A-*` (empty means any name), and choose **Any**, yes or no for **On:**, **Freeze:**, **Lock:** and **Plot:**. The filter is kept in the drawing. |
+| **New Group Filter** | Select some layers in the table first. This asks for a **Filter name:** and makes a filter that shows just those layers. It is kept in the drawing. |
+| **Delete Filter** | Deletes the filter chosen in the list. The built-in filters cannot be deleted. |
+| **Search for layer** | Shows only the layers whose name contains what you type. `*` and `?` work as wild cards. |
+
+## The columns
+
+Each row is one layer. Click a box or a list in a row to change that layer.
+
+| Column | What it does |
+|---|---|
+| **Name** | The layer's name. The current layer has a dot (•) in front of it. Double-click a name to rename the layer. Layer 0 cannot be renamed. |
+| **On** | Untick to hide the layer's objects. They stay in the drawing. |
+| **Frozen** | Tick to freeze the layer. Its objects are hidden. |
+| **Locked** | Tick to lock the layer. Its objects still show, but you cannot select or change them. |
+| **Color** | The coloured square shows the layer's colour. Click it to pick another in the **Layer Colour** window. |
+| **Linetype** | **Continuous**, **Dashed**, **Center**, **Hidden**, or any linetype loaded into the drawing. |
+| **Lineweight** | How thick the layer's lines are, from 0.00 mm to 2.00 mm. |
+| **Plot** | Untick to leave the layer off every plot, while it still shows on screen. |
+| **New VP Freeze** | Tick to freeze the layer in every layout viewport you make from now on. |
+| **VP Freeze** | Freezes the layer in the current layout viewport only. It shows a dash until you go into a viewport with [MSPACE](/reference/commands/mspace/). |
+| **Description** | A note about the layer. Double-click to type it. |
+| **Transparency** | How see-through the layer's objects are on screen, from 0 to 90 percent. |
+| **Plot Style** | Read only. It shows `Color_` and a number, because a layer plots as its colour does. |
+
+## Good to know
+
+- Objects drawn with colour, linetype or lineweight set to ByLayer take them from their layer. Change the layer and they all change together.
+- To put layer settings back after a change, use [LAYERP](/reference/commands/layerp/). To save and restore all the layer settings by name, use [LAYERSTATE](/reference/commands/layerstate/).
+- Layers that are off or frozen do not plot. Neither do layers with **Plot** unticked.
+- A white layer plots black on white paper.
+- The **Home** tab of the ribbon has quick layer tools such as [LAYOFF](/reference/commands/layoff/), [LAYISO](/reference/commands/layiso/) and [LAYFRZ](/reference/commands/layfrz/), so you can work by clicking objects instead of opening this window.
+
+## Compared with AutoCAD
+
+The Layer Properties Manager has the columns AutoCAD users know, including **New VP Freeze** and **VP Freeze**, and the same built-in filters with **Invert filter**. Plot styles are colour-dependent only, so the **Plot Style** column shows the greyed `Color_` name and cannot be changed.
+
+## Next
+
+- Change layers at the command line with [-LAYER](/reference/commands/dash-layer/).
+- Change one object's layer, colour or linetype with [PROPERTIES](/reference/commands/properties/).
+- Learn how to plan layers for a drawing in [Organising a drawing](/user-manual/organising/).

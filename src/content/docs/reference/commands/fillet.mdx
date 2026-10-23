@@ -1,15 +1,84 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "FILLET"
-description: "The FILLET (F) command in Musa CAD: Round corners between two intersecting lines, arcs, or polylines. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The FILLET (F) command in Musa CAD rounds the corner between two objects with an arc of the radius you set, or makes a sharp corner at radius 0. How to set the radius, round a whole polyline, keep the originals, and fillet many corners."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "FILLET"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+FILLET joins two objects with a rounded corner. It draws an arc of the radius you choose and trims or extends both objects so they meet it exactly. With a radius of 0 it makes a clean, sharp corner.
+
+## How it works
+
+Type `F` and press <kbd>Enter</kbd>. Musa CAD shows the current mode and radius. Set the radius with **Radius** if you need a new one. Then pick the first object and the second. Pick each one on the part you want to keep. The corner is rounded and the command ends.
+
+```musacad
+Command: F
+Current settings: Mode = TRIM, Radius = 0.0000
+Select first object or [Undo/Polyline/Radius/Trim/Multiple]: R
+Specify fillet radius <0.0000>: 12
+Select first object or [Undo/Polyline/Radius/Trim/Multiple]: (pick the first line)
+Select second object or shift-select to apply corner or [Radius]: (pick the second line)
+Filleted.
+```
+
+<Figure id="cmd-fillet" alt="On the left, before: a horizontal and a vertical line that cross and stick out past each other, with pick marks 1 on the horizontal line and 2 on the vertical line. On the right, after: the two lines, now blue, are joined by a blue arc of radius 12, and the parts cut away are shown dashed in grey." caption="Pick 1, then 2, with the radius set to 12." />
+
+While you move over the second object, Musa CAD shows the result a click would make: both objects as they would be, and the arc.
+
+Hold <kbd>Shift</kbd> as you pick the second object to make a sharp corner this once, whatever the radius.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Undo** (`U`) | Takes back the last fillet made in this run. Useful with **Multiple**. |
+| **Polyline** (`P`) | Rounds every corner of a 2D polyline at once. Asks `Select 2D polyline or [Radius]:`, then reports how many corners it rounded, such as `4 lines were filleted.` |
+| **Radius** (`R`) | Asks `Specify fillet radius <0.0000>:`. Type the new radius, or press <kbd>Enter</kbd> to keep it. Also offered at the second prompt. |
+| **Trim** (`T`) | Asks `Enter Trim mode option [Trim/No trim] <Trim>:`. **Trim** cuts or extends the objects to meet the arc. **No trim** leaves them as they are and only adds the arc. |
+| **Multiple** (`M`) | Keeps asking for pairs, so you can round many corners. Press <kbd>Enter</kbd> to stop. Each corner is its own undo step. |
+| <kbd>Enter</kbd> at **Select first object** | Ends the command. |
+
+## What FILLET can join
+
+- **Two lines.** Both are trimmed or extended to meet the arc. At radius 0 they meet in a sharp corner.
+- **Two parallel lines.** They are joined by a half circle as wide as the gap, at the end of the first line nearer where you picked it. The second line is trimmed or extended to meet it. The radius is not used.
+- **An arc or circle with a line, arc or circle, and an ellipse or spline with any of these.** The arc touches both smoothly, and each object is cut back to it on the side you picked. A circle or a whole ellipse stays whole. These need a radius greater than 0.
+- **A line and an open polyline, or two open polylines.** Pick the polyline's straight end segment. The two become one polyline with the corner rounded.
+- **Two segments of one polyline that meet.** That corner is rounded, and the arc becomes part of the polyline.
+- **Construction lines and rays.** They are treated as the line they run along. What stays of a construction line is a ray.
+
+## Settings FILLET remembers
+
+The radius and the Trim mode are kept for the next time, for as long as Musa CAD stays open. The first line of each run shows them.
+
+- The radius is the [FILLETRAD](/reference/system-variables/filletrad/) setting. Type `FILLETRAD` to set it directly.
+- The Trim mode is the [TRIMMODE](/reference/system-variables/trimmode/) setting: `1` for Trim, `0` for No trim. [CHAMFER](/reference/commands/chamfer/) uses the same setting, so changing it in one changes it in the other.
+
+## Good to know
+
+- A radius too big for the lines is refused with `Fillet: radius too large for these lines.`
+- An arc, circle, ellipse or spline at radius 0, including a <kbd>Shift</kbd> pick, is refused with `Fillet: a radius greater than 0 is needed to fillet a curve.`
+- `Fillet: no arc of that radius is tangent to both objects.` means no arc of that size can touch both. Try another radius.
+- Radius 0 with **No trim** has nothing to add: `Fillet: nothing to add with radius 0 in No trim mode.`
+- With **Polyline**, corners too short for the radius are skipped and counted at the end of the message. If none fit, Musa CAD says `Fillet: the radius fits none of the polyline's corners.`
+- The trimmed objects keep their layer, colour and linetype. The new arc takes the objects' properties when both are on the same layer, and otherwise goes on the current layer. A fillet between an arc or circle and a line, arc or circle always puts the new arc on the current layer.
+- At the Trim mode prompt, <kbd>Enter</kbd> chooses **Trim**, even when the default shown is **No trim**. Type `N` to keep No trim.
+- **Undo** takes back only the most recent fillet. After that it says `Nothing to undo.`
+
+## Compared with AutoCAD
+
+FILLET uses AutoCAD's prompts and options. As in AutoCAD, two parallel lines are joined by a half circle, the new arc takes the objects' properties when they share a layer, and the Trim mode is shared with CHAMFER.
+
+## Next
+
+- Cut a straight bevel across a corner instead with [CHAMFER](/reference/commands/chamfer/).
+- Draw a rectangle with rounded corners in one go with [RECTANG](/reference/commands/rectang/).
+- See all the editing commands together in [Modifying objects](/user-manual/modifying/).

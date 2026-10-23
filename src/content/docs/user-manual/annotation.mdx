@@ -1,0 +1,95 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Annotation
+description: Adding words and sizes to a Musa CAD drawing. Single-line and multiline text, text styles and symbols, every kind of dimension and dimension styles, leaders and multileaders, tables, fields, and GD&T frames.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Annotation
+  order: 5
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+Annotation is everything that explains a drawing: notes, sizes, labels, tables and tolerances. This chapter shows which tool to use for each.
+
+## Text
+
+Musa CAD has two kinds of text:
+
+- **Single-line text** (`DT` for TEXT). Each line is its own object. Good for labels and short notes. Press <kbd>Enter</kbd> at the end of a line to start the next one below it.
+- **Multiline text** (`MT` for MTEXT). One object holding a whole paragraph, which wraps to a width you set. Good for longer notes. It keeps formatting such as heights, colours, fonts, underlines and stacked fractions.
+
+Double-click a text, or type `ED`, to change its words.
+
+### Symbols
+
+Type these codes in any text and Musa CAD draws the symbol:
+
+| Type | To get |
+|---|---|
+| `%%d` | ° (degrees) |
+| `%%p` | ± (plus or minus) |
+| `%%c` | ⌀ (diameter) |
+| `%%%` | a single % |
+| `\U+` and four hex digits, such as `\U+2300` | any Unicode character |
+
+The codes are kept as you typed them, so the text saves and exchanges with other CAD programs unchanged.
+
+### Text styles and fonts
+
+A **text style** names a font, a height, a width factor and a slant. Every text uses a style. The `Standard` style uses Musa CAD's own single-stroke font, which looks like classic CAD lettering and plots crisply. A style can also use any TrueType or OpenType font on your computer.
+
+<CommandList label="Text commands" names={['TEXT', 'MTEXT', 'TEXTEDIT', 'STYLE', 'FIND', 'SCALETEXT', 'JUSTIFYTEXT', 'TXT2MTXT', 'TCASE', 'TEXTMASK', 'FIELD']} />
+
+## Dimensions
+
+Dimensions show sizes. Musa CAD measures each one from the points it is attached to, so the number is always right. When you move or stretch what a dimension measures, the dimension follows.
+
+The quickest way: type `DIM`, then click an object. Musa CAD picks a suitable kind for it, such as a linear dimension for a line or a radius for an arc. For full control, use a command for each kind:
+
+<CommandList label="Dimension commands" names={['DIM', 'DIMLINEAR', 'DIMALIGNED', 'DIMANGULAR', 'DIMRADIUS', 'DIMDIAMETER', 'DIMARC', 'DIMJOGGED', 'DIMORDINATE', 'DIMCONTINUE', 'DIMBASELINE', 'QDIM', 'DIMCENTER']} />
+
+DIMCONTINUE carries on a chain from the last dimension. DIMBASELINE stacks dimensions that all start from the same line. QDIM dimensions a whole selection at once.
+
+### Dimension styles
+
+A **dimension style** sets how dimensions look: text height, arrow size and shape, units, decimal places, tolerances and colours. Change a style and every dimension using it updates. Open the Dimension Style Manager with `D`.
+
+Typing a dimension variable's name, such as `DIMTXT` for the text height, changes the current style directly. To give one dimension a setting of its own, use DIMOVERRIDE or the Properties palette.
+
+<CommandList label="Dimension editing commands" names={['DIMSTYLE', 'DIMEDIT', 'DIMTEDIT', 'DIMSPACE', 'DIMBREAK', 'DIMJOGLINE', 'DIMINSPECT', 'DIMOVERRIDE', 'DIMDISASSOCIATE', 'DIMREASSOCIATE']} />
+
+## Leaders
+
+A leader is an arrow pointing at something, with a note at its other end.
+
+- **Multileaders** (`MLD` for MLEADER) are the modern kind: the arrow, line, landing and text are one object, and their look comes from a multileader style. One multileader can have several arrows.
+- **LEADER** and **QLEADER** (`LE`) draw the classic kind.
+
+<CommandList label="Leader commands" names={['MLEADER', 'MLEADERSTYLE', 'MLEADEREDIT', 'MLEADERALIGN', 'QLEADER', 'LEADER']} />
+
+## Tables
+
+Tables hold rows and columns of text, such as a parts list, a bill of materials or a revision block. Their borders and text sizes come from a table style, and cells can be merged.
+
+<CommandList label="Table commands" names={['TABLE', 'TABLESTYLE', 'TABLEEDIT', 'TABLEEXPORT', 'DATAEXTRACTION']} />
+
+## Geometric tolerances (GD&T)
+
+A feature control frame shows a geometric tolerance: the symbol, the tolerance value and up to three datum references. TOLERANCE opens a window to build one, with two rows for a composite frame. DATUM places a datum feature symbol.
+
+<CommandList label="GD&T commands" names={['TOLERANCE', 'DATUM']} />
+
+## Sizes on paper
+
+Text heights, arrow sizes and dimension sizes are in drawing units. Plan them for the scale you will plot at: text 2.5 high on paper is 25 high in a drawing plotted at 1:10. Annotative objects, which resize themselves for each viewport scale, are not in Musa CAD 0.8.0 yet.
+
+## Next
+
+- Group and control annotation with layers in [Organising a drawing](/user-manual/organising/).
+- Put it all on a sheet in [Layouts, viewports and plotting](/user-manual/layouts-and-plotting/).

@@ -6,17 +6,18 @@ description: Switching from AutoCAD? Most of your habits work in Musa CAD as the
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
-status: partial
+status: complete
 kind: guide
 sidebar:
   order: 8
 ---
 
 import { Steps } from '@astrojs/starlight/components';
+import CommandList from '../../../components/reference/CommandList.astro';
 
 **The short answer:** most of what your hands already know works in Musa CAD. Type `L` and you draw a line. Press <kbd>F8</kbd> and ortho turns on. Every edit command starts with `Select objects:`. This page goes through the details: what carries over, where Musa CAD goes further, what is different, and what is not there yet.
 
-It is marked partial because a command-by-command comparison will come from the [command reference](/reference/). As each command page is written, it will list its own differences from AutoCAD.
+Every written page in the [command reference](/reference/) also ends with its own **Compared with AutoCAD** section, so you can check any command in detail.
 
 ## What works the same
 
@@ -24,10 +25,10 @@ It is marked partial because a command-by-command comparison will come from the 
 |---|---|
 | **Typing commands and aliases** | The same names and aliases: `L`, `C`, `PL`, `A`, `REC`, `E`, `M`, `CO`, `RO`, `SC`, `MI`, `O`, `TR`, `EX`, `F`, `CHA`, `H`, `DLI`, `MT`, `B`, `I`, `X`, `LA`, `Z`, `U` and the rest. Capital or small letters both work, and a list of matches appears as you type. |
 | **The prompts** | `Specify next point or [Close/Undo]:` and so on, with the same options. Options are in square brackets, the default is in angle brackets. <kbd>Enter</kbd> repeats the last command, <kbd>Esc</kbd> cancels. |
-| **Selecting objects** | Click to pick. Drag left-to-right for a window, right-to-left for a crossing. Press and drag for a lasso. <kbd>Shift</kbd>+click removes an object. <kbd>Ctrl</kbd>+<kbd>A</kbd> selects everything. At `Select objects:` you can type Window, Crossing, Fence, WPolygon, CPolygon, ALL, Last, Previous, Add, Remove, Undo and the other keywords. Selecting first and then running a command also works. |
+| **Selecting objects** | Click to pick. Click two corners for a box: left to right for a window, right to left for a crossing. Press and drag for a lasso. <kbd>Shift</kbd>+click removes an object. <kbd>Ctrl</kbd>+<kbd>A</kbd> selects everything. At `Select objects:` you can type Window, Crossing, Fence, WPolygon, CPolygon, ALL, Last, Previous, Add, Remove, Undo and the other keywords. Selecting first and then running a command also works. |
 | **Coordinates** | `10,20`, `@30,0` (relative), `@30<45` (polar), and `#` for absolute inside Dynamic Input. Feet, inches and fractions work at every prompt. |
 | **The ribbon** | Home, Insert, Annotate, Parametric, View, Manage and Output, with AutoCAD's panels in AutoCAD's places. |
-| **Function keys** | <kbd>F3</kbd> object snap, <kbd>F7</kbd> grid, <kbd>F8</kbd> ortho, <kbd>F9</kbd> snap, <kbd>F10</kbd> polar, <kbd>F11</kbd> object snap tracking, <kbd>F12</kbd> Dynamic Input. <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd> undo and redo. |
+| **Function keys** | <kbd>F3</kbd> object snap, <kbd>F7</kbd> grid, <kbd>F8</kbd> ortho, <kbd>F9</kbd> snap, <kbd>F10</kbd> polar, <kbd>F11</kbd> object snap tracking, <kbd>F12</kbd> Dynamic Input. <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes. Redo is <kbd>Ctrl</kbd>+<kbd>Y</kbd> on Windows and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> on Linux. |
 | **Object snaps** | Running snaps, and one-off snaps typed at a prompt: `END`, `MID`, `CEN`, `INT`, `TAN`, `PER`, `EXT`, `NEA`, `QUA`, `NOD`, `INS`, `APP`, `PAR`, `GCEN`, `NON`. Also `FROM`, `M2P`, `TT`, `TK`, the <kbd>Shift</kbd>+right-click snap menu, and the <kbd>Shift</kbd> override keys. |
 | **Grips** | Every object has grips. Drag them to stretch or move; dimensions have a grip on their text. |
 | **Layers and properties** | The Layer Properties Manager with layer states and filters; `-LAYER` at the command line; LAYISO, LAYOFF, LAYFRZ and the other layer tools; ByLayer and ByBlock. |
@@ -39,6 +40,18 @@ It is marked partial because a command-by-command comparison will come from the 
 | **Your aliases** | ALIASEDIT can load your `acad.pgp` file. |
 | **Your shortcuts** | CUI lets you give any command a key, and warns you if the key is already taken. |
 | **Express Tools** | Many of them: TEXTMASK, TXTEXP, TCOUNT, TEXTFIT, BURST, GATTE, EXTRIM, NCOPY, MOCORO, FLATTEN, VPSYNC, VPSCALE, XLIST, ATTOUT, ATTIN, MPEDIT, DIMEX, DIMIM, TFRAMES. |
+
+## Your everyday commands
+
+These are the commands most drafters use every day. All of them are in Musa CAD, under the names you know, and each has a full page.
+
+<CommandList label="Everyday drawing commands" names={['LINE', 'PLINE', 'CIRCLE', 'ARC', 'RECTANG', 'POLYGON', 'ELLIPSE', 'SPLINE', 'HATCH']} />
+
+<CommandList label="Everyday editing commands" names={['ERASE', 'MOVE', 'COPY', 'ROTATE', 'SCALE', 'MIRROR', 'OFFSET', 'TRIM', 'EXTEND', 'FILLET', 'CHAMFER', 'ARRAY', 'STRETCH', 'EXPLODE', 'JOIN', 'BREAK', 'LENGTHEN', 'PEDIT', 'MATCHPROP', 'U']} />
+
+<CommandList label="Everyday annotation commands" names={['TEXT', 'MTEXT', 'TEXTEDIT', 'DIMLINEAR', 'DIMALIGNED', 'DIMRADIUS', 'DIMDIAMETER', 'DIMANGULAR', 'DIMCONTINUE', 'MLEADER', 'DIMSTYLE']} />
+
+<CommandList label="Everyday organising, viewing and output commands" names={['LAYER', 'BLOCK', 'INSERT', 'PROPERTIES', 'OSNAP', 'ZOOM', 'DIST', 'LIST', 'PLOT', 'QSAVE']} />
 
 ## Where Musa CAD goes further
 
@@ -54,6 +67,11 @@ It is marked partial because a command-by-command comparison will come from the 
 - **The interface is dark,** dialogs included.
 - **Fonts:** text uses Musa CAD's built-in line font or any TrueType or OpenType font on your computer. SHX font files are not read. A drawing that asks for one is drawn with Musa CAD's own line font, and the Properties palette still shows the font it asked for. See [Images and fonts](/file-formats/images-and-fonts/).
 - **New releases change the file format.** A file saved by a newer version needs that version or newer to open. Older files always open.
+- **Arrays are plain copies.** ARRAY makes ordinary objects, not an associative array, so there is no ARRAYEDIT. Change one copy and the others stay as they are.
+- **Dimension variables change the style.** Typing `DIMTXT` or another dimension variable changes the current dimension style itself, where AutoCAD would keep it as an override. To give one dimension a setting of its own, use DIMOVERRIDE or the Properties palette.
+- **Blocks hold the common objects.** A block can contain lines, arcs, circles, polylines, text, multiline text, attributes and other blocks. Hatches, dimensions and other objects stay outside the block when you make it, and Musa CAD says how many.
+- **Plot styles are three built-in choices:** in colour, monochrome or grayscale. CTB and STB files are not read.
+- **Musa CAD 0.8.0 does not save automatically.** Save often with <kbd>Ctrl</kbd>+<kbd>S</kbd>.
 
 ## What is not there yet
 
@@ -62,6 +80,8 @@ It is marked partial because a command-by-command comparison will come from the 
 - **Parametric constraints.** The Parametric tab is there, but its buttons are greyed out, and each tooltip says the tool is not built yet.
 - **Sheet sets, dynamic blocks, annotative objects, named plot styles (STB) and real SHX fonts** are not in version 0.8.0.
 - **Every last option.** Most draw, modify and annotate commands follow AutoCAD option for option, but some settings are still to come. The [command status table](/reference/command-status/) tracks every command, and the [AutoCAD settings status](/reference/autocad-settings-status/) tracks the dimension style and options settings one by one.
+
+The [roadmap](/project/roadmap/) lists what is still missing, theme by theme, with an issue for each.
 
 ## Bring your work across
 
@@ -77,8 +97,8 @@ It is marked partial because a command-by-command comparison will come from the 
 
 </Steps>
 
-## Still to come on this page
+## Next
 
-A table comparing each command's options with AutoCAD's, and the system variables the two programs share. Both will come from the [command reference](/reference/) as its pages are written.
-
-For a short side-by-side summary, see [Musa CAD as an AutoCAD alternative](https://musacad.org/autocad-alternative/) on the main website.
+- Learn the tool that makes Musa CAD different: [Dynamic Input](/user-manual/dynamic-input/).
+- Read the [User manual](/user-manual/) for how each kind of work is done.
+- For a short side-by-side summary, see [Musa CAD as an AutoCAD alternative](https://musacad.org/autocad-alternative/) on the main website.

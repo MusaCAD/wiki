@@ -1,15 +1,63 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "POLYGON"
-description: "The POLYGON (POL) command in Musa CAD: Draw a regular polygon by centre or by one edge. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The POLYGON (POL) command in Musa CAD draws a regular polygon with 3 to 1024 equal sides as one closed polyline. How to size it inside or around a circle from its centre, or from the length of one edge."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "POLYGON"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+POLYGON draws a regular polygon: a shape whose sides are all the same length, such as a hexagon for a nut. The polygon is one closed polyline.
+
+## How it works
+
+Type `POL` and press <kbd>Enter</kbd>. Give the number of sides, then the centre. Next, choose whether the size you give reaches the corners (**Inscribed**) or the middle of the sides (**Circumscribed**). Then give that size.
+
+```musacad
+Command: POL
+Enter number of sides <4>: 6
+Specify center of polygon or [Edge]: 0,0
+Enter an option [Inscribed in circle/Circumscribed about circle] <I>: ↵
+Specify radius of circle: 20
+Polygon created.
+```
+
+<Figure id="cmd-polygon" alt="Three blue hexagons. Inscribed: a hexagon whose corners touch a grey circle of radius 20 around it. Circumscribed: a larger hexagon whose sides touch a grey circle of radius 20 inside it. Edge: a hexagon standing on a bottom edge whose ends are marked 1 on the left and 2 on the right." caption="The same radius 20 used Inscribed and Circumscribed, and a polygon built on an edge." />
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Edge** (`E`) | Instead of the centre, give the two ends of one side: `Specify first endpoint of edge:` and `Specify second endpoint of edge:`. Looking from the first point to the second, the polygon is built on your left. Give the points from left to right to build it above the edge. |
+| **Inscribed in circle** (`I`) | The radius is the distance from the centre to each corner. The polygon fits inside a circle of that radius. |
+| **Circumscribed about circle** (`C`) | The radius is the distance from the centre to the middle of each side. The polygon fits around a circle of that radius. For a hexagon 20 across its flats, type a radius of 10. |
+| <kbd>Enter</kbd> at **Enter number of sides** | Keeps the number shown, which is the last one you used. |
+
+## Typing or clicking the radius
+
+- If you type the radius, the polygon stands on a flat bottom edge.
+- If you click a point, the point sets both the size and the turn. With **Inscribed**, a corner lands on the point. With **Circumscribed**, the middle of a side does.
+
+## Good to know
+
+- A polygon can have 3 to 1024 sides. Any other number is refused with `Requires an integer between 3 and 1024.`
+- The number of sides and your Inscribed or Circumscribed choice are kept until you close Musa CAD. Pressing <kbd>Enter</kbd> at the Inscribed or Circumscribed question keeps your last choice, but the prompt always shows `<I>`. Type `I` or `C` when you want to be sure.
+- A radius of 0 or less is refused with `The radius must be greater than zero.` Two edge ends at the same place are refused with `The two edge endpoints must differ.`
+- The result is a closed polyline. To work on its sides as separate lines, use [EXPLODE](/reference/commands/explode/).
+- <kbd>Esc</kbd> cancels the command. Nothing is drawn.
+
+## Compared with AutoCAD
+
+POLYGON follows AutoCAD's two ways of sizing a polygon: about a centre, Inscribed or Circumscribed, or by one edge. As in AutoCAD, a typed radius stands it on a flat bottom edge.
+
+## Next
+
+- Draw a rectangle with [RECTANG](/reference/commands/rectang/).
+- Draw the circle a polygon fits in with [CIRCLE](/reference/commands/circle/).
+- Change the polyline later with [PEDIT](/reference/commands/pedit/).

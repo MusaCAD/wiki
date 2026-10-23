@@ -1,0 +1,55 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// A short table of commands for a manual chapter: each command linked to its page, what you
+// type to start it, and what it does, read from Musa CAD's own data. A name Musa CAD does not
+// have fails the build, so a chapter cannot point at a command that was renamed or removed.
+import data from '../../data/wiki-data.json';
+import { pathOf } from '../../lib/reference.mjs';
+
+interface Props {
+	/** Command or system variable names, as Musa CAD lists them (e.g. LINE, -LAYER). */
+	names: string[];
+	/** What the list is, for screen readers: "Drawing commands". */
+	label: string;
+}
+const { names, label } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const byName = new Map(data.commands.map((c) => [c.name, c]));
+const rows = names.map((n) => {
+	const c = byName.get(n);
+	if (!c) throw new Error(`<CommandList>: Musa CAD ${data.version} has no command named ${n}.`);
+	// The short ways to start it: aliases other than the name itself, shortest first; the
+	// name itself when there are none.
+	const typed = (c.aliases ?? []).filter((a: string) => a !== c.name).sort((a: string, b: string) => a.length - b.length);
+	return { c, typed, href: base + pathOf(c) };
+});
+---
+
+<div class="mc-table-wrap not-content" role="region" aria-label={label} tabindex="0">
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Command</th>
+				<th scope="col">Type</th>
+				<th scope="col">What it does</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				rows.map(({ c, typed, href }) => (
+					<tr>
+						<td>
+							<a href={href}>
+								<code>{c.name}</code>
+							</a>
+						</td>
+						<td>{(typed.length ? typed : [c.name]).map((a: string, i: number) => [i > 0 && ', ', <code>{a}</code>])}</td>
+						<td>{c.description}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>

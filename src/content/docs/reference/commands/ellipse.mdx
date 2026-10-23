@@ -1,15 +1,83 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "ELLIPSE"
-description: "The ELLIPSE (EL) command in Musa CAD: Draw an ellipse or an elliptical arc. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The ELLIPSE (EL) command in Musa CAD draws an ellipse or an elliptical arc. How to give the axes by their ends or from the centre, use Rotation, draw part of an ellipse by angles, and draw isometric circles."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "ELLIPSE"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+ELLIPSE draws an ellipse, the oval shape a circle makes when you look at it at an angle. It can also draw part of one, called an elliptical arc. An ellipse has two axes: the long one through its widest part, and the short one across it.
+
+## How it works
+
+Type `EL` and press <kbd>Enter</kbd>. Give both ends of one axis. Then give the distance from the centre out to the edge along the other axis. Musa CAD draws the ellipse and the command ends.
+
+```musacad
+Command: EL
+Specify axis endpoint of ellipse or [Arc/Center]: 0,0
+Specify other endpoint of axis: @80,0
+Specify distance to other axis or [Rotation]: 20
+```
+
+The distance is half the other axis. This ellipse is 80 long and 40 tall.
+
+<Figure id="cmd-ellipse" alt="On the left, a blue ellipse 80 long and 40 tall. Its axis ends are marked 1 on the left and 2 on the right, joined by a thin line, and 3 marks the point 20 above the centre given as the distance to the other axis. On the right, a blue elliptical arc of the same size, from start angle 0 at its right end counter-clockwise round to end angle 270 at the bottom. The missing quarter at the lower right is dashed in grey." caption="An ellipse from its axis ends, and an elliptical arc from 0 to 270 degrees." />
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Center** (`C`) | Give the centre first: `Specify center of ellipse:`. Then `Specify endpoint of axis:`, one end of the first axis, and the distance to the other axis. |
+| **Arc** (`A`) | Draws an elliptical arc. You give the ellipse in the same way, then a start and an end angle. See [Elliptical arcs](#elliptical-arcs). |
+| **Rotation** (`R`) | Instead of the other axis: `Specify rotation around major axis:`. Think of a circle as wide as the first axis, turned away from you by that angle. 0 gives a circle, and 60 makes the other axis half as long. The angle must be less than 89.4 degrees. |
+| **Isocircle** (`I`) | Appears only while isometric drafting is on (see [ISODRAFT](/reference/commands/isodraft/)). Draws a circle as it looks in the current isometric plane. Give the centre, then the radius or **Diameter**. |
+
+## Elliptical arcs
+
+Type `A` first. After the axes, Musa CAD asks for the start and end angles:
+
+```musacad
+Command: EL
+Specify axis endpoint of ellipse or [Arc/Center]: A
+Specify axis endpoint of elliptical arc or [Center]: C
+Specify center of elliptical arc: 150,0
+Specify endpoint of axis: @40,0
+Specify distance to other axis or [Rotation]: 20
+Specify start angle or [Parameter]: 0
+Specify end angle or [Parameter/Included angle]: 270
+```
+
+Angles are in degrees, measured counter-clockwise from the first axis you gave. The arc runs counter-clockwise from the start angle to the end angle. You can also click a point: its direction from the centre gives the angle.
+
+| Option | What it does |
+|---|---|
+| **Parameter** (`P`) | Give the ellipse's parameter instead of a true angle. The parameter is the angle on the circle the ellipse is squashed from, which differs from the true angle except along the axes. |
+| **Angle** (`A`) | Goes back to true angles. |
+| **Included angle** (`I`) | At the end prompt, give how far the arc sweeps from its start instead: `Specify included angle for arc <180>:`. |
+
+## Good to know
+
+- The longer axis always becomes the major axis, whichever one you gave first. Angles for an arc are still measured from the first axis you gave.
+- An axis with no length is refused with `Invalid axis length.`
+- **Rotation** of 89.4 degrees or more is refused with `Rotation must be less than 89.4 degrees.`
+- **Isocircle** while isometric drafting is off says `Isocircle needs isometric drafting: ISODRAFT, or SNAP Style Isometric.`
+- An included angle of 0 is refused with `Included angle must be non-zero.`
+- When [PELLIPSE](/reference/system-variables/pellipse/) is 1, ELLIPSE draws a polyline made of arcs that follows the ellipse, instead of a true ellipse.
+- <kbd>Esc</kbd> cancels the command. Nothing is drawn.
+
+## Compared with AutoCAD
+
+ELLIPSE follows AutoCAD's prompts. As in AutoCAD, the longer axis is stored as the major one, **Rotation** accepts angles below 89.4 degrees, and **Isocircle** is offered while isometric drafting is on.
+
+## Next
+
+- Draw a circle with [CIRCLE](/reference/commands/circle/).
+- Draw in isometric views with [ISODRAFT](/reference/commands/isodraft/).
+- Cut away part of an ellipse with [TRIM](/reference/commands/trim/).

@@ -1,15 +1,73 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "DIMCONTINUE"
-description: "The DIMCONTINUE (DCO) command in Musa CAD: Continue a dimension chain from the last dimension's second extension line. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The DIMCONTINUE (DCO) command in Musa CAD adds dimensions end to end, each one starting where the last one stopped, on the same line. How to chain from the last dimension or from one you pick, and undo a step."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "DIMCONTINUE"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+DIMCONTINUE adds dimensions end to end, in a chain. Each new dimension starts at the second extension line of the one before and sits on the same dimension line. It is the quick way to dimension a row of steps or holes, one after another.
+
+## How it works
+
+First draw one dimension, for example with [DIMLINEAR](/reference/commands/dimlinear/). Then type `DCO` and press <kbd>Enter</kbd>. Click the next point you want to dimension to. A new dimension is added from the end of the last one to that point. Keep clicking: each new dimension carries on from the one you just added.
+
+To finish, press <kbd>Enter</kbd> twice, or press <kbd>Esc</kbd>. The first <kbd>Enter</kbd> asks which dimension to continue from; the second one ends the command.
+
+```musacad
+Command: DCO
+Specify a second extension line origin or [Select/Undo] <Select>: 70,35
+Continued dimension added.
+Specify a second extension line origin or [Select/Undo] <Select>: 100,20
+Continued dimension added.
+Specify a second extension line origin or [Select/Undo] <Select>: ↵
+Select continued dimension: ↵
+```
+
+<Figure id="cmd-dimcontinue" alt="A stepped block that gets lower towards the right. Along the top runs a row of three dimensions on one line. The first, in black, reads 35.00 and was drawn with DIMLINEAR. The next two, in blue, read 35.00 and 30.00. They were added by DIMCONTINUE from picks 1 and 2, at the corners of the lower steps." caption="One DIMLINEAR, then two picks with DIMCONTINUE." />
+
+### Continue from a different dimension
+
+DIMCONTINUE starts from the last dimension drawn. To go on from another one, press <kbd>Enter</kbd> (or type `S`) at the first prompt. At `Select continued dimension:` click the dimension, near the extension line you want to continue from. Then click the next points as before.
+
+```musacad
+Command: DCO
+Specify a second extension line origin or [Select/Undo] <Select>: ↵
+Select continued dimension: (click the dimension near its right-hand extension line)
+Specify a second extension line origin or [Select/Undo] <Select>: (click the next point)
+Continued dimension added.
+```
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Select** (`S`) | Asks `Select continued dimension:`, so you can continue from a dimension you pick. <kbd>Enter</kbd> does the same. Pressing <kbd>Enter</kbd> at **Select continued dimension** ends the command. |
+| **Undo** (`U`) | Removes the last dimension added and goes back to the one before it, so the next pick continues from there. With nothing added yet in this run, Musa CAD says `Nothing to undo.` |
+
+## Good to know
+
+- You can continue from a linear, aligned, angular or ordinate dimension. An angular chain goes round the same vertex, on the same arc. An ordinate chain adds the next feature measured from the same datum.
+- A linear chain keeps the first dimension's direction. A horizontal row stays horizontal even when the points step up and down, as in the picture.
+- Each new dimension takes the style, the overrides, the layer and the colour of the one it continues from. If [DIMLAYER](/reference/system-variables/dimlayer/) names a layer, the new ones go on that layer instead.
+- If the drawing has no dimension yet, a pick says `DIMCONTINUE: no previous dimension to continue from; select a dimension.`
+- If the last dimension is one that cannot be chained, such as a radius, a pick says `DIMCONTINUE needs a linear, aligned, ordinate or angular dimension to continue from.`
+- At **Select continued dimension**, a pick on empty space says `No dimension found.` A pick on a dimension of the wrong kind says `The dimension selected is not a linear, aligned, ordinate or angular dimension.`
+- Each dimension added is its own undo step, both with **Undo** inside the command and with [U](/reference/commands/u/) afterwards.
+
+## Compared with AutoCAD
+
+DIMCONTINUE asks the same questions as AutoCAD's, and <kbd>Enter</kbd> at **Select continued dimension** ends it, as in AutoCAD.
+
+## Next
+
+- Stack dimensions from one base line instead with [DIMBASELINE](/reference/commands/dimbaseline/).
+- Dimension a whole row in one go with [QDIM](/reference/commands/qdim/).
+- Even out the gaps between rows of dimensions with [DIMSPACE](/reference/commands/dimspace/).

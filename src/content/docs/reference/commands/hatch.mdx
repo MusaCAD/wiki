@@ -1,15 +1,89 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "HATCH"
-description: "The HATCH (H, BHATCH) command in Musa CAD: Fill an enclosed area with a pattern or solid color. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The HATCH (H) command in Musa CAD fills a closed area with a pattern, a solid colour or a gradient. How to pick inside an area or select closed objects, choose the pattern, scale and angle, and undo a fill."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "HATCH"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+HATCH fills an area with a pattern of lines, a solid colour or a gradient. Use it to show a cut surface in a section, or to shade part of a plan.
+
+## How it works
+
+Type `H` and press <kbd>Enter</kbd>. Click inside an area that is closed all the way round. Musa CAD finds the boundary around the point and fills it. Click inside more areas if you like, then press <kbd>Enter</kbd> to finish.
+
+```musacad
+Command: H
+Pick internal point or [Select objects/Undo/seTtings]: (click inside the shape)
+Hatch created.
+Pick internal point or [Select objects/Undo/seTtings]: ↵
+```
+
+The first time, the pattern is ANSI31, evenly spaced lines at 45 degrees, at scale 1 and angle 0. To change it, type `T` for **seTtings** before you click.
+
+<Figure id="cmd-hatch" alt="Two copies of a rectangle with a circle inside it. On the left, before: a small marker labelled pick sits inside the rectangle, outside the circle. On the right, after: the rectangle is filled with blue diagonal lines at 45 degrees, and the inside of the circle is left empty." caption="One click inside the rectangle hatches it and leaves the circle clear." />
+
+A closed polyline or circle inside the area is left clear, as an island. All the areas you pick in one HATCH become one hatch object, unless [HPSEPARATE](/reference/system-variables/hpseparate/) is 1.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Select objects** (`S`) | Instead of clicking inside, select closed objects: closed polylines, circles, whole ellipses or closed splines. Press <kbd>Enter</kbd> to fill them. An object inside another one becomes a hole. |
+| **Undo** (`U`) | Takes back the last fill made in this HATCH. If there is none, Musa CAD says `Nothing to undo.` |
+| **seTtings** (`T`) | Sets the pattern, then its scale and angle. See below. |
+| <kbd>Enter</kbd> | Ends the command. |
+
+## Pattern, scale and angle
+
+Type `T` at the first prompt:
+
+```musacad
+Command: H
+Pick internal point or [Select objects/Undo/seTtings]: T
+Enter a pattern name or [?/Solid/User defined/Gradient] <ANSI31>: ANSI37
+Specify a scale for the pattern <1.0000>: 2
+Specify an angle for the pattern <0>: ↵
+Pick internal point or [Select objects/Undo/seTtings]: (click inside the shape)
+Hatch created.
+```
+
+- **Pattern name:** type the name of a pattern. Type `?` to list them all. The built-in patterns are ANGLE, ANSI31 to ANSI38, BOX, BRICK, CHECKER, CLAY, CONC, CORK, CROSS, DASH, DOTS, EARTH, GRASS, GRAVEL, GRID, HEX, HONEY, INSUL, LINE, NET, NET3, PLAST, SQUARE, STARS, STEEL, TRIANG and ZIGZAG.
+- **Scale:** a larger scale spreads the pattern out. A smaller one packs it closer.
+- **Angle:** turns the pattern, in degrees.
+- **Solid** (`S`): fills the area with the hatch's colour. No scale or angle is asked.
+- **User defined** (`U`): plain parallel lines. Musa CAD asks `Specify angle for crosshatch lines <0>:`, `Specify spacing between the lines <1.0000>:` and `Double hatch area? [Yes/No] <N>:`. Yes adds a second set of lines at right angles.
+- **Gradient** (`G`): shades from the hatch's colour to a second colour. Musa CAD asks `Specify second colour as r,g,b <255,255,255>:` and `Specify gradient angle <0>:`. The [GRADIENT](/reference/commands/gradient/) command starts HATCH with a gradient.
+
+The pattern, scale and angle are kept for the next hatch until you close Musa CAD.
+
+A name that is not built in is looked for in the `.pat` pattern files in the drawing's folder, and in the `support` folder inside Musa CAD's settings folder. A pattern found there is stored in the drawing. A name found nowhere says `Unknown pattern "NAME"; ? lists them.`, with the name you typed.
+
+## Good to know
+
+- `Valid hatch boundary not found.` means the area is not closed, or you clicked outside every closed area. Look for a small gap. [-HATCH](/reference/commands/dash-hatch/) has a gap tolerance under **Advanced** that can bridge small gaps.
+- Lines, arcs, circles, ellipses, splines and polylines can close an area. Construction lines, text, dimensions, blocks and other hatches cannot.
+- Objects that are selected when HATCH starts are filled at once, with the current pattern, and the command ends. A hatch you just made stays selected, so press <kbd>Esc</kbd> to clear it before you start HATCH again. Otherwise Musa CAD tries to fill the hatch itself and says `Valid hatch boundary not found.`
+- Each fill is its own undo step. [U](/reference/commands/u/) after HATCH takes back the last one.
+- <kbd>Esc</kbd> ends HATCH. The fills you already made stay.
+- A new hatch follows its boundary. Move, rotate or scale the boundary, or drag its grips, and the hatch goes with it. Set [HPASSOC](/reference/system-variables/hpassoc/) to 0 to make new hatches stay as they are drawn.
+- How big a new hatch's pattern is drawn also depends on [MEASUREMENT](/reference/system-variables/measurement/). With 1 (metric), the standard patterns are drawn 25.4 times as large as with 0 (imperial).
+- If hatches do not show at all, check [FILLMODE](/reference/system-variables/fillmode/). When it is off, hatches are hidden.
+- When only hatches are selected, the ribbon shows the **Hatch Editor** tab, where you can change their pattern, scale and angle.
+
+## Compared with AutoCAD
+
+HATCH asks its questions at the command line, starting with AutoCAD's `Pick internal point` and using its `Valid hatch boundary not found.` message. The built-in patterns are Musa CAD's own, written from the public `.pat` format rather than copied from AutoCAD's `acad.pat`. You can use AutoCAD's patterns by putting its `.pat` file in one of the folders above, but typing a name that matches a built-in pattern picks the built-in one.
+
+## Next
+
+- Change a hatch later with [HATCHEDIT](/reference/commands/hatchedit/).
+- Hatch from the command line with more options using [-HATCH](/reference/commands/dash-hatch/).
+- Draw a closed boundary to hatch with [PLINE](/reference/commands/pline/) or [RECTANG](/reference/commands/rectang/).

@@ -1,15 +1,71 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "PROPERTIES"
-description: "The PROPERTIES (PR, PROPS, CH) command in Musa CAD: Open the Properties palette to view and edit object properties. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The PROPERTIES (PR) command in Musa CAD opens or closes the Properties palette, where you see and change the layer, colour, size and other settings of the selected objects. Every group and field explained."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "PROPERTIES"
-tableOfContents: false
 ---
+
+PROPERTIES shows the Properties palette. The palette lists the settings of the objects you have selected, such as their layer, colour, linetype, size and text, and lets you change them by typing or picking a new value.
+
+## How it works
+
+Type `PR` and press <kbd>Enter</kbd>. The **Properties** palette opens on the right of the window, and the command ends at once. `PROPS` and `CH` do the same. Type `PR` again to close the palette.
+
+```musacad
+Command: PR
+Properties palette toggled.
+```
+
+Now select objects in the drawing. The palette fills with their settings and follows the selection as it changes. Click in a field, change the value, and the selected objects change with it.
+
+## The palette
+
+The top line names what is selected: one object type such as `Line`, a count such as `3 Lines`, or `Mixed (5)` for different types. With nothing selected it says `No selection` and names the current layer.
+
+Below that, the settings come in groups. A field appears only when it applies to every selected object, so a mixed selection shows little more than the **General** group.
+
+| Group | Fields |
+|---|---|
+| **General** | **Layer**, **Color**, **Linetype**, **Linetype scale**, **Lineweight** and **Transparency**. Every object has these. |
+| **Geometry** | A line shows its **Length**, **Start** and **End**, and **Start X**, **Start Y**, **End X** and **End Y** to type new ends. A circle or arc shows **Center** and **Radius**, with **Center X** and **Center Y**. An ellipse shows its centre the same way. Text shows its **Position**, with **Position X** and **Position Y**. A polyline shows **Global width**, **Elevation** and **Thickness**. |
+| **Text** | For text, multiline text and leader labels: **Contents**, **Height**, **Rotation (deg)**, **Justify**, **Font**, **Style**, **Width factor**, **Line spacing**, **Defined width**, **Attachment** and, on leaders, **Text color**. Not every field shows for every kind. |
+| **Dimension** | **Arrowhead**, **Arrow size**, **Line color**, **Ext line color**, **Text height**, **Text color**, **Text fit**, **Text override**, **Text moved**, **Text prefix**, **Text suffix**, **Tolerance**, **Upper deviation**, **Lower deviation** and **Precision**. |
+| **Hatch** | **Pattern**, **Scale**, **Angle (deg)** and **Origin**. |
+| **Tolerance** | For geometric tolerances: **Cells**, or the **Datum letter** of a datum. |
+
+## Changing a value
+
+| Field | How to change it |
+|---|---|
+| A number | Type the new value and press <kbd>Enter</kbd>, or click away. **Length**, **Start**, **End**, **Center**, **Position** and **Origin** are shown only; change them with the X and Y fields below them. |
+| A list, such as **Layer** or **Linetype** | Pick a new entry. **Linetype** offers **ByLayer**, **ByBlock**, **Continuous**, **Dashed**, **Center**, **Hidden** and the drawing's loaded linetypes. **Lineweight** offers **ByLayer**, **ByBlock** and 0.00 mm to 2.00 mm. |
+| **Transparency** | Pick **ByLayer**, **ByBlock** or a percentage, or type a whole number from 0 to 90. Anything else is ignored. |
+| **Color** | Click the colour button to choose a colour in the **Select color** window. Click **ByLayer** to take the layer's colour again, or **ByBlock** to take the colour of the block it sits in. |
+| **Contents** | Click **Edit text…**, change the text in the **Edit contents** window, and click **OK**. |
+| A dimension setting | Type or pick an override for this dimension. Click **ByStyle** next to it to go back to the dimension style's value. |
+
+`*VARIES*` in a field means the selected objects have different values there. Type or pick a value to give them all the same one.
+
+## Good to know
+
+- Each change you make in the palette is one undo step. [U](/reference/commands/u/) takes it back.
+- A **Radius** of 0 or less is ignored.
+- ByLayer means the object takes that setting from its layer. Set objects to ByLayer and control them from [LAYER](/reference/commands/layer/), so one change there updates them all.
+- The palette is a panel of the main window. Drag its title bar to float it or to dock it on another side, and use its close button or `PR` to hide it.
+- To copy all the settings of one object onto others, [MATCHPROP](/reference/commands/matchprop/) is quicker than the palette.
+
+## Compared with AutoCAD
+
+The palette works like AutoCAD's: it follows the selection, shows `*VARIES*` where selected objects differ, and gives coordinates one row per axis, such as **Start X** and **Start Y**. It has no Quick Select button; use [QSELECT](/reference/commands/qselect/) to select objects by their properties.
+
+## Next
+
+- Copy properties from one object to others with [MATCHPROP](/reference/commands/matchprop/).
+- Set up the layers your objects take their settings from with [LAYER](/reference/commands/layer/).
+- Read about layers, colours and linetypes in [Organising a drawing](/user-manual/organising/).

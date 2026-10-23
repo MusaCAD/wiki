@@ -1,15 +1,83 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "LIST"
-description: "The LIST (LI) command in Musa CAD: List the selected objects: kind, layer, space, handle, properties, geometry, area and perimeter. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The LIST (LI) command in Musa CAD prints the facts about the objects you select: kind, layer, space, handle, colour, linetype, lineweight, geometry, and area and perimeter. How to read each part of the report."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "LIST"
-tableOfContents: false
 ---
+
+LIST tells you everything Musa CAD knows about an object: what kind it is, its layer and other properties, and its exact geometry. Use it to check a length, a radius or an area, or to find out why an object looks the way it does. It changes nothing.
+
+## How it works
+
+Type `LI` and press <kbd>Enter</kbd>. Select the objects, then press <kbd>Enter</kbd>. Musa CAD prints a block of facts for each one. If objects are already selected when you start LIST, it lists them straight away.
+
+```musacad
+Command: LI
+Select objects: (click a line and a circle) ↵
+                  LINE      Layer: "0"
+                            Space: Model space
+                            Handle = 10
+                            Color: BYLAYER    Linetype: BYLAYER    Lineweight: BYLAYER
+             from (20.0000,10.0000) to (50.0000,50.0000)
+             length 50.0000
+             Length = 50.0000,  Angle in XY Plane = 53
+             Delta X = 30.0000,  Delta Y = 40.0000,  Delta Z = 0.0000
+                  CIRCLE      Layer: "0"
+                            Space: Model space
+                            Handle = 30
+                            Color: BYLAYER    Linetype: BYLAYER    Lineweight: BYLAYER
+             centre (100.0000,50.0000)
+             radius 25.0000
+             area 1963.4954,  circumference 157.0796
+```
+
+## Reading the report
+
+Each block has the same parts, in this order.
+
+| Part | What it tells you |
+|---|---|
+| Kind and **Layer** | The kind of object in capitals, such as `LINE`, `CIRCLE`, `POLYLINE` or `MTEXT`, and the layer it is on. |
+| **Space** | `Model space`, or `Paper space` followed by the layout's name in brackets. |
+| **Handle** | Musa CAD's own number for the object. Yours will be different from the example. |
+| **Color**, **Linetype**, **Lineweight** | `BYLAYER` when the object takes it from its layer. Otherwise the colour as red, green and blue numbers (such as `255,0,0`), the linetype's name, and the lineweight in mm (such as `0.35 mm`). If the object has its own linetype scale, `Linetype scale:` follows. A hidden object shows `(hidden)`. |
+| Geometry | One fact per line. What you see depends on the kind of object; see below. |
+| Size | A line ends with its length, angle and X and Y differences. A circle ends with its area and circumference. A closed polyline, ellipse, spline or hatch ends with its area and perimeter; an open one with its length. An arc ends with its length and the angle it spans. |
+
+The geometry lines for common objects:
+
+| Object | Geometry lines |
+|---|---|
+| Line | `from (x,y) to (x,y)`, `length` |
+| Circle | `centre (x,y)`, `radius` |
+| Arc | `centre (x,y)`, `radius`, `from` start angle `to` end angle |
+| Polyline | the number of vertices, `open` or `closed`, and `constant width` or the segment `widths` if it has any |
+| Ellipse | `center (x,y)`, `major radius`, `minor radius`, `rotation` |
+| Text | `height`, and the words in quotes |
+| Dimension | `measures`, the value measured from the points it is attached to, and any `text override` |
+| Table | the number of rows and columns |
+
+Lengths and angles use the drawing's units. By default, lengths show four decimals and angles show whole degrees. Change this with [UNITS](/reference/commands/units/).
+
+## Good to know
+
+- A dimension's report shows what it really measures, worked out from its points. If someone typed different text over the number, the `text override` shows that too, so you can spot it.
+- LIST changes nothing, so it adds no undo step.
+- The report can be long. Scroll the command line to read it all.
+- To list every object in the drawing, use [DBLIST](/reference/commands/dblist/).
+
+## Compared with AutoCAD
+
+LIST prints a block per object laid out like AutoCAD's, with the kind and layer first, then the space, handle and properties, then the geometry.
+
+## Next
+
+- Measure between two points with [DIST](/reference/commands/dist/).
+- See and change properties in the [PROPERTIES](/reference/commands/properties/) palette.
+- Find an area and perimeter with [AREA](/reference/commands/area/).

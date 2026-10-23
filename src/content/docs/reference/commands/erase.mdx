@@ -1,15 +1,75 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "ERASE"
-description: "The ERASE (E) command in Musa CAD: Delete selected objects from the drawing. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The ERASE (E) command in Musa CAD deletes the objects you select. How to pick objects, use windows and crossing windows, erase a selection at once, and bring objects back with OOPS or U."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "ERASE"
-tableOfContents: false
 ---
+
+ERASE deletes objects from the drawing. Select what you want to remove, press <kbd>Enter</kbd>, and it is gone.
+
+## How it works
+
+Type `E` and press <kbd>Enter</kbd>. Musa CAD asks you to select objects. Pick as many as you like, then press <kbd>Enter</kbd> to erase them all.
+
+```musacad
+Command: E
+Select objects: (pick a line)
+1 found.
+Select objects: (pick another line)
+1 found, 2 total.
+Select objects: ↵
+```
+
+If objects are already selected when you start ERASE, they are erased at once, without the `Select objects:` question.
+
+With objects selected and no command running, you can also press <kbd>Delete</kbd>. Musa CAD erases them and says `Erased selection.`
+
+## Options
+
+At `Select objects:` you can type a keyword instead of picking. These are the ones you will use most:
+
+| Option | What it does |
+|---|---|
+| **ALL** (`ALL`) | Selects every object you can select. |
+| **Last** (`L`) | Selects the newest object in the drawing. |
+| **Previous** (`P`) | Selects again the objects the last edit worked on. |
+| **Window** (`W`) | Asks for two corners and takes the objects that lie completely inside, whichever way you go. |
+| **Crossing** (`C`) | Asks for two corners and takes the objects inside or touching the box. |
+| **Remove** (`R`) | The prompt changes to `Remove objects:`, and what you pick is taken out of the set. **Add** (`A`) switches back. |
+| **Undo** (`U`) | Takes back the last pick or window. |
+| <kbd>Enter</kbd> | Erases the set and ends the command. With nothing selected, the command ends and nothing is erased. |
+
+[SELECT](/reference/commands/select/) explains every keyword, including Fence, WPolygon, CPolygon, Group and SIngle.
+
+## Selecting objects
+
+At `Select objects:` you build up the set of objects to erase. Each pick or window adds to it, and Musa CAD says how many it found, such as `1 found.` or `2 found, 5 total.`
+
+- **Click** an object to add it.
+- **Click an empty spot, then click again** to draw a box. Going from left to right makes a window: it takes only objects that lie completely inside. Going from right to left makes a crossing window: it also takes objects that only touch it.
+- **Press and drag** to draw a free shape, called a lasso. Start dragging to the right for a window, to the left for a crossing.
+- Hold <kbd>Shift</kbd> and **click** a selected object to take it out again.
+- Press <kbd>Enter</kbd>, or right-click, when the set is complete.
+
+## Good to know
+
+- Erased something by mistake? [OOPS](/reference/commands/oops/) brings back the objects the last ERASE removed, and keeps everything you did since. It says how many came back, such as `3 object(s) restored.`, or `OOPS: nothing to restore.` if there is nothing.
+- [U](/reference/commands/u/) also undoes the erase. One ERASE is one undo step, however many objects it removed.
+- Objects on layers that are off, frozen or locked cannot be selected, so ERASE cannot remove them. Unlock the layer first.
+- ERASE does not print a message when it is done. The objects simply disappear.
+
+## Compared with AutoCAD
+
+ERASE works the way AutoCAD users expect: the same `Select objects:` step with the same keywords, a selection made beforehand is erased at once, and OOPS brings the last set back.
+
+## Next
+
+- Bring back the last erased objects with [OOPS](/reference/commands/oops/).
+- Learn every way to choose objects with [SELECT](/reference/commands/select/).
+- Read more about changing drawings in [Modifying objects](/user-manual/modifying/).

@@ -1,0 +1,81 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Drawing
+description: How drawing works in Musa CAD. Starting commands, answering prompts and options, and the tools for lines, polylines, circles, arcs, rectangles, curves, hatches, construction lines and points.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Drawing
+  order: 1
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+Everything in a drawing is made by a command. This chapter shows how commands talk to you, then walks through the tools for each kind of shape.
+
+## How commands work
+
+Type a command's name, or its short alias, and press <kbd>Enter</kbd>. `L` starts LINE, `C` starts CIRCLE, `REC` starts RECTANG. You don't need to click in a box first: with [Dynamic Input](/user-manual/dynamic-input/) on, what you type appears next to the cursor. The ribbon buttons start the same commands.
+
+The command then asks you questions, one at a time. Each question is a **prompt**:
+
+```musacad
+Command: C
+Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 30,40
+Specify radius of circle or [Diameter] <10.0000>: ↵
+```
+
+- **Square brackets** list the options. Type the capital letters of one to choose it: `D` for Diameter, `T` for Ttr. Some options have their capital letters in the middle, such as `cuTting edges`, where you type `T`.
+- **Angle brackets** show a default. Press <kbd>Enter</kbd> to accept it.
+- **Points** can be clicked or typed. [Precision and drafting aids](/user-manual/precision/) explains every way to give an exact point.
+
+A few keys work the same in every command:
+
+| Key | What it does |
+|---|---|
+| <kbd>Enter</kbd> | Accepts what you typed, or the default. At a prompt that repeats, such as LINE's next point, it ends the command. |
+| <kbd>Space</kbd> | The same as <kbd>Enter</kbd>, except while you are typing text. |
+| <kbd>Esc</kbd> | Cancels the command. What it already drew stays. |
+| <kbd>Enter</kbd> with no command running | Starts the last command again. |
+| Right-click during a command | The same as <kbd>Enter</kbd>. |
+| Right-click with no command running | A menu with **Repeat** for the last command, recent input, the clipboard and selection tools. |
+
+Undo a whole command with [U](/reference/commands/u/) or <kbd>Ctrl</kbd>+<kbd>Z</kbd>. To run any command over and over until you press <kbd>Esc</kbd>, type `MULTIPLE` and then the command's name.
+
+## Lines and polylines
+
+A **line** is a single straight segment. LINE keeps going, so one command can draw many lines, but each segment is its own object.
+
+A **polyline** is one object made of straight and curved segments. Select it and the whole outline is selected. Polylines can have widths, can be closed, and can be offset, filleted and measured as one shape. Use PLINE for outlines you will treat as one part. RECTANG and POLYGON also make closed polylines.
+
+<CommandList label="Line and polyline commands" names={['LINE', 'PLINE', 'RECTANG', 'POLYGON', 'MLINE', 'TRACE', 'SKETCH', 'BREAKLINE', 'REVCLOUD']} />
+
+## Circles, arcs and curves
+
+<CommandList label="Curve commands" names={['CIRCLE', 'ARC', 'ELLIPSE', 'DONUT', 'SPLINE', 'BLEND']} />
+
+CIRCLE remembers the last radius and offers it as the default next time. ARC has many ways to start: three points, or a start, a centre or an end followed by an angle, a length or a direction. Its page lists them all.
+
+## Hatches and fills
+
+A hatch fills an area with a pattern, a solid colour or a gradient. The easiest way is to click inside a closed area: Musa CAD finds the boundary around the point, and leaves holes such as circles inside unfilled. You can also select closed objects as the boundary.
+
+Hatches are drawn as real lines in a plot, so a PDF stays sharp at any zoom.
+
+<CommandList label="Hatch and fill commands" names={['HATCH', 'GRADIENT', 'HATCHEDIT', 'BOUNDARY', 'SOLID', 'WIPEOUT']} />
+
+## Construction lines, points and centre marks
+
+Construction lines run forever in one or both directions. They are useful as guides while you lay out a drawing. Points mark positions, and can be shown as a dot, a cross or other shapes.
+
+<CommandList label="Construction and marking commands" names={['XLINE', 'RAY', 'POINT', 'DIVIDE', 'MEASURE', 'CENTERLINE', 'CENTERMARK']} />
+
+## Next
+
+- Change what you drew in [Modifying](/user-manual/modifying/).
+- Place points exactly with [Precision and drafting aids](/user-manual/precision/).
+- Every drawing command, with every option, is in the [command reference](/reference/).

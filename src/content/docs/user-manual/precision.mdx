@@ -1,0 +1,109 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Precision and drafting aids
+description: How to place every point exactly in Musa CAD. Typed coordinates, object snaps and their keywords, FROM and midpoint input, ortho, polar and object snap tracking, grid and snap, and measuring what you drew.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Precision and drafting aids
+  order: 3
+---
+
+import CommandList from '../../../components/reference/CommandList.astro';
+
+A CAD drawing is only useful if its sizes are exact. Musa CAD gives you several ways to put a point exactly where it belongs. You can mix them freely, even within one command.
+
+## Type the coordinates
+
+Whenever a command asks for a point, you can type it instead of clicking:
+
+| You type | The point is |
+|---|---|
+| `40,25` | at X 40, Y 25, measured from the drawing's origin. |
+| `@100,0` | 100 to the right of the last point and 0 up. The `@` means "from the last point". |
+| `@50<30` | 50 away from the last point, in the direction 30 degrees. Angles go anticlockwise from the right. |
+| `50<30` | 50 from the origin, at 30 degrees. |
+| `50` | 50 along the direction the cursor points from the last point. This is called **direct distance entry**. |
+| `@` | the last point itself. |
+| `#40,25` | at X 40, Y 25 from the origin, even where Dynamic Input would read it as relative. |
+
+Lengths can also be typed as fractions or in feet and inches, such as `12 3/8` or `1'-6"`. A foot counts as twelve drawing units.
+
+After a typed point, Musa CAD repeats the point it understood on the next line, for example `= 100, 60  (relative @100, 0)`. If you typed something it cannot read, it says why and asks again.
+
+With [Dynamic Input](/user-manual/dynamic-input/) on, you type lengths and angles into boxes next to the cursor instead. Press <kbd>Tab</kbd> to move between them.
+
+## Object snaps
+
+Object snaps lock the cursor onto exact places on objects you already drew, such as the end of a line or the centre of a circle. When the cursor comes near one, a marker appears. Click, and the point is exactly there.
+
+**Running snaps** work all the time while object snap is on. Press <kbd>F3</kbd> to turn them on or off, and type `OS` to choose which ones run. To begin with, Endpoint, Center, Intersection and Extension are on.
+
+To use a snap **for one point only**, type its keyword when a command asks for a point, then click. You can also hold <kbd>Shift</kbd> and right-click to choose a snap from a menu.
+
+| Keyword | Snaps to |
+|---|---|
+| `END` | the nearest end of a line, arc or segment |
+| `MID` | the middle of a line, arc or segment |
+| `CEN` | the centre of a circle, arc or ellipse |
+| `GCEN` | the centre of a closed polyline |
+| `NOD` | a point object |
+| `QUA` | a quadrant of a circle or arc: its top, bottom, left or right |
+| `INT` | where two objects cross |
+| `APP` | where two objects would cross if they were extended |
+| `EXT` | along the extension of a line or arc, past its end |
+| `INS` | the insertion point of a block or text |
+| `PER` | the point that makes a right angle with an object |
+| `TAN` | the point where a line would touch a circle or arc |
+| `PAR` | a direction parallel to a line |
+| `NEA` | the nearest point on an object |
+| `NONE` | no snap for this point, even if running snaps are on |
+
+## Points from other points
+
+These words also work at any point prompt:
+
+- **`FROM`**: pick a base point, then type an offset from it, such as `@20,10`. Useful when the point you need is a set distance from a corner.
+- **`M2P`**: pick two points; the point is exactly halfway between them.
+- **`TK`**: tracking. Pick a series of points; each one moves along X or Y from the last. Press <kbd>Enter</kbd> to use the last one.
+- **`TT`**: pick a temporary point to track from, then move along a tracking line from it.
+
+## Ortho, polar tracking and object snap tracking
+
+| Aid | Key | What it does |
+|---|---|---|
+| Ortho | <kbd>F8</kbd> | Keeps the cursor to horizontal and vertical moves from the last point. |
+| Polar tracking | <kbd>F10</kbd> | Shows a tracking line when the cursor is near one of the polar angles, every 90 degrees to begin with. Change the increment from the status bar or with `POLARANG`. |
+| Object snap tracking | <kbd>F11</kbd> | Rest the cursor on a snap point for a moment, then move away: tracking lines run from it, so you can line a new point up with it. |
+
+With any of these showing a direction, type a length and press <kbd>Enter</kbd>. The point goes that far along it.
+
+## Grid and snap
+
+The grid is a pattern of lines in the background, to help you judge sizes. Snap makes the cursor jump in steps.
+
+| Aid | Key | Command |
+|---|---|---|
+| Grid | <kbd>F7</kbd> | [GRID](/reference/commands/grid/) sets the spacing, major lines and how it adapts as you zoom. |
+| Snap | <kbd>F9</kbd> | [SNAP](/reference/commands/snap/) sets the step. |
+
+[LIMITS](/reference/commands/limits/) can mark the edges of your drawing area. With checking on, points outside them are refused.
+
+## The settings in one place
+
+The Drafting Settings window (`DS` or `OS`) has a tab for each aid: snap and grid, polar tracking, object snaps, and Dynamic Input.
+
+<CommandList label="Drafting aid commands" names={['OSNAP', 'ORTHO', 'GRID', 'SNAP', 'LIMITS', 'UNITS']} />
+
+## Measure what you drew
+
+<CommandList label="Measuring commands" names={['DIST', 'ID', 'AREA', 'MEASUREGEOM', 'LIST', 'MASSPROP', 'CAL', 'QUICKCALC']} />
+
+## Next
+
+- Learn the keys for typing at the cursor in [Dynamic Input](/user-manual/dynamic-input/).
+- Add sizes to the drawing in [Annotation](/user-manual/annotation/).

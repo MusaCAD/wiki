@@ -1,15 +1,160 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "DIMSTYLE"
-description: "The DIMSTYLE (D, DST, DDIM) command in Musa CAD: Create and change dimension styles: text, arrows, units and colours, and the current style. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The DIMSTYLE (D) command in Musa CAD opens the Dimension Style Manager, where you make, change and choose dimension styles. Every button of the manager and every tab of the style editor, from arrows to units."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "DIMSTYLE"
-tableOfContents: false
 ---
+
+DIMSTYLE opens the Dimension Style Manager. A dimension style is a named set of choices for how dimensions look: the text height, the arrowheads, the colours, and how the numbers are written. Every dimension uses a style. Change the style, and every dimension that uses it changes with it.
+
+## How it works
+
+Type `D` and press <kbd>Enter</kbd> (`DST` and `DDIM` work too). The **Dimension Style Manager** opens and the command ends. Pick a style in the list, then use the buttons on the right. When you are done, click **Close**.
+
+```musacad
+Command: D
+(select Standard, click New..., type Mechanical and click OK)
+(on the Text tab set Text height to 3.5, then click OK)
+Dimension style "Mechanical" added.
+(click Set Current)
+"Mechanical" is now the current dimension style.
+```
+
+Every drawing has a style called **Standard**. New dimensions are drawn in the current style. To work with styles at the command line instead, for example in a script, use [-DIMSTYLE](/reference/commands/dash-dimstyle/).
+
+## The Dimension Style Manager
+
+| Part | What it does |
+|---|---|
+| **Current dimension style:** | The line at the top names the current style. |
+| **Styles** | The drawing's dimension styles. The current one is in bold. Double-click a style to modify it, or right-click it for **Set Current**, **Modify...**, **Rename...** and **Delete**. |
+| **List:** | **All styles**, or **Styles in use**: the styles that dimensions, leaders or tolerance frames use, plus Standard and the current style. |
+| **Preview of:** | A sample part dimensioned in the selected style, with a linear, an aligned, an angular and a radius dimension. It is drawn the same way the drawing draws dimensions. |
+| **Description** | A few lines about the selected style: its text height, its arrowheads, how its numbers read, and where moved text goes. |
+| **Set Current** | Makes the selected style current. Musa CAD says `"Mechanical" is now the current dimension style.` with that style's name. |
+| **New...** | Makes a new style, starting as a copy of the selected one. Type a name in **Create New Dimension Style** (it suggests `Copy of` and the selected name), click **OK**, then set the style up in the editor. |
+| **Modify...** | Opens the selected style in the editor. When you click **OK**, every dimension in that style changes at once. |
+| **Rename...** | Gives the selected style a new name. Standard cannot be renamed. |
+| **Delete** | Deletes the selected style after you confirm. Standard, the current style and a style in use cannot be deleted; hold the cursor over the button to see why. |
+| **Close** | Closes the manager. |
+
+## The style editor
+
+**New...** and **Modify...** open the style editor, titled **New Dimension Style:** or **Modify Dimension Style:** and the style's name. Its settings are on seven tabs. The **Preview** beside them changes as you change a setting. Click **OK** to keep your changes or **Cancel** to drop them.
+
+Every colour list offers **ByLayer** (the colour of the dimension's layer), seven named colours, and **Select Colour...** to choose any colour.
+
+### Lines
+
+| Setting | What it does |
+|---|---|
+| **Dimension lines** > **Colour:** | The colour of the dimension line. |
+| **Dimension lines** > **Lineweight:** | How thick the dimension and extension lines are, from the standard list. |
+| **Extension lines** > **Colour:** | The colour of the extension lines. |
+| **Extend beyond dim lines:** | How far the extension lines run past the dimension line. |
+| **Offset from origin:** | The small gap between the point measured and the start of the extension line. |
+
+### Symbols and Arrows
+
+| Setting | What it does |
+|---|---|
+| **Arrowheads:** | **Closed filled**, **Architectural tick**, **Open** or **Dot**. Leaders and multileaders drawn in this style use these arrowheads too. |
+| **Arrow size:** | How big the arrowheads are. |
+| **Colour:** | The colour of the arrowheads. |
+
+### Text
+
+| Setting | What it does |
+|---|---|
+| **Text height:** | How tall the dimension text is. |
+| **Text colour:** | The colour of the text. |
+| **Vertical:** | Where the text sits against the dimension line: **Centered**, **Above**, **Outside**, **JIS** or **Below**. |
+| **Horizontal:** | Where the text sits along a linear or aligned dimension: **Centered**, **At Ext Line 1**, **At Ext Line 2**, **Over Ext Line 1** or **Over Ext Line 2**. |
+| **View Direction:** | **Left-to-Right**, or **Right-to-Left** to read the text the other way. |
+
+### Fit
+
+| Setting | What it does |
+|---|---|
+| **Fit options** | When the text does not fit between the extension lines: **Move the text outside (best fit)**, **Always keep the text between the extension lines**, or **Always place the text outside**. |
+| **Text placement** | When the text is moved from its place, for example by dragging its grip: **Beside the dimension line (the line moves with it)**, **Over the dimension line, with a leader**, or **Over the dimension line, without a leader**. |
+
+### Primary Units
+
+| Setting | What it does |
+|---|---|
+| **Unit format:** | **Scientific**, **Decimal**, **Engineering**, **Architectural** or **Fractional**. |
+| **Precision:** | How many decimal places, or how fine a fraction. The list shows each choice as the numbers will read, such as `0.00`. |
+| **Fraction format:** | **Horizontal**, **Diagonal** or **Not stacked**. |
+| **Decimal separator:** | **'.' (Period)** or **',' (Comma)**. |
+| **Round off:** | Rounds every length to a multiple of this. 0 means no rounding. |
+| **Prefix:** and **Suffix:** | Text written before and after the value, such as a unit. On a radius or diameter dimension, a prefix takes the place of the R or the diameter sign. |
+| **Measurement scale factor:** | Every measured length is multiplied by this before it is written. |
+| **Zero suppression** | Tick **Leading (0.50 reads .50)** or **Trailing (12.50 reads 12.5)** to leave out those zeros. For feet and inches, **0 feet (0'-6" reads 6")** and **0 inches (1'-0" reads 1')** do the same. |
+| **Angular dimensions** > **Units format:** | **Decimal Degrees**, **Degrees Minutes Seconds**, **Gradians** or **Radians**. |
+| **Angular dimensions** > **Precision:** | **As linear**, or a number of decimal places for angles. |
+
+### Alternate Units
+
+| Setting | What it does |
+|---|---|
+| **Display alternate units** | Writes each length a second time, in other units, in brackets. |
+| **Unit format:**, **Precision:** | The format and the decimal places of the second value. |
+| **Multiplier for alt units:** | The length is multiplied by this for the second value. The Standard style has 25.4, which turns inches into millimetres. |
+| **Round distances to:** | Rounds the second value to a multiple of this. |
+| **Prefix:** and **Suffix:** | Text before and after the second value. |
+| **Placement:** | **After primary value** or **Below primary value**. |
+
+### Tolerances
+
+| Setting | What it does |
+|---|---|
+| **Method:** | **None**, **Symmetrical** (the value ± one amount), **Deviation** (a plus and a minus amount beside the value), **Limits** (the largest and smallest sizes) or **Basic** (the value in a box). It applies to every dimension in the style that has no tolerance of its own. |
+| **Precision:** | **As the primary units**, or a number of decimal places. |
+| **Upper value:** and **Lower value:** | The tolerance amounts. |
+| **Scaling for height:** | How tall the tolerance text is compared with the value. |
+
+Settings that a method does not use are greyed out.
+
+## Related system variables
+
+Each of these sets one value of the current style at the command line, which is handy in scripts. For example, `DIMTXT` asks `Enter new value for DIMTXT <2.5000>:` in the Standard style.
+
+| Variable | Setting |
+|---|---|
+| [DIMTXT](/reference/system-variables/dimtxt/), [DIMCLRT](/reference/system-variables/dimclrt/) | Text height, text colour |
+| [DIMASZ](/reference/system-variables/dimasz/), [DIMBLK](/reference/system-variables/dimblk/) | Arrow size, arrowheads |
+| [DIMCLRD](/reference/system-variables/dimclrd/), [DIMCLRE](/reference/system-variables/dimclre/), [DIMLWD](/reference/system-variables/dimlwd/) | Dimension line colour (arrowheads follow it), extension line colour, lineweight |
+| [DIMEXE](/reference/system-variables/dimexe/), [DIMEXO](/reference/system-variables/dimexo/) | Extend beyond dim lines, offset from origin |
+| [DIMTAD](/reference/system-variables/dimtad/), [DIMJUST](/reference/system-variables/dimjust/), [DIMTXTDIRECTION](/reference/system-variables/dimtxtdirection/) | Vertical, horizontal, view direction |
+| [DIMATFIT](/reference/system-variables/dimatfit/), [DIMTMOVE](/reference/system-variables/dimtmove/) | Fit options, text placement |
+| [DIMLUNIT](/reference/system-variables/dimlunit/), [DIMDEC](/reference/system-variables/dimdec/), [DIMFRAC](/reference/system-variables/dimfrac/), [DIMDSEP](/reference/system-variables/dimdsep/) | Unit format, precision, fraction format, decimal separator |
+| [DIMRND](/reference/system-variables/dimrnd/), [DIMLFAC](/reference/system-variables/dimlfac/), [DIMZIN](/reference/system-variables/dimzin/) | Round off, measurement scale factor, zero suppression |
+| [DIMAUNIT](/reference/system-variables/dimaunit/), [DIMADEC](/reference/system-variables/dimadec/) | Angle format and its precision |
+| [DIMALT](/reference/system-variables/dimalt/), [DIMALTU](/reference/system-variables/dimaltu/), [DIMALTD](/reference/system-variables/dimaltd/), [DIMALTF](/reference/system-variables/dimaltf/), [DIMALTRND](/reference/system-variables/dimaltrnd/) | Alternate units: on or off, format, precision, multiplier, rounding |
+| [DIMTFAC](/reference/system-variables/dimtfac/) | Tolerance scaling for height |
+
+## Good to know
+
+- Standard is always there. It cannot be renamed or deleted.
+- A new style starts as a copy of the style selected when you click **New...**, so select the closest one first.
+- A new style's name cannot contain `<`, `>`, `/`, `\`, `"`, `:`, `;`, `?`, `*`, `|`, `,`, `=` or a backquote (`` ` ``). Musa CAD says `A style name cannot contain` and the character. A name already in use is refused with `There is already a style called` and the name.
+- Changes to styles are not undo steps: [U](/reference/commands/u/) does not take them back. Use **Modify...** again to change a style back.
+- Styles are saved with the drawing.
+- To give a few dimensions their own values without changing the style, use [DIMOVERRIDE](/reference/commands/dimoverride/).
+
+## Compared with AutoCAD
+
+The Dimension Style Manager is laid out as AutoCAD's, and the editor has the same tabs. One difference: a dimension variable typed at the command line, such as `DIMTXT`, changes the current style itself. AutoCAD keeps such a change as an override of the style.
+
+## Next
+
+- Draw dimensions in the current style with [DIMLINEAR](/reference/commands/dimlinear/) or [DIM](/reference/commands/dim/).
+- Set the style of multileaders with [MLEADERSTYLE](/reference/commands/mleaderstyle/).
+- Read about dimensions and notes in [Annotation](/user-manual/annotation/).

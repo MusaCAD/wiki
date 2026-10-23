@@ -1,15 +1,96 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "COPY"
-description: "The COPY (CO, CP) command in Musa CAD: Duplicate selected objects at a specified offset. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The COPY (CO) command in Musa CAD places copies of selected objects and leaves the originals where they are. How to place one or many copies, type a distance, undo a copy, and lay copies out in a row with Array."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "COPY"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+COPY makes copies of objects and leaves the originals where they are. You can place many copies in one go, each one measured from the same base point.
+
+## How it works
+
+Type `CO` (or `CP`) and press <kbd>Enter</kbd>. Select the objects and press <kbd>Enter</kbd>. Click a base point, then click or type where each copy goes. Press <kbd>Enter</kbd> when you have placed enough.
+
+```musacad
+Command: CO
+Select objects: (click left of the circles, then right of them)
+2 found.
+Select objects: ↵
+Current settings: Copy mode = Multiple
+Specify base point or [Displacement/mOde] <Displacement>: (click the centre)
+Specify second point or [Array] <use first point as displacement>: @40,0
+Copy placed.
+Specify second point or [Array/Exit/Undo] <Exit>: @80,0
+Copy placed.
+Specify second point or [Array/Exit/Undo] <Exit>: ↵
+```
+
+<Figure id="cmd-copy" alt="Three identical pairs of circles, one inside the other, in a row. The left pair is black and labelled original, with its centre marked as point 1, the base point. The two blue pairs to the right are labelled @40,0 and @80,0." caption="One base point and two second points place two copies." />
+
+Every second point is measured from the base point, not from the last copy. So `@40,0` and then `@80,0` give copies 40 and 80 to the right. A copy follows the cursor before you click, so you can see where it will go.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **Displacement** (`D`) | Asks `Specify displacement <0.0000, 0.0000, 0.0000>:`. Type how far away the copy goes as X,Y, such as `40,0`. COPY places that one copy and ends. |
+| **mOde** (`O`) | Asks `Enter a copy mode option [Single/Multiple] <Multiple>:`. **Multiple** keeps asking for more copies. **Single** places one copy and ends. |
+| **Array** (`A`) | Places a row of copies at even steps. See below. |
+| **Undo** (`U`) | Takes back the last copy. It appears after the first copy. |
+| **Exit** (`E`) | Ends the command. <kbd>Enter</kbd> does the same once a copy is placed. |
+| <kbd>Enter</kbd> at **Specify base point** | Same as **Displacement**. |
+| <kbd>Enter</kbd> at the first **Specify second point** | Uses the base point's coordinates as the distance. A base point of `40,10` places the copy 40 right and 10 up. |
+
+## A row of copies with Array
+
+Type `A` at **Specify second point** to place several copies in a line:
+
+```musacad
+Specify second point or [Array] <use first point as displacement>: A
+Enter number of items to array: 4
+Specify second point or [Fit]: @25,0
+3 copies placed.
+```
+
+- The number counts the original, so `4` makes three copies. It must be 2 or more, or Musa CAD says `Requires an integer value of 2 or more.`
+- The point you give is the step from one item to the next: here, a copy every 25 units.
+- Type `F` (**Fit**) first, and the point is where the last copy goes instead. The copies are spread evenly up to it. Type `A` to switch back.
+
+## Selecting objects
+
+At `Select objects:` you build up the set of objects to copy. Each pick or window adds to it, and Musa CAD says how many it found, such as `1 found.` or `2 found, 5 total.`
+
+- **Click** an object to add it.
+- **Click an empty spot, then click again** to draw a box. Going from left to right makes a window: it takes only objects that lie completely inside. Going from right to left makes a crossing window: it also takes objects that only touch it.
+- **Press and drag** to draw a free shape, called a lasso. Start dragging to the right for a window, to the left for a crossing.
+- Hold <kbd>Shift</kbd> and **click** a selected object to take it out again.
+- Press <kbd>Enter</kbd>, or right-click, when the set is complete. If nothing is selected, COPY ends.
+
+If objects are already selected when you start COPY, it uses them and goes straight to the base point. You can also type a keyword at `Select objects:`, such as `ALL` for everything or `P` for the objects the last edit worked on. [SELECT](/reference/commands/select/) lists them all.
+
+## Good to know
+
+- The copy mode is kept until you close Musa CAD. The line `Current settings: Copy mode = Multiple` tells you which mode is on.
+- COPY remembers the distance of the last copy and offers it as the default at **Displacement**.
+- Each copy is its own undo step, both with **Undo** inside COPY and with [U](/reference/commands/u/) afterwards. After an **Array**, each copy in the row is a step of its own too, so **Undo** takes them back one at a time.
+- <kbd>Esc</kbd> ends COPY. The copies you already placed stay.
+- A copy is drawn on top of other objects, like a newly drawn one.
+- Objects on layers that are off, frozen or locked cannot be selected.
+
+## Compared with AutoCAD
+
+COPY uses the same prompts and options AutoCAD users know: **Displacement**, **mOde** with Single and Multiple, and **Array** with **Fit**.
+
+## Next
+
+- Make many copies in rows, columns, a circle or along a path with [ARRAY](/reference/commands/array/).
+- Make a mirror-image copy with [MIRROR](/reference/commands/mirror/).
+- Move objects instead of copying them with [MOVE](/reference/commands/move/).

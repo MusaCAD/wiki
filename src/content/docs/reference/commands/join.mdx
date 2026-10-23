@@ -1,15 +1,70 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
 title: "JOIN"
-description: "The JOIN (J) command in Musa CAD: Join collinear or connected objects into a single object. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+description: "The JOIN (J) command in Musa CAD joins lines, arcs, polylines and curves into one object. Lines on one line become one line, arcs on one circle one arc, and pieces whose ends meet one polyline. How to pick them and what you get."
+tier: assisted
 appliesTo: 0.8.0
-lastVerified: 2026-10-22
-status: stub
+lastVerified: 2026-10-23
+status: complete
 kind: command
 command: "JOIN"
-tableOfContents: false
 ---
+
+import Figure from '../../../../components/Figure.astro';
+
+JOIN turns several objects into one. A chain of lines and arcs becomes a single polyline that moves, offsets and selects as one object. Two pieces of a broken line become one line again.
+
+## How it works
+
+The quickest way: select the objects first, then type `J` and press <kbd>Enter</kbd>. Musa CAD joins them at once.
+
+Or type `J` and press <kbd>Enter</kbd> with nothing selected. Pick the source object, the one the result takes its layer and properties from. Then pick or window the objects to join to it, and press <kbd>Enter</kbd>.
+
+```musacad
+Command: J
+Select source object or multiple objects to join at once: (pick line 1)
+Select objects to join: (pick lines 2, 3 and 4)
+Select objects to join: ↵
+4 objects joined into a polyline.
+```
+
+<Figure id="cmd-join" alt="Before, on the left: in the top row, four separate lines numbered 1 to 4 form a path with a peak in the middle, with every end marked; in the bottom row, two lines numbered 1 and 2 lie on one line with a gap between them. After, on the right: the top row is one blue polyline of the same shape, and the bottom row is one blue line running from the far end of the first to the far end of the second, with no gap." caption="A chain becomes one polyline; two lines on one line become one line." />
+
+## What JOIN makes
+
+What you get depends on what you join.
+
+| You join | You get |
+|---|---|
+| Lines that all lie along one line | One line, from one far end to the other. Any gaps between them are filled. Musa CAD says, for example, `Joined 2 lines into one line.` |
+| Arcs that all lie on one circle | One arc. The gaps between the arcs are filled, all but the largest one, which stays open. If they reach all the way round, a circle. |
+| Elliptical arcs that all lie on one ellipse | One elliptical arc, filled in the same way, or a whole ellipse. |
+| Splines of the same degree whose ends meet | One spline. |
+| Lines, arcs and open polylines whose ends meet | One polyline. If the chain closes on itself, a closed polyline, and Musa CAD says `4 objects joined into a closed polyline.` |
+
+## Options
+
+| Option | What it does |
+|---|---|
+| **cLose** (`L`) | Offered when the source is an arc or an elliptical arc: `Select arcs to join to source or [cLose]:`. Makes the source whole. Musa CAD says `Arc converted to a circle.` or `Elliptical arc converted to an ellipse.` |
+| <kbd>Enter</kbd> at **Select objects to join** | Joins what is selected and ends the command. |
+
+## Good to know
+
+- For a polyline, the ends must meet exactly. If none do, Musa CAD says `JOIN: the selected objects don't share endpoints.` Use object snaps when you draw, or close small gaps with [PEDIT](/reference/commands/pedit/) **Multiple**, **Join**, which asks for a fuzz distance.
+- JOIN needs at least two objects it can join, or it says `JOIN: select at least two joinable objects (lines, arcs, open polylines).`
+- Closed polylines have no free ends and are left as they are, as are objects JOIN cannot join, such as text.
+- If the selection holds several separate chains, each becomes its own polyline, for example `Joined 6 objects into 2 polylines.`
+- The new object takes the layer and properties of the source.
+- The whole join is one undo step.
+
+## Compared with AutoCAD
+
+As in AutoCAD, lines on one line become one line, arcs on one circle become one arc, and a chain of mixed pieces becomes a polyline. JOIN itself has no fuzz distance; PEDIT's Multiple Join has one, as in AutoCAD.
+
+## Next
+
+- Edit the joined polyline's vertices and width with [PEDIT](/reference/commands/pedit/).
+- Offset the joined outline in one go with [OFFSET](/reference/commands/offset/).
+- Turn a polyline back into separate lines and arcs with [EXPLODE](/reference/commands/explode/).
