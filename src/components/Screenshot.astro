@@ -1,0 +1,27 @@
+---
+// A screenshot is a manual asset: it carries the version it was captured with, and the
+// staleness check reads it. Prefer <Figure> (engine-rendered) wherever a plot can show the thing.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+	src: ImageMetadata;
+	/** What the picture shows. Required. */
+	alt: string;
+	caption?: string;
+	/** The engine release the picture was taken with. */
+	capturedWith: string;
+	/** Load eagerly when it is the first thing on the page. */
+	eager?: boolean;
+}
+const { src, alt, caption, capturedWith, eager = false } = Astro.props;
+if (!alt || !alt.trim()) throw new Error('<Screenshot>: alt text is required.');
+---
+
+<figure class="mc-shot not-content" data-captured-with={capturedWith}>
+	<Image src={src} alt={alt} widths={[640, 960, 1280]} sizes="(max-width: 50rem) 100vw, 42rem" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+	<figcaption>
+		{caption && <span>{caption} </span>}
+		<span class="mc-figure-meta" style="display:inline">Musa CAD {capturedWith}</span>
+	</figcaption>
+</figure>

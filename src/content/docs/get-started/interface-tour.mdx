@@ -1,0 +1,78 @@
+---
+title: A tour of the interface
+description: The parts of the Musa CAD window named, so the rest of the wiki makes sense. The ribbon and its seven tabs, the application menu, the Quick Access Toolbar, drawing tabs, dynamic input, the command line, the status bar and the Properties palette.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  order: 7
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import overview from '../../../assets/screenshots/overview.png';
+import commandEntry from '../../../assets/screenshots/command-entry.png';
+import dynamicInput from '../../../assets/screenshots/dynamic-input.png';
+
+<Screenshot src={overview} alt="The Musa CAD window. Top: the application menu button with the Musa mark, the Quick Access Toolbar, and the ribbon on its Home tab with the Draw, Modify, Annotation, Layers, Block, Properties, Groups, Utilities and Clipboard panels. Below the ribbon, three drawing tabs. The drawing area shows a house floor plan with one exterior wall selected, its grips drawn as small squares. On the right, the Properties palette lists the wall's general properties and geometry. At the bottom, the status bar with the OSNAP, GRID, ORTHO, SNAP, POLAR, OTRACK and DYN toggles." caption="The window on its Home tab, with a wall selected and the Properties palette open." capturedWith="0.8.0" eager />
+
+The window is laid out as AutoCAD's Drafting & Annotation workspace is, and uses the same names, so this page is short. The application is dark-themed throughout, dialogs included.
+
+## The ribbon
+
+Seven tabs, in this order: **Home**, **Insert**, **Annotate**, **Parametric**, **View**, **Manage**, **Output**. Each holds panels of tools: large buttons for the common ones, stacked small buttons for the rest, and a chevron under a label where a tool has several methods (Circle's six, Arc's eleven, the dimension kinds). A small arrow at the bottom right of some panels opens the related dialog, for example the Dimension Style Manager from the Annotation panel.
+
+Hover any button and its tooltip shows the command's name, its alias and what it does, straight from the application's command table. A button drawn disabled is a tool Musa CAD does not have yet, standing in AutoCAD's position; its tooltip says so. The whole Parametric tab is of that kind at version 0.8.0.
+
+The Home tab's panels: Draw · Modify · Annotation · Layers · Block · Properties · Groups · Utilities · Clipboard. The ribbon collapses its panels progressively as the window narrows, and contextual tabs appear while you edit a hatch or text. Tabs and panels can be shown, hidden and minimized from the View tab's Interface panel.
+
+## The application menu and the Quick Access Toolbar
+
+The Musa mark at the top left opens the application menu: New, Open…, Save, Save As…, Import (DXF…, DWG…), Export (DXF…, DWG…), Plot…, DWG Setup…, Options…, Check for Updates…, Save Bug Report…, About Musa CAD…, Exit.
+
+Beside it, the Quick Access Toolbar: New, Open, Save, Save As, Undo, Redo, Plot. Its drop-down ticks the tools shown, can add Plot Preview, Batch Plot, Match Properties, Layer, Properties and Data Extraction, and can show the toolbar below the ribbon.
+
+## Drawing tabs
+
+Several drawings open at once, each in a tab above the drawing area. <kbd>Ctrl</kbd>+<kbd>Tab</kbd> and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Tab</kbd> cycle them; <kbd>Ctrl</kbd>+<kbd>W</kbd> closes the current one. Each drawing keeps its own view, selection and undo history, and the clipboard carries objects between them.
+
+## Typing commands: dynamic input and the command line
+
+<Screenshot src={commandEntry} alt="A house plan with REC typed in a small box beside the crosshair. Below the box, a list offers RECTANG and RECTANGLE, each with its one-line description." caption="Commands typed at the cursor; the matches offered as you type." capturedWith="0.8.0" />
+
+By default, **Dynamic Input** is on (<kbd>F12</kbd>): you type at the cursor, the autocomplete list offers matching commands with their descriptions, and each prompt appears beside the crosshair, with the length and angle of what you are drawing shown as fields you can type into. <kbd>F12</kbd> turns it off, which brings back the classic command-line bar at the bottom of the window. Either way the prompts are the same.
+
+<Screenshot src={dynamicInput} alt="A wide polyline being drawn away from a house plan. At the cursor, two fields show the segment's length and its angle, and a dashed polar tracking line holds the segment at 45 degrees." caption="Dynamic input: the length and angle at the cursor, polar tracking holding 45°." capturedWith="0.8.0" />
+
+Typing conventions, the same as AutoCAD's: a command by its name or alias; options by their capitalised letters; <kbd>Enter</kbd> or <kbd>Space</kbd> to accept; <kbd>Esc</kbd> to cancel; <kbd>Enter</kbd> at an empty prompt repeats the last command; <kbd>Up</kbd> and <kbd>Down</kbd> walk the history.
+
+## The status bar
+
+Along the bottom, the drafting-mode toggles, each with its function key:
+
+| Toggle | Key | What it does |
+|---|---|---|
+| OSNAP | <kbd>F3</kbd> | Running object snaps: endpoint, midpoint, centre, intersection and the rest |
+| 3DOSNAP | <kbd>F4</kbd> | 3D object snap, kept for parity; a 2D drawing has nothing for it to snap to |
+| DUCS | <kbd>F6</kbd> | Dynamic UCS, kept for parity; it follows faces a 2D drawing does not have |
+| GRID | <kbd>F7</kbd> | The reference grid |
+| ORTHO | <kbd>F8</kbd> | Horizontal and vertical only |
+| SNAP | <kbd>F9</kbd> | Grid snap |
+| POLAR | <kbd>F10</kbd> | Polar tracking; the drop-down sets the increment angle |
+| OTRACK | <kbd>F11</kbd> | Object snap tracking |
+| DYN | <kbd>F12</kbd> | Dynamic Input |
+
+When a newer release is out, the status bar says so quietly on the right; clicking it opens the Update window. Options (`OP`) turns the daily check off.
+
+## The Properties palette, layers and the right-click menu
+
+`PR` (or <kbd>Ctrl</kbd>+<kbd>1</kbd> is not bound; use the Properties button on the Home tab's Properties panel) opens the **Properties palette**, docked on the right: the selected objects' layer, colour, linetype, lineweight, transparency and geometry, editable in place. With several objects selected, a field that differs between them reads *VARIES*.
+
+The **Layers** panel on the Home tab carries the current-layer drop-down, where a click on a layer's icons switches it on or off, frozen or thawed, locked or unlocked without closing the list; `LA` opens the Layer Properties Manager.
+
+Right-click on empty canvas with nothing running: Repeat, Recent Input, Clipboard, Isolate, Erase, Select Similar, Quick Select, Deselect All, Undo, Redo, Properties.
+
+## Palettes and workspaces
+
+The View tab's Palettes panel opens the Properties palette, the tool palettes and the calculator; its Interface panel shows and hides ribbon tabs and panels and switches workspaces. Keyboard shortcuts of your own are set in **CUI** (Manage tab, Customization panel), and command aliases of your own in **ALIASEDIT**, which also reads an AutoCAD `acad.pgp`.

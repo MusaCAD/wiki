@@ -1,0 +1,44 @@
+name: Problem with a wiki page
+description: Something on a page is wrong, missing, unclear or out of date.
+title: "Page problem: "
+labels: ["page-problem"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The address of the page (filled in when you came from "Report a problem with this page").
+      placeholder: https://wiki.musacad.org/get-started/install-linux/
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Musa CAD version the page says it was checked against
+      placeholder: 0.8.0
+  - type: input
+    id: yourversion
+    attributes:
+      label: Musa CAD version you are using
+      placeholder: 0.8.0 (Help ▸ About, or musacad --version)
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem
+      options:
+        - Wrong (the page says something the application does not do)
+        - Missing (something the page should cover)
+        - Unclear
+        - Out of date
+        - Broken link or image
+        - Accessibility
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What is wrong, and what did you expect
+      description: Quote the sentence if you can. If the application behaves differently, say what it does.
+    validations:
+      required: true

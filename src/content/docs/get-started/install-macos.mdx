@@ -1,0 +1,48 @@
+---
+title: Install on macOS (preview)
+description: The macOS build of Musa CAD is a preview. The command line works; the drawing area needs OpenGL 4.5, which macOS does not provide, and the application says so at startup.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+platforms: [macos]
+sidebar:
+  order: 4
+---
+
+import Platforms from '../../../components/Platforms.astro';
+
+<Platforms items={['macos']} />
+
+:::caution[Read this first]
+On macOS, Musa CAD's drawing area does not open. The viewport renders through OpenGL 4.5 Core, macOS stops at OpenGL 4.1 and has deprecated it, so the application shows a message at startup saying what it found, what it needs, and that a Metal or OpenGL 4.1 render backend is the missing piece, then exits with code 2. Desktop support on macOS is tracked in [issue #2](https://github.com/MusaCAD/MusaCAD/issues/2).
+:::
+
+What does work is the command line: `--check` to validate a drawing and `--plot` to plot it to PDF, headlessly. That is what the macOS build is for today, and what the project's own workflow verifies before publishing it.
+
+## What you get
+
+`MusaCAD-<version>-arm64.dmg` on each release's page, built for Apple silicon. It contains `MusaCAD.app` with Qt bundled.
+
+## Install
+
+1. Download the disk image from the [latest release](https://github.com/MusaCAD/MusaCAD/releases/latest) and open it.
+2. Drag `MusaCAD.app` to Applications.
+3. If macOS refuses to open it because it cannot check the developer, right-click the app and choose **Open** once. The project signs and notarizes the build only when its signing secrets are configured; treat a release as unsigned unless its notes say otherwise.
+
+## Use the command line
+
+The executable is inside the bundle:
+
+```sh
+/Applications/MusaCAD.app/Contents/MacOS/musacad_app --version
+/Applications/MusaCAD.app/Contents/MacOS/musacad_app --check part.musa
+/Applications/MusaCAD.app/Contents/MacOS/musacad_app --plot part.musa part.pdf --paper A4
+```
+
+Exit codes and options are the same as on every other platform; `--help` prints them. The scripting section of this wiki will cover them in full.
+
+## When the viewport comes
+
+The architecture already keeps the GPU behind a backend seam; a Metal or reduced OpenGL 4.1 path behind it is the work. When it lands, the release notes will say so and this page will change.

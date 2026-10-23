@@ -1,0 +1,54 @@
+---
+title: Build from source
+description: Musa CAD is clone-and-build clean. The prerequisites, the three commands, where the binary lands, and where the full per-platform guide lives.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: partial
+kind: guide
+sidebar:
+  order: 5
+---
+
+Musa CAD builds from a clone with CMake presets and no third-party CAD dependency. This page is the short version for a Linux desktop. The developer section of this wiki will carry the per-platform guide, the sanitizer presets and the packaging; until it does, [BUILD.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/BUILD.md) in the repository is the reference, and this page is marked partial for that reason.
+
+## Prerequisites
+
+| What | Minimum |
+|---|---|
+| C++23 compiler | GCC 13, Clang 17, or MSVC 19.38 (Visual Studio 2022 17.8) |
+| CMake | 3.25 |
+| Ninja | 1.10 |
+| Qt 6 (Core, Gui, Widgets) | 6.4 |
+| Vulkan loader and headers | 1.3 (located at configure time; the shipped viewport uses OpenGL) |
+
+On Debian or Ubuntu:
+
+```sh
+sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev libvulkan-dev
+```
+
+Everything else the build needs it fetches itself (Catch2 for the tests).
+
+## Build
+
+```sh
+git clone https://github.com/MusaCAD/MusaCAD.git
+cd MusaCAD
+cmake --preset release
+cmake --build --preset release
+```
+
+The application lands at `build/release/bin/musacad_app`. The `dev` preset builds Debug with AddressSanitizer and UndefinedBehaviorSanitizer and the unit tests; `ctest --preset dev` runs them.
+
+```sh
+./build/release/bin/musacad_app --version
+```
+
+## DWG
+
+DWG support is not built in and adds no build dependency: the application runs an external converter (ODA File Converter or LibreDWG's `dwg2dxf`) as a separate process. A fresh build handles DXF; DWG Setup in the application menu downloads the converter.
+
+## Windows and macOS
+
+Both are built by the project's GitHub workflows (`build-windows.yml`, `build-macos.yml`), and BUILD.md describes the Visual Studio and Qt setup for a local Windows build. The macOS build produces a working command line and a viewport that cannot open; see [Install on macOS](/get-started/install-macos/).

@@ -1,0 +1,43 @@
+{
+  "name": "musacad-wiki",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "The Musa CAD Wiki — wiki.musacad.org. Content CC BY-SA 4.0; code samples and example drawings CC0.",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "render": "node scripts/render-examples.mjs",
+    "prebuild": "node scripts/render-examples.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:staleness": "node scripts/check-staleness.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "audit": "node scripts/audit.mjs",
+    "verify": "npm run check:contrast && npm run check:staleness && npm run build && npm run check:links && npm run audit"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.4",
+    "@astrojs/starlight": "^0.42.6",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/space-grotesk": "^5.2.10",
+    "@fontsource/opendyslexic": "^5.3.0",
+    "astro": "^7.2.10",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@axe-core/playwright": "^4.14.0",
+    "lighthouse": "^13.5.0",
+    "playwright-core": "^1.64.1",
+    "typescript": "^5.6.3",
+    "unist-util-visit": "^5.1.0",
+    "yaml": "^2.9.1"
+  }
+}

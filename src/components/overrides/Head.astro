@@ -1,0 +1,26 @@
+---
+// Starlight's <head>, plus: the reading settings applied before first paint (no flash of the
+// wrong size or theme contrast), and the wiki's own meta.
+import Default from '@astrojs/starlight/components/Head.astro';
+---
+
+<Default><slot /></Default>
+
+{/* Inlined on purpose: it must run before the first paint. Keys match tokens.css. */}
+<script is:inline>
+  (() => {
+    try {
+      var raw = localStorage.getItem('mc-reading');
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      var d = document.documentElement.dataset;
+      if (s.fontSize) d.fontSize = s.fontSize;
+      if (s.lineHeight) d.lineHeight = s.lineHeight;
+      if (s.measure) d.measure = s.measure;
+      if (s.codeSize) d.codeSize = s.codeSize;
+      if (s.font) d.font = s.font;
+      if (s.motion) d.motion = s.motion;
+      if (s.contrast) d.contrast = s.contrast;
+    } catch (e) {}
+  })();
+</script>

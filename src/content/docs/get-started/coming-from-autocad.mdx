@@ -1,0 +1,69 @@
+---
+title: Coming from AutoCAD
+description: For drafters who know AutoCAD. What carries over unchanged, what is different, what is not in Musa CAD yet, and how to bring your aliases, shortcuts and files with you.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: partial
+kind: guide
+sidebar:
+  order: 8
+---
+
+Musa CAD mirrors AutoCAD's conventions on purpose. This page is the honest account of how far that goes at version 0.8.0: what you can rely on, what behaves differently, and what simply is not there. It is marked partial because the command-by-command comparison belongs to the command reference, which is being generated; this page will link into it as it lands.
+
+## What carries over
+
+| Habit | In Musa CAD | Notes |
+|---|---|---|
+| Typing commands and aliases | Yes | `L`, `C`, `PL`, `A`, `REC`, `E`, `M`, `CO`, `RO`, `SC`, `MI`, `O`, `TR`, `EX`, `F`, `CHA`, `H`, `DLI`, `DAL`, `DAN`, `DRA`, `DDI`, `LE`, `MT`, `DT`, `B`, `I`, `X`, `LA`, `Z`, `P`, `U` and the rest, case-insensitive, with autocomplete. |
+| The prompts | Yes | `Specify next point or [Close/Undo]:`, options by capital letters, defaults in angle brackets, <kbd>Enter</kbd> to repeat, <kbd>Esc</kbd> to cancel. |
+| `Select objects:` | Yes | Every edit command starts there when nothing is selected, with Window, Crossing, BOX, ALL, Fence, WPolygon, CPolygon, Group, Last, Previous, Add, Remove, Multiple, Undo, AUto and SIngle, and "N found". Noun-verb (select first) works too. |
+| Selection by mouse | Yes | Pick, window left-to-right, crossing right-to-left, click-click boxes, press-and-drag lasso with <kbd>Space</kbd> cycling window, crossing and fence; <kbd>Shift</kbd>+click removes; <kbd>Ctrl</kbd>+<kbd>A</kbd> selects all; selection cycling on overlapping objects. PICKBOX, PICKFIRST, PICKADD, PICKAUTO, PICKDRAG, HIGHLIGHT, SELECTIONPREVIEW and SELECTIONCYCLING exist. |
+| Coordinates | Yes | `10,20`, `@30,0`, `@30<45`, `30<45`; `#` for absolute inside dynamic input; feet, inches and fractions at every prompt. |
+| The ribbon | Yes | Home, Insert, Annotate, Parametric, View, Manage, Output, with AutoCAD's panels and groupings. |
+| Function keys | Yes | <kbd>F3</kbd> OSNAP, <kbd>F7</kbd> GRID, <kbd>F8</kbd> ORTHO, <kbd>F9</kbd> SNAP, <kbd>F10</kbd> POLAR, <kbd>F11</kbd> OTRACK, <kbd>F12</kbd> DYN; <kbd>F4</kbd> and <kbd>F6</kbd> switch and are kept, with nothing to act on in 2D. |
+| Object snaps | Yes | Running snaps, single-pick overrides typed (`END`, `MID`, `CEN`, `INT`, `TAN`, `PER`, `EXT`, `NEA`, `QUA`, `NOD`, `INS`, `APP`, `PAR`, `GCEN`, `NON`) or from <kbd>Shift</kbd>+right-click; `FROM`, `M2P`, `TT`, `TK`; temporary override keys held at a prompt. |
+| Grips | Yes | Grips on every object, hot grips, stretch, move, the dimension text grip. |
+| Layers, linetypes, lineweights | Yes | The Layer Properties Manager with states, filters, VP freeze and a plot-style column; `-LAYER` at the command line; LAYISO, LAYOFF, LAYFRZ and the rest; ByLayer and ByBlock. |
+| Blocks, attributes, xrefs | Yes | BLOCK, WBLOCK, INSERT, the Block Editor (BEDIT), ATTDEF, EATTEDIT, BATTMAN, ATTSYNC, REFEDIT, XREF attach, detach and reload; raster images with clipping. |
+| Dimensions | Yes | Linear, aligned, angular, radius, diameter, jogged, ordinate, arc length; DIMCONTINUE and DIMBASELINE; QDIM; DIMEDIT, DIMTEDIT, DIMSPACE, DIMBREAK; associative dimensions; the Dimension Style Manager with named styles and the dimension variables. |
+| Text, leaders, tables | Yes | TEXT with the fifteen justifications, MTEXT, text styles; LEADER, QLEADER, MLEADER with styles; TABLE with styles and data links to CSV and Excel. |
+| Layouts and plotting | Yes | Layouts, MVIEW viewports, MSPACE and PSPACE, page setups, PLOT to PDF or a printer, PREVIEW, PUBLISH, EXPORTPDF; the plot style is colour-dependent (CTB): None, Monochrome, Grayscale. |
+| Inquiry | Yes | DIST, ID, AREA, LIST, MEASUREGEOM, MASSPROP, TIME, STATUS, CAL and QUICKCALC. |
+| Your `acad.pgp` aliases | Yes | ALIASEDIT keeps your own aliases in a PGP file and can load an `acad.pgp`. |
+| Keyboard shortcuts of your own | Yes | CUI, Keyboard Shortcuts: a key per command, with a warning when the key is already used. |
+| Express Tools | Some | TEXTMASK, TXTEXP, TCOUNT, TEXTFIT, BURST, GATTE, EXTRIM, NCOPY, MOCORO, FLATTEN, VPSYNC, VPSCALE, XLIST, ATTOUT, ATTIN, MPEDIT, DIMEX, DIMIM, TFRAMES. |
+
+## What is different
+
+- **The native format is `.musa`,** a readable text format, not DWG. DXF is read and written natively. DWG goes through the free ODA File Converter, run as a separate program; **DWG Setup** downloads it for you in one click. What an import could not carry is named in the result, never silently dropped.
+- **Dynamic Input is on by default** and the classic command line is one <kbd>F12</kbd> away. The prompts are the same in both.
+- **The interface is dark only,** dialogs included.
+- **Text uses the stroke font or any TrueType or OpenType font on your system.** SHX shape files are not parsed; a drawing that names one gets a faithful substitute, and the substitution is reported.
+- **Fonts and glyphs are checked for you.** `musacad --check` reports text that overlaps other text, leaves the sheet's frame, or uses a character the font cannot draw, for use in a pipeline.
+- **No account, no licence, no telemetry.** The only network use is the once-a-day check for a new version (Options turns it off) and the converter download you ask for.
+- **Releases are frequent and the format moves with them:** a file saved by a newer version needs that version or newer. Older files always open.
+
+## What is not there yet
+
+Stated plainly, as the project states it in its roadmap:
+
+- **3D.** Musa CAD is 2D. If your work is 3D, it is not the tool.
+- **AutoLISP, VBA, .NET, ObjectARX, plug-ins.** No scripting inside the application. The headless command line checks and plots drawings; that is the automation surface.
+- **Parametric constraints.** The Parametric tab is there, every button disabled, each tooltip saying so.
+- **Sheet sets**, **dynamic blocks**, **annotative objects**, **named plot styles (STB)**, and **true SHX parsing** are not implemented at 0.8.0. The repository's [COMMANDS.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/COMMANDS.md) is the per-command table, and [AUTOCAD_CONFIG.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/AUTOCAD_CONFIG.md) the option-by-option status of the dimension style and options settings.
+- **Every last option.** Most draw, modify and annotate commands follow AutoCAD option for option; some settings are still on the list, and the command reference will say which, command by command, once it is generated.
+
+## Bringing your work across
+
+1. **Files.** Open DXF directly. For DWG, run DWG Setup once and let it download the converter, then File ▸ Import ▸ DWG…; read the import result, which names anything skipped.
+2. **Aliases.** ALIASEDIT, then load your `acad.pgp`.
+3. **Shortcuts.** CUI, assign the keys you are used to.
+4. **Habits.** Nothing to do. Type `L`, draw a line.
+
+## What this page does not cover yet
+
+A command-by-command comparison with each command's options, and a list of system variables that exist in both, with their differences. Both come from the generated command reference and will be linked here when it lands.
+
+The site's [AutoCAD alternative](https://musacad.org/autocad-alternative/) page has the shorter, side-by-side version of this comparison.

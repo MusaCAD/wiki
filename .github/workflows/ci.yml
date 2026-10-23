@@ -1,0 +1,84 @@
+name: Build, check and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Starlight's "last updated" reads git history
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install poppler (pdftocairo) for the engine-rendered figures
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils libfuse2
+
+      - name: Cache the pinned engine release
+        uses: actions/cache@v4
+        with:
+          path: .cache/engine
+          key: engine-${{ hashFiles('wiki.config.mjs') }}
+
+      - run: npm ci
+
+      - name: Tokens — contrast, both themes
+        run: npm run check:contrast
+
+      - name: Pages — staleness and coverage
+        run: npm run check:staleness
+
+      - name: Build (renders the examples with the pinned engine first)
+        run: npm run build
+
+      - name: Links and anchors
+        run: npm run check:links
+
+      - name: Accessibility, keyboard, layout and performance gates
+        run: npm run audit
+
+      - name: Layout screenshots (320 / 768 / 1280 / 2560)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: layout-screenshots
+          path: .cache/shots
+          if-no-files-found: ignore
+
+      - uses: actions/configure-pages@v5
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

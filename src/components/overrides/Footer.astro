@@ -1,0 +1,55 @@
+---
+// Edit · Report a problem · last updated · prev/next, then the wiki's footer: the origin,
+// links, licences and the trademark line every page carries.
+import EditLink from '@astrojs/starlight/components/EditLink.astro';
+import LastUpdated from '@astrojs/starlight/components/LastUpdated.astro';
+import Pagination from '@astrojs/starlight/components/Pagination.astro';
+import { Icon } from '@astrojs/starlight/components';
+import { ENGINE, SITE_HOME, WIKI_REPO, FLATHUB_URL } from '../../../wiki.config.mjs';
+import type { WikiRouteData } from '../../route-data';
+
+const route = Astro.locals.starlightRoute as typeof Astro.locals.starlightRoute & { wiki: WikiRouteData };
+const wiki = route.wiki;
+const t = Astro.locals.t;
+const base = import.meta.env.BASE_URL;
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="mc-footer" data-pagefind-ignore>
+	<div class="mc-meta print:hidden">
+		<div class="sl-flex" style="gap: 1.5rem; flex-wrap: wrap;">
+			<EditLink />
+			<a href={wiki.reportUrl} rel="noopener">
+				<Icon name="warning" size="1.2em" />
+				{t('mc.reportProblem')}
+			</a>
+		</div>
+		<LastUpdated />
+	</div>
+	<Pagination />
+
+	<div class="mc-rule">
+		<span class="tick" aria-hidden="true"></span>
+		<span class="line" aria-hidden="true"></span>
+		<a class="origin" href={base} aria-label={`@0,0 ${t('mc.home')}`} title={t('mc.home')}>@0,0</a>
+		<span class="line short" aria-hidden="true"></span>
+	</div>
+
+	<ul class="mc-footer-links">
+		<li><a href={SITE_HOME} rel="noopener">musacad.org</a></li>
+		<li><a href={`${SITE_HOME}/download/`} rel="noopener">Download</a></li>
+		<li><a href={ENGINE.repo} rel="noopener">Source on GitHub</a></li>
+		<li><a href={FLATHUB_URL} rel="noopener">Flathub</a></li>
+		<li><a href={`${ENGINE.repo}/issues`} rel="noopener">Issues</a></li>
+		<li><a href={`${SITE_HOME}/donate/`} rel="noopener">Donate</a></li>
+		<li><a href={`${SITE_HOME}/privacy/`} rel="noopener">Privacy</a></li>
+		<li><a href={WIKI_REPO} rel="noopener">This wiki's repository</a></li>
+	</ul>
+
+	<p>
+		{t('mc.footer.content')} {t('mc.footer.examples')} {t('mc.footer.engine')}
+		<a href={`${WIKI_REPO}/blob/main/LICENSE`} rel="noopener">Licence details</a>.
+	</p>
+	<p>{t('mc.footer.trademark')}</p>
+	<p>© {year} Musa CAD contributors · built against Musa CAD {ENGINE.version}</p>
+</footer>

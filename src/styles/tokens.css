@@ -1,0 +1,238 @@
+/*
+  Design tokens for the Musa CAD Wiki.
+
+  The values are musacad.org's own (src/styles/global.css in MusaCAD/MusaCAD-Website), mapped
+  onto Starlight's variables, plus the application's dark theme (src/ui/theme.cpp in the
+  engine) for dark mode. Every text/background pair used here is checked by
+  scripts/check-contrast.mjs; change a value and run it.
+
+  Layers: Starlight declares `starlight.base` for props.css. Unlayered rules win over any layer,
+  so these overrides sit outside layers on purpose.
+*/
+
+:root,
+::backdrop {
+  /* ---- Musa CAD brand, both themes ---- */
+  --mc-brand: #f73c1c; /* the logo's fillet orange; display and decoration only (3.5:1) */
+  --mc-teal: #0bd1b5; /* the logo's teal end face; highlight moments */
+  --mc-navy: #0e2c4c; /* the logo's navy body */
+  --mc-green-bright: #0fa968; /* dimension / snap green for strokes and markers */
+
+  /* ---- The command line, as the application draws it (same in both themes) ---- */
+  --mc-cmd-bg: #1e1e1e;
+  --mc-cmd-border: #4a4a4a;
+  --mc-cmd-text: #e0e0e0;
+  --mc-cmd-prompt: #9acd6a; /* QLabel#CommandPrompt */
+  --mc-cmd-option: #7fc8ff;
+  --mc-cmd-default: #b8b8b8;
+  --mc-cmd-input: #ffffff;
+  --mc-cmd-echo: #9a9a9a;
+
+  /* ---- Dark theme (the default `:root` in Starlight is dark) ---- */
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #ececec;
+  --sl-color-gray-2: #d6d6d6; /* body text: the app's text colour */
+  --sl-color-gray-3: #a8a8a8;
+  --sl-color-gray-4: #6f6f6f;
+  --sl-color-gray-5: #3f3f3f; /* the ribbon page grey, as hairlines */
+  --sl-color-gray-6: #2b2b2b; /* the app's window colour */
+  --sl-color-black: #232323; /* the app's base colour */
+
+  --sl-color-accent-low: #3b1a12;
+  --sl-color-accent: #f75a3b;
+  --sl-color-accent-high: #ffb4a6;
+
+  --sl-color-green-low: #163826;
+  --sl-color-green: #3ccf8e;
+  --sl-color-green-high: #b9f2d6;
+  --sl-color-orange-low: #3d2a10;
+  --sl-color-orange: #f2b44a;
+  --sl-color-orange-high: #fbe3b3;
+  --sl-color-blue-low: #1a2c47;
+  --sl-color-blue: #4a90d9; /* the app's selection blue */
+  --sl-color-blue-high: #bcd9f7;
+  --sl-color-red-low: #40181a;
+  --sl-color-red: #ff6b6b;
+  --sl-color-red-high: #ffc9c9;
+
+  --sl-color-text: var(--sl-color-gray-2);
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-text-invert: var(--sl-color-accent-low);
+  --sl-color-bg: var(--sl-color-black);
+  --sl-color-bg-nav: var(--sl-color-gray-6);
+  --sl-color-bg-sidebar: var(--sl-color-gray-6);
+  --sl-color-bg-inline-code: #333333;
+  --sl-color-bg-accent: var(--sl-color-accent-high);
+  --sl-color-hairline-light: var(--sl-color-gray-5);
+  --sl-color-hairline: var(--sl-color-gray-6);
+  --sl-color-hairline-shade: #1a1a1a;
+  --sl-color-backdrop-overlay: hsla(0, 0%, 5%, 0.7);
+
+  --mc-paper-2: #2b2b2b; /* raised surfaces */
+  --mc-panel: #1b1b1b; /* recessed */
+  --mc-line: #3f3f3f;
+  --mc-line-strong: #555555;
+  --mc-grid: #3a3f46;
+  --mc-ink-soft: #a8a8a8;
+  --mc-ink-faint: #8e9298;
+  --mc-status-ok: #3ccf8e;
+  --mc-status-warn: #f2b44a;
+  --mc-status-fail: #ff6b6b;
+
+  /* ---- Type ---- */
+  --sl-font: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --sl-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --mc-font-display: 'Space Grotesk Variable', 'Space Grotesk', var(--sl-font);
+  --mc-font-dyslexic: 'OpenDyslexic', 'Inter Variable', sans-serif;
+
+  --sl-text-body: 1.0625rem; /* 17px: a reading size, not a UI size */
+  --sl-line-height: 1.7;
+  --sl-line-height-headings: 1.15;
+  --sl-text-code: 0.875rem;
+  --sl-text-code-sm: 0.8125rem;
+
+  /* ---- Measure ---- */
+  --sl-content-width: 42rem; /* ~72–76 characters of Inter at the body size */
+  --sl-sidebar-width: 17.5rem;
+  --sl-content-pad-x: 1rem; /* the 16px gutter at 320px */
+  --sl-nav-height: 3.5rem;
+}
+
+:root[data-theme='light'],
+[data-theme='light'] ::backdrop {
+  --sl-color-white: #14181e; /* ink */
+  --sl-color-gray-1: #1f252d;
+  --sl-color-gray-2: #2a3039; /* body text */
+  --sl-color-gray-3: #586070; /* ink-soft */
+  --sl-color-gray-4: #8b919c;
+  --sl-color-gray-5: #d8d3c6; /* line-strong */
+  --sl-color-gray-6: #f5f3ec; /* panel */
+  --sl-color-gray-7: #faf9f6; /* paper */
+  --sl-color-black: #faf9f6; /* the page: warm off-white */
+
+  --sl-color-accent-low: #fde6e2; /* accent wash */
+  --sl-color-accent: #d82608; /* AA orange: 4.9:1 on paper */
+  --sl-color-accent-high: #8f1a06;
+
+  --sl-color-green-low: #dff3e8;
+  --sl-color-green: #0fa968;
+  --sl-color-green-high: #0b5a39;
+  --sl-color-orange-low: #fdefd2;
+  --sl-color-orange: #e09a1e;
+  --sl-color-orange-high: #6b4300;
+  --sl-color-blue-low: #dbe9f8;
+  --sl-color-blue: #2f6fb8;
+  --sl-color-blue-high: #16365c;
+  --sl-color-red-low: #fde2e2;
+  --sl-color-red: #d33a3a;
+  --sl-color-red-high: #7a1c1c;
+
+  --sl-color-text-accent: var(--sl-color-accent);
+  --sl-color-text-invert: var(--sl-color-black);
+  --sl-color-bg-nav: #faf9f6;
+  --sl-color-bg-sidebar: #faf9f6;
+  --sl-color-bg-inline-code: #efece3;
+  --sl-color-bg-accent: var(--sl-color-accent);
+  --sl-color-hairline-light: #e8e4da;
+  --sl-color-hairline-shade: #e8e4da;
+  --sl-color-backdrop-overlay: hsla(220, 10%, 30%, 0.5);
+
+  --mc-paper-2: #ffffff;
+  --mc-panel: #f5f3ec;
+  --mc-line: #e8e4da;
+  --mc-line-strong: #d8d3c6;
+  --mc-grid: #cfd8e3;
+  --mc-ink-soft: #586070;
+  --mc-ink-faint: #666e7d; /* 4.6:1 on panel */
+  --mc-status-ok: #0b7a4b;
+  --mc-status-warn: #8a5a00;
+  --mc-status-fail: #b51f06;
+}
+
+/* ---- High contrast, on top of either theme (Reading settings) ---- */
+:root[data-contrast='high'] {
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #ffffff;
+  --sl-color-gray-2: #ffffff;
+  --sl-color-gray-3: #e6e6e6;
+  --sl-color-gray-4: #bdbdbd;
+  --sl-color-gray-5: #8a8a8a;
+  --sl-color-gray-6: #101010;
+  --sl-color-black: #000000;
+  --sl-color-accent-high: #ffd0c4;
+  --sl-color-accent: #ff8a6c;
+  --sl-color-accent-low: #3b1a12;
+  --sl-color-bg-inline-code: #1c1c1c;
+  --sl-color-hairline-shade: #666666;
+  --mc-paper-2: #000000;
+  --mc-panel: #0a0a0a;
+  --mc-line: #8a8a8a;
+  --mc-line-strong: #bdbdbd;
+  --mc-ink-soft: #e6e6e6;
+  --mc-ink-faint: #d0d0d0;
+}
+:root[data-contrast='high'][data-theme='light'] {
+  --sl-color-white: #000000;
+  --sl-color-gray-1: #000000;
+  --sl-color-gray-2: #000000;
+  --sl-color-gray-3: #222222;
+  --sl-color-gray-4: #444444;
+  --sl-color-gray-5: #777777;
+  --sl-color-gray-6: #f0f0f0;
+  --sl-color-gray-7: #ffffff;
+  --sl-color-black: #ffffff;
+  --sl-color-accent-high: #6e1200;
+  --sl-color-accent: #a81c02;
+  --sl-color-accent-low: #ffe4de;
+  --sl-color-bg-nav: #ffffff;
+  --sl-color-bg-sidebar: #ffffff;
+  --sl-color-bg-inline-code: #f0f0f0;
+  --sl-color-hairline-light: #777777;
+  --sl-color-hairline-shade: #777777;
+  --mc-paper-2: #ffffff;
+  --mc-panel: #f0f0f0;
+  --mc-line: #777777;
+  --mc-line-strong: #444444;
+  --mc-ink-soft: #222222;
+  --mc-ink-faint: #333333;
+}
+:root[data-contrast='high'] a {
+  text-decoration: underline;
+}
+
+/* ---- Reading settings (persisted in localStorage; applied before first paint by Head.astro) ---- */
+:root[data-font-size='s'] { font-size: 93.75%; }
+:root[data-font-size='l'] { font-size: 112.5%; }
+:root[data-font-size='xl'] { font-size: 125%; }
+:root[data-line-height='compact'] { --sl-line-height: 1.5; }
+:root[data-line-height='relaxed'] { --sl-line-height: 1.95; }
+:root[data-measure='narrow'] { --sl-content-width: 38rem; }
+:root[data-measure='wide'] { --sl-content-width: 52rem; }
+:root[data-code-size='s'] { --sl-text-code: 0.8125rem; --sl-text-code-sm: 0.75rem; }
+:root[data-code-size='l'] { --sl-text-code: 1rem; --sl-text-code-sm: 0.9375rem; }
+:root[data-font='dyslexic'] {
+  --sl-font: var(--mc-font-dyslexic);
+  --mc-font-display: var(--mc-font-dyslexic);
+  --sl-line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+/* Motion off: the reading setting, and the system preference. The wiki has no flourishes
+   that need a still equivalent; everything simply stops moving. */
+:root[data-motion='off'] *,
+:root[data-motion='off'] *::before,
+:root[data-motion='off'] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

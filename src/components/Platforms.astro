@@ -1,0 +1,11 @@
+---
+// Which platforms a section applies to. Read by people; the frontmatter `platforms` field is read by machines.
+interface Props {
+	items: Array<'windows' | 'linux' | 'macos'>;
+}
+const names = { windows: 'Windows', linux: 'Linux', macos: 'macOS' };
+---
+
+<ul class="mc-platforms not-content" aria-label="Applies to">
+	{Astro.props.items.map((p) => <li>{names[p]}</li>)}
+</ul>

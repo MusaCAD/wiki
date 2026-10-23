@@ -1,0 +1,85 @@
+---
+// Breadcrumbs, the title, and the status line every page carries: coverage status, the
+// release it was checked against, when, and the platforms it applies to.
+import type { WikiRouteData } from '../../route-data';
+
+type Entry = { type: 'link'; isCurrent: boolean; label: string; href: string } | { type: 'group'; label: string; entries: Entry[] };
+
+const route = Astro.locals.starlightRoute as typeof Astro.locals.starlightRoute & { wiki: WikiRouteData };
+const { entry, sidebar, lang } = route;
+const wiki = route.wiki;
+const t = Astro.locals.t;
+const base = import.meta.env.BASE_URL;
+const data = entry.data as typeof entry.data & { platforms?: string[]; kind?: string };
+
+function trail(entries: Entry[], acc: Entry[] = []): Entry[] | null {
+	for (const e of entries) {
+		if (e.type === 'link' && e.isCurrent) return acc;
+		if (e.type === 'group') {
+			const r = trail(e.entries, [...acc, e]);
+			if (r) return r;
+		}
+	}
+	return null;
+}
+const groups = trail(sidebar as Entry[]) ?? [];
+const isRootLanding = (data.kind === 'landing' && (entry.id === '' || entry.id === 'index')) || entry.id === '404';
+const verified = wiki.lastVerified.getTime() > 0
+	? wiki.lastVerified.toLocaleDateString(lang, { dateStyle: 'medium', timeZone: 'UTC' })
+	: null;
+const platformName: Record<string, string> = { windows: 'Windows', linux: 'Linux', macos: 'macOS' };
+---
+
+{
+	!isRootLanding && (
+		<nav aria-label="Breadcrumb" data-pagefind-ignore>
+			<ol class="mc-crumbs">
+				<li>
+					<a href={base}>{t('mc.home')}</a>
+				</li>
+				{groups.map((g) => (
+					<li>
+						<span>{g.label}</span>
+					</li>
+				))}
+				<li>
+					<span aria-current="page">{entry.data.title}</span>
+				</li>
+			</ol>
+		</nav>
+	)
+}
+
+<h1 id="_top">{entry.data.title}</h1>
+
+{
+	!isRootLanding && (
+		<div class="mc-status" data-pagefind-ignore>
+			<span class="mc-chip" data-status={wiki.status}>{t(`mc.status.${wiki.status}` as 'mc.status.complete')}</span>
+			{wiki.tier === 'generated' && <span class="mc-chip">generated from the application</span>}
+			<span>
+				{t('mc.appliesTo')} {wiki.appliesTo}
+			</span>
+			{verified && (
+				<span>
+					{t('mc.verified')} <time datetime={wiki.lastVerified.toISOString()}>{verified}</time>
+				</span>
+			)}
+			{data.platforms && (
+				<span>{data.platforms.map((p) => platformName[p] ?? p).join(' · ')}</span>
+			)}
+		</div>
+	)
+}
+
+<style>
+	@layer starlight.core {
+		h1 {
+			margin-top: 1rem;
+			font-size: var(--sl-text-h1);
+			line-height: var(--sl-line-height-headings);
+			font-weight: 600;
+			color: var(--sl-color-white);
+		}
+	}
+</style>

@@ -1,0 +1,196 @@
+---
+// Reading settings: theme, text size, line spacing, reading width, a dyslexia-friendly font,
+// motion, code size, high contrast. A native <dialog>, so Esc, focus and the backdrop are
+// the browser's. Persisted in localStorage ('mc-reading'); applied before first paint by
+// Head.astro. Two instances may exist (header and mobile menu): ids are per instance, the
+// stored state is shared.
+import { Icon } from '@astrojs/starlight/components';
+
+interface Props {
+	id: string;
+}
+const { id } = Astro.props;
+const t = Astro.locals.t;
+const n = (name: string) => `mc-rs-${id}-${name}`;
+---
+
+<mc-reading-settings>
+	<button type="button" class="mc-rs-button" data-open aria-haspopup="dialog" aria-controls={n('dialog')}>
+		<span class="mc-aa" aria-hidden="true">Aa</span>
+		<span class="sr-only">{t('mc.readingSettings')}</span>
+		<Icon name="setting" size="1.1em" />
+	</button>
+
+	<dialog class="mc-rs" id={n('dialog')} aria-labelledby={n('title')}>
+		<form method="dialog">
+			<h2 id={n('title')}>{t('mc.readingSettings')}</h2>
+
+			<fieldset>
+				<legend>{t('mc.readingSettings.theme')}</legend>
+				<div class="mc-rs-options">
+					<label><input type="radio" name={n('theme')} value="light" /> Light</label>
+					<label><input type="radio" name={n('theme')} value="dark" /> Dark</label>
+					<label><input type="radio" name={n('theme')} value="auto" /> System</label>
+					<label><input type="checkbox" name={n('contrast')} value="high" /> High contrast</label>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend>{t('mc.readingSettings.fontSize')}</legend>
+				<div class="mc-rs-options">
+					<label><input type="radio" name={n('fontSize')} value="s" /> Small</label>
+					<label><input type="radio" name={n('fontSize')} value="m" /> Normal</label>
+					<label><input type="radio" name={n('fontSize')} value="l" /> Large</label>
+					<label><input type="radio" name={n('fontSize')} value="xl" /> Larger</label>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend>{t('mc.readingSettings.lineSpacing')}</legend>
+				<div class="mc-rs-options">
+					<label><input type="radio" name={n('lineHeight')} value="compact" /> Compact</label>
+					<label><input type="radio" name={n('lineHeight')} value="normal" /> Normal</label>
+					<label><input type="radio" name={n('lineHeight')} value="relaxed" /> Relaxed</label>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend>{t('mc.readingSettings.width')}</legend>
+				<div class="mc-rs-options">
+					<label><input type="radio" name={n('measure')} value="narrow" /> Narrow</label>
+					<label><input type="radio" name={n('measure')} value="normal" /> Normal</label>
+					<label><input type="radio" name={n('measure')} value="wide" /> Wide</label>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend>{t('mc.readingSettings.codeSize')}</legend>
+				<div class="mc-rs-options">
+					<label><input type="radio" name={n('codeSize')} value="s" /> Small</label>
+					<label><input type="radio" name={n('codeSize')} value="m" /> Normal</label>
+					<label><input type="radio" name={n('codeSize')} value="l" /> Large</label>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend>{t('mc.readingSettings.dyslexicFont')} · {t('mc.readingSettings.motion')}</legend>
+				<div class="mc-rs-options">
+					<label><input type="checkbox" name={n('font')} value="dyslexic" /> OpenDyslexic</label>
+					<label><input type="checkbox" name={n('motion')} value="off" /> Motion off</label>
+				</div>
+			</fieldset>
+
+			<div class="mc-rs-actions">
+				<button type="button" data-reset>{t('mc.readingSettings.reset')}</button>
+				<button type="submit" data-close>{t('mc.readingSettings.close')}</button>
+			</div>
+		</form>
+	</dialog>
+</mc-reading-settings>
+
+<script>
+	type Settings = {
+		fontSize?: string;
+		lineHeight?: string;
+		measure?: string;
+		codeSize?: string;
+		font?: string;
+		motion?: string;
+		contrast?: string;
+	};
+	const KEY = 'mc-reading';
+	const DEFAULTS: Required<Settings> = {
+		fontSize: 'm',
+		lineHeight: 'normal',
+		measure: 'normal',
+		codeSize: 'm',
+		font: '',
+		motion: '',
+		contrast: '',
+	};
+	const FIELDS = ['fontSize', 'lineHeight', 'measure', 'codeSize', 'font', 'motion', 'contrast'] as const;
+
+	function load(): Settings {
+		try {
+			return JSON.parse(localStorage.getItem(KEY) || '{}') || {};
+		} catch {
+			return {};
+		}
+	}
+	function save(s: Settings) {
+		try {
+			localStorage.setItem(KEY, JSON.stringify(s));
+		} catch {}
+	}
+	function apply(s: Settings) {
+		const d = document.documentElement.dataset;
+		for (const k of FIELDS) {
+			const v = s[k];
+			if (v && v !== DEFAULTS[k]) d[k] = v;
+			else delete d[k];
+		}
+	}
+	function currentTheme(): string {
+		try {
+			return localStorage.getItem('starlight-theme') || 'auto';
+		} catch {
+			return 'auto';
+		}
+	}
+	function setTheme(theme: string) {
+		const provider = (window as unknown as { StarlightThemeProvider?: { updatePickers: (t?: string) => void } })
+			.StarlightThemeProvider;
+		const resolved = theme === 'auto' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : theme;
+		document.documentElement.dataset.theme = resolved;
+		try {
+			localStorage.setItem('starlight-theme', theme === 'auto' ? '' : theme);
+		} catch {}
+		provider?.updatePickers(theme);
+	}
+
+	class ReadingSettings extends HTMLElement {
+		constructor() {
+			super();
+			const open = this.querySelector<HTMLButtonElement>('[data-open]')!;
+			const dialog = this.querySelector<HTMLDialogElement>('dialog')!;
+			const form = dialog.querySelector('form')!;
+			const reset = dialog.querySelector<HTMLButtonElement>('[data-reset]')!;
+
+			const fill = () => {
+				const s = { ...DEFAULTS, ...load() };
+				for (const input of form.querySelectorAll<HTMLInputElement>('input')) {
+					const field = input.name.replace(/^mc-rs-[^-]+-/, '');
+					if (field === 'theme') input.checked = input.value === currentTheme();
+					else input.checked = (s as Record<string, string>)[field] === input.value;
+				}
+			};
+			open.addEventListener('click', () => {
+				fill();
+				dialog.showModal();
+			});
+			form.addEventListener('change', (e) => {
+				const input = e.target as HTMLInputElement;
+				const field = input.name.replace(/^mc-rs-[^-]+-/, '');
+				if (field === 'theme') {
+					setTheme(input.value);
+					return;
+				}
+				const s = load();
+				if (input.type === 'checkbox') (s as Record<string, string>)[field] = input.checked ? input.value : '';
+				else (s as Record<string, string>)[field] = input.value;
+				save(s);
+				apply(s);
+			});
+			reset.addEventListener('click', () => {
+				save({});
+				apply({});
+				setTheme('auto');
+				fill();
+			});
+			dialog.addEventListener('click', (e) => {
+				if (e.target === dialog) dialog.close();
+			});
+		}
+	}
+	if (!customElements.get('mc-reading-settings')) customElements.define('mc-reading-settings', ReadingSettings);
+</script>
