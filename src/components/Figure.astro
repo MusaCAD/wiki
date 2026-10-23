@@ -12,8 +12,10 @@ interface Props {
 	caption?: string;
 	/** Offer the drawing file for download (default: yes). */
 	download?: boolean;
+	/** Load at once: for the first figure on a page, which is what the page paints largest. */
+	eager?: boolean;
 }
-const { id, alt, caption, download = true } = Astro.props;
+const { id, alt, caption, download = true, eager = false } = Astro.props;
 type Entry = { engine: string; args: string; width: number; height: number; file: string };
 const entry = (manifest as Record<string, Entry>)[id];
 if (!entry) throw new Error(`<Figure id="${id}">: no rendered example. Add examples/${id}.musa and run npm run render.`);
@@ -24,7 +26,7 @@ const t = Astro.locals.t;
 
 <figure class="mc-figure not-content">
 	<div class="mc-figure-sheet">
-		<img src={`${base}rendered/${id}.svg`} width={entry.width} height={entry.height} alt={alt} loading="lazy" decoding="async" />
+		<img src={`${base}rendered/${id}.svg`} width={entry.width} height={entry.height} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} decoding="async" />
 	</div>
 	{caption && <figcaption>{caption}</figcaption>}
 	<div class="mc-figure-meta">

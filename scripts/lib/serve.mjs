@@ -1,5 +1,8 @@
 // A static file server for dist/, for the audits and the link check. No dependencies.
+// Text responses are gzipped when the client accepts it, as GitHub Pages serves them, so the
+// audits measure what readers get and not an uncompressed stand-in.
 import { createServer } from 'node:http';
+import { gzipSync } from 'node:zlib';
 import { readFile, stat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 
@@ -39,9 +42,15 @@ export function serve(dir, port = 0) {
         file = join(dir, '404.html');
         res.statusCode = 404;
       }
-      const body = await readFile(file);
-      res.setHeader('content-type', TYPES[extname(file)] ?? 'application/octet-stream');
+      let body = await readFile(file);
+      const type = TYPES[extname(file)] ?? 'application/octet-stream';
+      res.setHeader('content-type', type);
       res.setHeader('cache-control', 'no-store');
+      const compressible = /^(text\/|application\/(json|xml|manifest|javascript))|svg/.test(type);
+      if (compressible && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
+        body = gzipSync(body);
+        res.setHeader('content-encoding', 'gzip');
+      }
       res.end(body);
     } catch {
       res.statusCode = 500;

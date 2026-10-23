@@ -23,6 +23,8 @@ function trail(entries: Entry[], acc: Entry[] = []): Entry[] | null {
 	return null;
 }
 const groups = trail(sidebar as Entry[]) ?? [];
+// A section's landing page carries its group's name as its title; one crumb is enough.
+if (groups.length && groups[groups.length - 1]!.label === entry.data.title) groups.pop();
 const isRootLanding = (data.kind === 'landing' && (entry.id === '' || entry.id === 'index')) || entry.id === '404';
 const verified = wiki.lastVerified.getTime() > 0
 	? wiki.lastVerified.toLocaleDateString(lang, { dateStyle: 'medium', timeZone: 'UTC' })

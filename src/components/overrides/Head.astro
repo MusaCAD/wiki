@@ -1,10 +1,16 @@
 ---
-// Starlight's <head>, plus: the reading settings applied before first paint (no flash of the
-// wrong size or theme contrast), and the wiki's own meta.
+// Starlight's <head>, plus: the two fonts every page paints with, preloaded so they do not
+// wait behind the stylesheet; the reading settings applied before first paint (no flash of
+// the wrong size or contrast); and nothing else.
 import Default from '@astrojs/starlight/components/Head.astro';
+import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import groteskUrl from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 ---
 
 <Default><slot /></Default>
+
+<link rel="preload" as="font" type="font/woff2" href={interUrl} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={groteskUrl} crossorigin />
 
 {/* Inlined on purpose: it must run before the first paint. Keys match tokens.css. */}
 <script is:inline>
