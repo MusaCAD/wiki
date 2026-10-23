@@ -1,0 +1,44 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Musa CAD 0.8.0 is out
+description: Musa CAD 0.8.0 adds draw order and transparency, multilines, associative hatches and dimensions, multileader styles, the Block Editor, data links, plot preview and batch plotting, and many Express Tools.
+date: 2026-10-22
+authors: pranay
+tags: [release]
+excerpt: The biggest release so far. Draw order and transparency, multilines, associative hatches and dimensions, multileader styles, the Block Editor, data links, plot preview, batch plotting and Express Tools.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: blog
+---
+
+Musa CAD 0.8.0 is the biggest release so far. It is about what goes **into** a drawing: the order things are drawn in, transparency, multilines, hatches and dimensions that follow their objects, multileader styles, the Block Editor, linked tables, and plotting whole sets.
+
+## Get it
+
+- **Linux:** the AppImage and the Flatpak file are on the [release page](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.8.0), and Flathub has it too.
+- **macOS:** the disk image is on the release page. As before, the command line works but the drawing area does not open yet.
+- **Windows:** the installer follows once it has been tested on a real Windows PC. When it is ready, an installed 0.7.0 offers the update by itself.
+
+**About your files:** the drawing format moved from version 39 to 45. Drawings from 0.7.0 open unchanged. Drawings saved by 0.8.0 need 0.8.0 or newer.
+
+## What is new
+
+- **Draw order, transparency and ByBlock.** Every object has a place in the draw order. DRAWORDER brings objects to the front or sends them back, and TEXTTOFRONT and HATCHTOBACK do it for all text or all hatches at once. Objects can have their own transparency, and blocks can pass their colour, linetype and lineweight to the objects inside them (ByBlock).
+- **Drawing.** Multilines with MLINE, MLSTYLE and MLEDIT. Splines keep the points they were drawn through. PEDIT Spline works as AutoCAD's does. Wipeouts are proper objects, and DXF wipeouts now come in.
+- **Hatches** follow their boundaries, use AutoCAD's standard patterns and `.pat` files, and can be edited with HATCHEDIT.
+- **Dimensions** follow the objects they measure, and the Dimension Style Manager gained tolerances, alternate units and more. New: DIMBREAK, DIMJOGLINE and DIMINSPECT.
+- **Multileaders** with styles. Change a style and every multileader drawn with it follows.
+- **Blocks:** the Block Editor (BEDIT), BLOCKREPLACE, ATTSYNC and BASE.
+- **Text, fields, tables and data:** links from tables to CSV and Excel files, data extraction and table export.
+- **Layers:** layer states, filters, LAYERP, LAYMRG, LAYDEL and LAYWALK.
+- **Output:** PREVIEW, EXPORTPDF and PUBLISH for whole sets, and a page setup for each layout.
+- **Drafting aids:** Dynamic Input's pointer input and option list, feet and inches at every prompt, and grip dimensions.
+- **The interface:** the View Manager, tool palettes, workspaces, and keyboard shortcuts and aliases of your own.
+- **Express Tools:** TEXTMASK, TXTEXP, TCOUNT, TEXTFIT, BURST, GATTE, EXTRIM, NCOPY, MOCORO, FLATTEN, VPSYNC, VPSCALE, XLIST, ATTOUT, ATTIN, MPEDIT, DIMEX, DIMIM and TFRAMES.
+
+Every one of these commands has a page in the [command reference](/reference/), and the full list of changes is in the [release notes](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.8.0).
+
+Pranay

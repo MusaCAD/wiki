@@ -1,0 +1,43 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: "Drawings without drafting: an AI pipeline on top of Musa CAD"
+description: How an open-source pipeline uses Musa CAD to turn FreeCAD 3D models into complete, checked A4 fabrication drawings, with a person approving the decisions that matter.
+date: 2026-10-23
+authors: pranay
+tags: [automation, ai, scripting]
+excerpt: How an open-source pipeline uses Musa CAD to turn FreeCAD 3D models into complete, checked fabrication drawings, with a person approving the decisions that matter.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: blog
+---
+
+Making fabrication drawings is slow, careful work. Every part needs its views, a section, dimensions, tolerances, notes and a filled-in title block, and every sheet has to be checked before it goes to the workshop. I wanted to see how much of that an AI agent could do, if the CAD program was built to be driven by one.
+
+The result is the [fabrication pipeline](https://github.com/MusaCAD/fabrication_pipeline). It takes 3D models of parts and assemblies from FreeCAD and produces print-ready A4 drawings on a company title block, with no hand drafting.
+
+## Why Musa CAD makes this possible
+
+Three things in Musa CAD do the heavy lifting:
+
+- **A drawing is plain text.** The pipeline writes every sheet as a `.musa` file, one record per line. There is no binary format to reverse-engineer and no plug-in to install.
+- **Musa CAD's reader is strict.** A wrong record stops the whole file, with the line number. An agent gets a clear error instead of a drawing that is quietly wrong.
+- **Printing needs no window.** Every sheet is plotted to PDF through the same code the program uses, on a machine with no screen.
+
+## A person stays in charge
+
+The agent does the work, and a person makes the decisions. After it analyses the models and judges whether they are ready to be made, the pipeline **stops** until someone approves. Then it asks, one question at a time, how each part should be drawn: which view to show, where to cut the section, which tolerances to use.
+
+Only then does it draw. Every annotation is placed by a layout engine that refuses to let text or dimensions overlap. If a sheet cannot be laid out cleanly, it fails loudly instead of being shipped. A final check renders every PDF to an image and goes through a list of points, from paper size and scale to the title block, before anything is called done.
+
+## What it taught me about Musa CAD
+
+Every time the pipeline needed something Musa CAD could not do, it went in as an issue on the Musa CAD repository. Building a demanding user of the program on top of it is one of the best ways to find out what it is missing, and to fix it where real drawings need it.
+
+## Try it yourself
+
+You do not need the whole pipeline to start. The [AI workflows](/scripting/ai-workflows/) page shows the four things an agent needs, and [Drawings from code](/scripting/drawings-from-code/) has a short program you can run today.
+
+Pranay
