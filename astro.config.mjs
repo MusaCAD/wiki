@@ -121,6 +121,8 @@ export default defineConfig({
             { slug: 'reference/system-variables' },
             { slug: 'reference/keyboard-shortcuts' },
             { slug: 'reference/ribbon' },
+            { slug: 'reference/command-status' },
+            { slug: 'reference/autocad-settings-status' },
           ],
         },
         {
@@ -134,7 +136,26 @@ export default defineConfig({
         },
         {
           label: 'File formats',
-          items: [{ slug: 'file-formats' }, { slug: 'file-formats/musa-format' }],
+          items: [{ autogenerate: { directory: 'file-formats' } }],
+        },
+        {
+          label: 'Troubleshooting',
+          items: [{ autogenerate: { directory: 'troubleshooting' } }],
+        },
+        {
+          label: 'Releases',
+          collapsed: true,
+          items: [{ autogenerate: { directory: 'releases' } }],
+        },
+        {
+          label: 'Developer guide',
+          collapsed: true,
+          items: [{ autogenerate: { directory: 'developer' } }],
+        },
+        {
+          label: 'About the project',
+          collapsed: true,
+          items: [{ autogenerate: { directory: 'project' } }],
         },
       ],
     }),

@@ -1,0 +1,76 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Tests
+description: How Musa CAD is tested. The Catch2 unit tests, the end-to-end command-line test, the header check, the self-test hooks, and the AddressSanitizer and ThreadSanitizer builds.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: developer
+sidebar:
+  label: Tests
+  order: 5
+---
+
+## Run them
+
+```sh
+cmake --preset dev
+cmake --build --preset dev
+ctest --preset dev
+```
+
+The `dev` preset builds in Debug with AddressSanitizer and UndefinedBehaviorSanitizer, so a test that reads freed memory or overflows fails even if its assertions pass. To build the tests in another configuration, set `-DMUSACAD_BUILD_TESTS=ON`.
+
+## What runs
+
+| Test | What it checks |
+|---|---|
+| The unit tests (Catch2) | The geometry kernel, the store, snapshots, the command processor and every command, file reading and writing, dimensions, hatches, text. Commands are driven through the processor with no window. |
+| `cli_check` | The real program, run with no display: `--help`, `--version`, `--check` and `--plot` exit with the documented codes and write real output. |
+| `header_hygiene_scan` | The public core headers include no Qt, Vulkan, OpenGL or third-party geometry library, so the core stays independent of them. |
+
+The unit tests are split across several binaries so that each one links quickly under the sanitizers. New test files go in the `_musacad_test_files` list in `tests/CMakeLists.txt`.
+
+## ThreadSanitizer
+
+The concurrency code (the triple buffer, the message queue, the geometry engine) is tested again under ThreadSanitizer:
+
+```sh
+cmake --preset tsan && cmake --build --preset tsan
+ctest --preset tsan
+```
+
+On recent Linux kernels ThreadSanitizer can stop at startup with `FATAL: ThreadSanitizer: unexpected memory mapping`, because address-space randomisation is stronger than it expects. Lower it for the session:
+
+```sh
+sudo sysctl -w vm.mmap_rnd_bits=28
+```
+
+or, without root, run the build and the tests with randomisation turned off for that process:
+
+```sh
+setarch "$(uname -m)" -R cmake --build --preset tsan
+setarch "$(uname -m)" -R ctest --preset tsan
+```
+
+Only `cli_check` runs the Qt program, and Qt and glib have races of their own there; `tools/tsan.supp` silences those for that one test. The concurrency tests run with no suppressions, so a race in Musa CAD's own code always fails.
+
+## Self-tests in a real window
+
+Some checks need the real window and a GPU, so they run on a desktop rather than in CI:
+
+| Variable | What it does |
+|---|---|
+| `MUSACAD_SELFTEST=1` | Opens the window, runs a set of checks (deleting, modifying, dialogs, saving, layers, annotation, grips, Dynamic Input and more) and prints `[selftest] overall: PASS` or `FAIL`. |
+| `MUSACAD_SMOKE=1` | Shows the window and quits: a clean start. |
+| `MUSACAD_DUMP_UI=1` | Prints the window's widget tree, ribbon included, and quits. |
+
+These hooks start from a fresh install's settings and put the user's saved Dynamic Input preference back afterwards.
+
+For the AddressSanitizer smoke run of the full program, the windowing and graphics libraries report leaks of their own; point LeakSanitizer at `tools/lsan.supp`:
+
+```sh
+MUSACAD_SMOKE=1 LSAN_OPTIONS=suppressions=tools/lsan.supp ./build/dev/bin/musacad_app
+```

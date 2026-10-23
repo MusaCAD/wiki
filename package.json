@@ -9,15 +9,16 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "predev": "node scripts/render-examples.mjs",
+    "predev": "node scripts/render-engine-docs.mjs && node scripts/render-examples.mjs",
     "render": "node scripts/render-examples.mjs",
+    "docs": "node scripts/render-engine-docs.mjs",
     "sync": "node scripts/sync-engine.mjs && node scripts/generate-reference.mjs",
     "generate": "node scripts/generate-reference.mjs",
-    "prebuild": "node scripts/render-examples.mjs",
+    "prebuild": "node scripts/render-engine-docs.mjs && node scripts/render-examples.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "precheck": "node scripts/render-examples.mjs",
+    "precheck": "node scripts/render-engine-docs.mjs && node scripts/render-examples.mjs",
     "check": "astro check",
     "check:headers": "node scripts/check-headers.mjs",
     "check:pages": "node scripts/check-pages.mjs",
@@ -25,7 +26,7 @@
     "check:staleness": "node scripts/check-staleness.mjs",
     "check:links": "node scripts/check-links.mjs",
     "audit": "node scripts/audit.mjs",
-    "verify": "npm run check:headers && npm run check:pages && npm run check:contrast && npm run check:staleness && npm run build && npm run check:links && npm run audit"
+    "verify": "npm run docs && npm run check:headers && npm run check:pages && npm run check:contrast && npm run check:staleness && npm run build && npm run check:links && npm run audit"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.4",

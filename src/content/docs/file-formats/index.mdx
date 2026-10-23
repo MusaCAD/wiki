@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
 title: File formats and other CAD programs
-description: The file types Musa CAD reads and writes, its own .musa format, DXF, DWG through the free ODA File Converter, and images.
+description: The file types Musa CAD reads and writes. Its own .musa format, DXF built in, DWG through the free ODA File Converter, PDF output, images and fonts, and moving projects from AutoCAD.
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
-status: partial
+status: complete
 kind: landing
 sidebar:
   label: Overview
@@ -18,15 +18,18 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 | Format | Read | Write | Notes |
 |---|---|---|---|
 | `.musa` | Yes | Yes | Musa CAD's own format. Plain text. |
-| `.dxf` | Yes | Yes | Built in, nothing to install. |
-| `.dwg` | Yes | Yes | Through the free ODA File Converter, which Musa CAD downloads for you from **DWG Setup**. |
+| `.dxf` | Yes | Yes | Built in, nothing to install. Writes AutoCAD R2000 files. |
+| `.dwg` | Yes | Yes | Through the free ODA File Converter, which Musa CAD downloads for you from **DWG Setup…** in the application menu. Writes AutoCAD 2018 files. |
 | PDF | No | Yes | Plot or export. Real vector output. |
-| PNG, JPEG, BMP, TIFF, GIF | As images in a drawing | No | Attach with `IMAGEATTACH`. |
+| PNG, JPEG, BMP, TIFF, GIF | As images in a drawing | No | Attach with `IMAGEATTACH`, linked or embedded. |
+| `.pgp` | Yes | Yes | Command aliases, including AutoCAD's `acad.pgp`. Load with `ALIASEDIT`. |
 
 When Musa CAD imports a file, it tells you anything it could not bring across, instead of dropping it silently.
 
 <CardGrid>
   <LinkCard title="The .musa format" description="What a drawing file contains, which versions open where, and the full version history." href="/file-formats/musa-format/" />
+  <LinkCard title="DXF files" description="What comes in, what is skipped and reported, and what changes on the way out." href="/file-formats/dxf/" />
+  <LinkCard title="DWG files" description="Set up the free converter in one click, and how DWG support works." href="/file-formats/dwg/" />
+  <LinkCard title="Images and fonts" description="Linked and embedded images, and what happens to SHX and missing fonts." href="/file-formats/images-and-fonts/" />
+  <LinkCard title="Moving projects from AutoCAD" description="Bring drawings, blocks, references and aliases across, step by step." href="/file-formats/from-autocad/" />
 </CardGrid>
-
-Pages on DXF support entity by entity, DWG setup, fonts and moving projects in from AutoCAD are being written. Until then, see [Install on Linux](/get-started/install-linux/#dwg-files-in-the-flatpak) and [Install on Windows](/get-started/install-windows/#opening-dwg-files) for DWG setup.

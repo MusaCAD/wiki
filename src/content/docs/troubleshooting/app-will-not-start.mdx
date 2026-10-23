@@ -1,0 +1,71 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Musa CAD will not start
+description: Musa CAD closes at start with a message that it needs OpenGL 4.5, or does not open at all. How to fix it with a graphics driver update, 3D acceleration in a virtual machine, or the AppImage's FUSE fallback.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: troubleshooting
+symptom:
+  affects: Computers with old graphics drivers, virtual machines without 3D acceleration, Macs, and some Linux systems running the AppImage.
+  cause: The drawing area needs OpenGL 4.5. If the system offers less, Musa CAD explains this and closes. AppImages also need FUSE, which some systems lack.
+sidebar:
+  label: Will not start
+  order: 1
+---
+
+## It says it needs OpenGL 4.5
+
+Musa CAD shows a message like this and then closes:
+
+```txt
+Musa CAD's viewport needs OpenGL 4.5 Core (it draws through direct state access
+and persistently mapped buffers), and this system provides OpenGL 3.3 (llvmpipe).
+```
+
+The numbers and the name in brackets are what your computer offered. They tell you what to fix:
+
+- **An old version number with your graphics card's name.** Update your graphics driver. Current drivers for Intel, AMD and NVIDIA graphics on Windows and Linux all support OpenGL 4.5.
+- **`llvmpipe`, `softpipe` or `Microsoft Basic Render Driver`.** No graphics driver is in use, and the computer is drawing in software. Install your graphics card's driver.
+- **A virtual machine.** Turn on 3D acceleration in the virtual machine's display settings, and install its guest additions or tools.
+- **A Mac.** macOS stops at OpenGL 4.1, so no update can help. The Mac version is a preview for this reason. See [Install on macOS](/get-started/install-macos/).
+
+### You can still use the command line
+
+Checking and plotting drawings does not need the drawing area. These work on any computer:
+
+```sh
+musacad --check drawing.musa
+musacad --plot drawing.musa drawing.pdf --paper A4
+```
+
+See [The command line](/scripting/command-line/).
+
+## The AppImage does nothing on Linux
+
+First make sure the file can run:
+
+```sh
+chmod +x MusaCAD-0.8.0-x86_64.AppImage
+./MusaCAD-0.8.0-x86_64.AppImage
+```
+
+If it says something about FUSE, your system does not have the library AppImages normally use. You can install it: on Ubuntu 22.04 and later, the package is `libfuse2`. Or you can tell the AppImage to unpack itself and run without FUSE:
+
+```sh
+APPIMAGE_EXTRACT_AND_RUN=1 ./MusaCAD-0.8.0-x86_64.AppImage
+```
+
+The [Flathub version](/get-started/install-linux/) avoids this completely.
+
+## Nothing happens and there is no message
+
+Start Musa CAD from a terminal, so you can see what it prints. On Linux run `flatpak run org.musacad.MusaCAD`, or the AppImage file. On Windows run `musacad.exe` from the install folder in a command prompt.
+
+A line starting `[musacad_ui] GL renderer:` shows which graphics driver it found. Include everything it printed when you [report the problem](/troubleshooting/bug-reports/).
+
+## Next
+
+If Musa CAD starts but drawing is slow or the drawing area stays black, see [The drawing area is black, blank or slow](/troubleshooting/drawing-area/).

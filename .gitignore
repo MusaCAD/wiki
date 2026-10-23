@@ -13,3 +13,10 @@ public/examples/
 src/data/rendered.json
 # The Musa CAD source, checked out by the sync workflow
 .engine-src/
+# Rendered at build time by scripts/render-engine-docs.mjs from the Musa CAD repository
+src/content/docs/developer/architecture.md
+src/content/docs/project/roadmap.md
+src/content/docs/project/third-party-components.md
+src/content/docs/reference/command-status.md
+src/content/docs/reference/autocad-settings-status.md
+src/content/docs/releases/v*.md

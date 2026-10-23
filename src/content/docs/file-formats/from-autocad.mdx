@@ -1,0 +1,77 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Moving projects from AutoCAD
+description: A step-by-step guide to bringing AutoCAD drawings, blocks, external references, fonts, plot settings and command aliases into Musa CAD, and checking that everything came across.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Moving from AutoCAD
+  order: 5
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+This page is about your files. For how the commands and the screen compare, see [Coming from AutoCAD](/get-started/coming-from-autocad/).
+
+## Bring a project across
+
+<Steps>
+
+1. **Choose DXF or DWG.** Both work. If you still have AutoCAD, saving as DXF from AutoCAD is the most direct route, because Musa CAD reads DXF itself. Otherwise set up [DWG support](/file-formats/dwg/) once and open the DWG files directly.
+
+2. **Keep the folder together.** Copy the whole project folder, not single drawings. External references and images are found relative to the drawing, so they must stay in the same place next to it.
+
+3. **Open the drawing.** Choose **Import ▸ DXF…** or **Import ▸ DWG…** from the application menu. The drawing opens in a new tab.
+
+4. **Read the import message.** It ends with what was skipped, if anything:
+
+   ```txt
+   Imported 412 entities on 9 layers (36 block refs over 12 definitions); skipped 3 unsupported (ACAD_TABLE, MULTILEADER).
+   ```
+
+   [DXF files](/file-formats/dxf/#what-is-skipped) explains each kind of object that can be skipped.
+
+5. **Save it as `.musa`.** Choose **Save As** and keep this as your working copy from now on. A `.musa` file keeps everything Musa CAD can do, which DXF and DWG cannot.
+
+6. **Check it.** Zoom to extents (`ZOOM`, then `E`), look through the layers and layouts, and plot a page to compare with the original.
+
+</Steps>
+
+## What comes across
+
+| From AutoCAD | In Musa CAD |
+|---|---|
+| Layers, with colour, linetype, lineweight, plot setting and description | The same |
+| Blocks and attributes | The same. A block holds lines, arcs, circles, polylines, text and other blocks; other objects inside blocks are skipped and listed. |
+| External references to DWG files | Convert the referenced files to DXF or `.musa` first. Musa CAD attaches `.musa` and `.dxf` files as references. |
+| Dimension styles and text styles | The same |
+| Layouts and viewports | The same, including per-viewport layer freezing |
+| Hatches, gradients and wipeouts | The same |
+| Tables and multileaders | Skipped on import in 0.8.0 |
+| SHX fonts | Drawn with Musa CAD's own single-stroke font. See [Images and fonts](/file-formats/images-and-fonts/). |
+| Plot style tables (CTB and STB files) | Not read. Musa CAD plots in colour, monochrome or greyscale, chosen in the Plot window. |
+| 3D objects | Skipped. Musa CAD is 2D only. |
+
+## Bring your habits across
+
+- **Command aliases.** Type `ALIASEDIT` and click **Load...** to add the aliases from your `acad.pgp`. Musa CAD keeps them in its own file, so your AutoCAD file is not changed.
+- **Keyboard shortcuts.** Type `CUI` to set the keys you are used to.
+- **Templates.** Open your template DWG or DXF, save it as `.musa`, and start new drawings from a copy of it.
+
+## Check text and dimensions in bulk
+
+For a large project, the command line can check every drawing for text problems without opening a window:
+
+```sh
+for f in *.dxf; do musacad --check "$f" || echo "check $f"; done
+```
+
+It reports text that overlaps, runs outside the frame, or uses characters its font cannot draw. See [The command line](/scripting/command-line/).
+
+## Next
+
+If a drawing does not open or looks wrong, see [Troubleshooting](/troubleshooting/).

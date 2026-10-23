@@ -1,0 +1,73 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: DWG files
+description: How to open and save AutoCAD DWG files in Musa CAD. Set up the free ODA File Converter in one click, or use LibreDWG; how the conversion works, the AutoCAD 2018 files it saves, and the Flatpak on Wayland.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: DWG
+  order: 3
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+DWG is AutoCAD's own file format. Musa CAD opens and saves DWG files with the help of a free converter program. Setting it up takes one click.
+
+## Set it up once
+
+<Steps>
+
+1. Choose **DWG Setup…** from the application menu (the Musa CAD logo at the top left).
+2. Click **Download ODA File Converter…** and Musa CAD downloads the free converter from the Open Design Alliance website. It sets it up for you.
+3. Musa CAD confirms where it installed the converter. DWG files work from now on.
+
+</Steps>
+
+You only do this once. If you open a DWG before setting up a converter, Musa CAD offers DWG Setup.
+
+### Use a converter you already have
+
+Musa CAD can use either of these converters:
+
+- **ODA File Converter**, free from [opendesign.com](https://www.opendesign.com/guestfiles/oda_file_converter). On Windows, Musa CAD finds it in `Program Files\ODA` by itself.
+- **LibreDWG**'s `dwg2dxf` and `dxf2dwg` programs, free software available in many Linux distributions.
+
+Musa CAD finds a converter on your `PATH`. Or click **Browse…** in DWG Setup and pick the program.
+
+## Open and save DWG
+
+- **Open a DWG:** choose **Import ▸ DWG…** from the application menu, or type `DWGIN`. It opens in a new tab.
+- **Save as DWG:** choose **Export ▸ DWG…**, or type `DWGOUT`.
+
+## How it works
+
+Opening a DWG takes two steps. The converter turns the DWG into a DXF file, and Musa CAD then reads that DXF. Saving works the other way round: Musa CAD writes a DXF, and the converter turns it into a DWG in **AutoCAD 2018** format.
+
+So a DWG keeps exactly what a DXF keeps. [DXF files](/file-formats/dxf/) lists what comes in, what is skipped, and what changes on the way out.
+
+After an import, Musa CAD lists what it skipped, and saves that list in a log beside the file, such as `plan.dwg.import.log`.
+
+### Why the converter is separate
+
+Musa CAD is free software under the LGPL. The libraries that read DWG are either proprietary or under the GPL, and building one in would change Musa CAD's licence. Running a separate program keeps Musa CAD free to use, change and share. It is also why no package includes a converter.
+
+## In the Flatpak
+
+The Flatpak downloads and uses the ODA File Converter like any other install. The converter needs an X11 display, though:
+
+- **On an X11 desktop,** it runs inside the sandbox. Nothing else to do.
+- **On a Wayland desktop,** it has to run outside the sandbox. Allow that once in a terminal:
+
+```sh
+flatpak override --user --talk-name=org.freedesktop.Flatpak org.musacad.MusaCAD
+```
+
+The same permission lets the Flatpak use a converter installed on your system. Turn on **Use a converter installed on the host (Flatpak)** in DWG Setup.
+
+## Next
+
+If something goes wrong, see [DWG files do nothing or fail](/troubleshooting/dwg-files/).

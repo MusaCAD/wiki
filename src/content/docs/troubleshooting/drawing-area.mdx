@@ -1,0 +1,58 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: The drawing area is black, blank or slow
+description: The Musa CAD window opens, but the drawing area is black, empty, or slow to respond. How to find which graphics driver it uses, switch to the faster graphics card, and get a drawing back into view.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: troubleshooting
+symptom:
+  affects: Laptops with two graphics chips, computers drawing in software, and drawings zoomed away from their contents.
+  cause: Musa CAD is running on a slow or software graphics driver, or the drawing is simply out of view.
+sidebar:
+  label: Drawing area
+  order: 2
+---
+
+## The drawing seems empty
+
+Before anything else, make sure the drawing is in view. Type `ZOOM`, then `E` for Extents, and press Enter. Musa CAD zooms to show everything in the drawing.
+
+If that shows nothing, check the layers. Type `LAYER` to open the Layer Properties Manager and look for layers that are off or frozen.
+
+## Find out which graphics driver it uses
+
+Start Musa CAD from a terminal and look for this line:
+
+```txt
+[musacad_ui] GL renderer: <your graphics card> | <driver version>
+```
+
+- **Your graphics card's name.** Good. If drawing is still slow, see below.
+- **`llvmpipe` or another software renderer.** No graphics driver is in use. Install your graphics card's driver.
+
+To see the frame rate while you work, open **Options** (type `OPTIONS`) and turn on **Show performance overlay**.
+
+## On a laptop with two graphics chips
+
+Many laptops have a power-saving graphics chip and a faster one. Musa CAD may start on the slower one.
+
+- **Windows:** in **Settings ▸ System ▸ Display ▸ Graphics**, add Musa CAD and choose **High performance**.
+- **Linux with an NVIDIA card:** put `prime-run` in front of the command that starts Musa CAD, for example `prime-run flatpak run org.musacad.MusaCAD`. Some desktops also offer **Launch using Dedicated Graphics Card** when you right-click the app.
+- **Linux with two AMD or Intel chips:** start it with `DRI_PRIME=1` in front of the command.
+
+## On Linux under Wayland
+
+Musa CAD runs natively on Wayland, from Flathub and from the AppImage. That gives a smoother cursor than running through XWayland. If you suspect Wayland is causing a problem, you can force X11 to compare:
+
+```sh
+QT_QPA_PLATFORM=xcb ./MusaCAD-0.8.0-x86_64.AppImage
+```
+
+If the problem only happens on one of the two, say so when you [report it](/troubleshooting/bug-reports/).
+
+## Next
+
+If the drawing area does not appear at all, see [Musa CAD will not start](/troubleshooting/app-will-not-start/).

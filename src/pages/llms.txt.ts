@@ -15,6 +15,10 @@ const SECTIONS: [string, string][] = [
   ['reference', 'Command reference'],
   ['scripting', 'Scripting and automation'],
   ['file-formats', 'File formats'],
+  ['troubleshooting', 'Troubleshooting'],
+  ['releases', 'Releases'],
+  ['developer', 'Developer guide'],
+  ['project', 'About the project'],
   ['blog', 'Blog'],
 ];
 

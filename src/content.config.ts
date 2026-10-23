@@ -77,6 +77,8 @@ export const wikiFrontmatter = z.object({
     .optional(),
   /** Pages rendered at build time from a file in the Musa CAD repository (ARCHITECTURE.md ...). */
   sourceOf: z.string().optional(),
+  /** kind: release — the release the page is about, e.g. 0.8.0. */
+  release: releaseVersion.optional(),
 });
 
 export type WikiFrontmatter = z.infer<typeof wikiFrontmatter>;

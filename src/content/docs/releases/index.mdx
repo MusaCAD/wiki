@@ -1,0 +1,47 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Releases
+description: Every Musa CAD release with its date, file format and release notes, which files open in which version, and how to upgrade safely.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: landing
+sidebar:
+  label: All releases
+  order: 0
+---
+
+import ReleaseTable from '../../../components/reference/ReleaseTable.astro';
+
+Since September 2026, a new Musa CAD release has come out every one to two weeks. Each one has its own page here with the full release notes, the downloads, and what it means for your files.
+
+<ReleaseTable />
+
+## Upgrading
+
+Upgrading is safe for your drawings: **a newer Musa CAD always opens files from an older one.** Two things to know:
+
+- **Files saved by a newer release may not open in an older one.** When a release changes the file format, its page says so. If you share drawings with someone on an older version, either both upgrade, or send them a DXF, which every version reads.
+- **Your settings carry over.** Your shortcuts, aliases, workspaces and preferences are kept when you upgrade.
+
+How to upgrade:
+
+| You installed from | To upgrade |
+|---|---|
+| Flathub | It updates with your other apps, or run `flatpak update org.musacad.MusaCAD`. |
+| The Windows installer | Click the update notice in the status bar; the Update window downloads and installs the new version. Or run the new installer over the old one. |
+| The AppImage | Download the new AppImage and use it instead of the old one. |
+| The Flatpak file | Install the new file with `flatpak install --user`. |
+| Source | `git pull`, then build again. |
+
+Musa CAD checks once a day whether a new release is out, and says so in the status bar. You can turn that off in **Options** (`OP`).
+
+## Which files open where
+
+The [.musa format page](/file-formats/musa-format/#which-files-open-where) has the full table, and the history of what each format version added.
+
+## Further back
+
+Before 0.1.0 there were no public releases. The complete list of changes, release by release, is in the [changelog](https://github.com/MusaCAD/MusaCAD/blob/main/CHANGELOG.md) in the Musa CAD repository.

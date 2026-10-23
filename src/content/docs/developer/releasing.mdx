@@ -1,0 +1,77 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Releasing
+description: How a Musa CAD release is made. The version number, the checks before tagging, what the tag builds, verifying each package, publishing, Flathub, and the wiki's sync.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: developer
+sidebar:
+  label: Releasing
+  order: 7
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+A release is a git tag, `vX.Y.Z`. Pushing it builds the packages and publishes them. This page is the short version of [RELEASING.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/RELEASING.md), which has every command.
+
+## What a release produces
+
+| Platform | File | Built by |
+|---|---|---|
+| Linux | `MusaCAD-<version>-x86_64.AppImage` | `packaging/linux/build_appimage.sh`, locally and in CI |
+| Linux | `MusaCAD-<version>.flatpak` | `packaging/flatpak/build_flatpak.sh`, locally |
+| Windows | `MusaCAD-<version>-x86_64-setup.exe` and its `.sha256` | the Windows workflow |
+| macOS | `MusaCAD-<version>-arm64.dmg` | the macOS workflow |
+
+The version number lives in one place: `project(MusaCAD VERSION X.Y.Z ...)` in the top `CMakeLists.txt`.
+
+## The steps
+
+<Steps>
+
+1. **Check.** All tests pass under the `dev` preset, and the `release` build has no warnings.
+
+2. **Write it up.** Bump the version, add the `CHANGELOG.md` entry, and write the release notes in `docs/release-notes/v<version>.md`. Release notes say what is new, and also what is not in this release yet.
+
+3. **Check the licences.** Re-run the scan in `THIRD_PARTY_LICENSES.md`: no GPL or DWG library in the build, the program or the packages.
+
+4. **Get Flathub ready.** Add the version's `<release>` entry to the AppStream metainfo. If the interface changed, take the screenshots again with `tools/screenshots/capture.sh`.
+
+5. **Build once in the Flatpak SDK.** It uses a newer GCC with extra hardening, which can turn warnings into errors that the desktop compiler does not show.
+
+6. **Build and verify the Linux packages** with `scripts/release.sh <version>`. Start the AppImage from a folder the build never touched, open a drawing, plot a PDF and close it. Then check the headless path too, with no display:
+
+   ```sh
+   env -u DISPLAY -u WAYLAND_DISPLAY APPIMAGE_EXTRACT_AND_RUN=1 \
+       ./MusaCAD-<version>-x86_64.AppImage --plot drawing.musa out.pdf --paper A4
+   ```
+
+   A working window does not prove a working `--plot`, because the two load different Qt plugins. Version 0.2.0 shipped with exactly that bug.
+
+7. **Tag and push.** `git tag -a v<version>` and `git push origin v<version>`. The Linux and Windows workflows build on the tag and create the GitHub release.
+
+8. **Publish.** Set the release notes on the GitHub release and attach the Flatpak file.
+
+</Steps>
+
+The Windows installer is tested by a person on a real Windows PC before it is published. They check both programs it installs: the app from the Start menu, and `musacad.exe --check` and `--plot` from a command prompt. When that test has not happened yet, the release ships without the installer and says so at the top of its notes. The installer is added to the same release later. An installer that CI built but nobody tested is never published.
+
+### The installer's checksum
+
+The Windows workflow publishes `MusaCAD-<version>-x86_64-setup.exe.sha256` next to the installer. The update button inside Musa CAD on Windows downloads the installer and refuses it if its SHA-256 does not match that file. It also refuses an installer whose version is not the release's version. If you attach an installer by hand, attach its `.sha256` too:
+
+```sh
+sha256sum MusaCAD-<version>-x86_64-setup.exe > MusaCAD-<version>-x86_64-setup.exe.sha256
+```
+
+## After the release
+
+- **Flathub** gets a pull request with the new version automatically, either from the engine's Flathub workflow or from Flathub's own checker. Merge it once its build is green, and Flathub publishes the update within a few hours. Installed copies notice it within a day.
+- **The wiki** catches up by itself. Its sync workflow notices the new release once a day, refreshes the command reference and opens a pull request in the wiki repository. To start it at once instead of waiting:
+
+```sh
+gh api repos/MusaCAD/wiki/dispatches -f event_type=engine-release -f 'client_payload[tag]=v<version>'
+```

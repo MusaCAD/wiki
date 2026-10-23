@@ -7,6 +7,7 @@ import EditLink from '@astrojs/starlight/components/EditLink.astro';
 import LastUpdated from '@astrojs/starlight/components/LastUpdated.astro';
 import Pagination from '@astrojs/starlight/components/Pagination.astro';
 import { Icon } from '@astrojs/starlight/components';
+import ScrollableTables from '../ScrollableTables.astro';
 import { ENGINE, SITE_HOME, WIKI_REPO, FLATHUB_URL } from '../../../wiki.config.mjs';
 import type { WikiRouteData } from '../../route-data';
 
@@ -55,3 +56,6 @@ const year = new Date().getUTCFullYear();
 	<p>{t('mc.footer.trademark')}</p>
 	<p>© {year} Pranay Kiran and the Musa CAD contributors · written for Musa CAD {ENGINE.version}</p>
 </footer>
+
+<ScrollableTables />
+

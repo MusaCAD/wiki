@@ -1,0 +1,79 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: DXF files
+description: How Musa CAD reads and writes DXF, the exchange format most CAD programs understand. Which objects come in, which are skipped and reported, the AutoCAD R2000 files it writes, and what changes on the way out.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: reference
+sidebar:
+  label: DXF
+  order: 2
+---
+
+DXF is a text format that almost every CAD program can read and write. Musa CAD reads and writes it without any extra software. It is the best way to exchange drawings with AutoCAD, LibreCAD, QCAD, DraftSight and others.
+
+## Open and save DXF
+
+- **Open a DXF:** choose **Import ▸ DXF…** from the application menu, or type `IMPORT`. The file opens in a new tab.
+- **Save as DXF:** choose **Export ▸ DXF…**, or type `EXPORT`.
+- **From the command line:** `musacad drawing.dxf` opens it, and `musacad --plot drawing.dxf out.pdf` plots it without opening a window.
+
+Keep your working copy as `.musa`. DXF is for exchange, and a few things can only be kept in Musa CAD's own format.
+
+## What comes in
+
+Musa CAD reads these DXF objects:
+
+| Kind | DXF objects |
+|---|---|
+| Lines and curves | LINE, LWPOLYLINE, 2D POLYLINE, CIRCLE, ARC, ELLIPSE, SPLINE, XLINE, RAY, POINT, MLINE |
+| Text | TEXT, MTEXT, with their text styles |
+| Dimensions and notes | DIMENSION (every kind), LEADER, TOLERANCE, with the dimension styles |
+| Fills | HATCH (solid, patterns, user-defined and gradients), WIPEOUT |
+| Blocks | BLOCK definitions, INSERT, ATTDEF, ATTRIB, external references |
+| Images | IMAGE with its IMAGEDEF |
+| Layouts | paper space objects and VIEWPORT |
+
+It also reads the layer, linetype, text style, dimension style and viewport tables, the drawing units, the limits and the linetype scale.
+
+### What is skipped
+
+Anything Musa CAD cannot read is skipped and named, never dropped silently. Every import ends with a line like this:
+
+```txt
+Imported 412 entities on 9 layers (36 block refs over 12 definitions); skipped 3 unsupported (ACAD_TABLE, MULTILEADER).
+```
+
+These are not read in version 0.8.0:
+
+- **Tables** (ACAD_TABLE) and **multileaders** (MULTILEADER).
+- **3D objects:** 3D polylines, meshes, 3D faces, solids, regions and surfaces. Musa CAD is a 2D program.
+- **Inside block definitions:** dimensions, leaders, points, hatches and images. A block in Musa CAD holds lines, arcs, circles, polylines, text and nested blocks, so these are skipped there. Ellipses and splines inside a block come in as polylines that follow the same curve.
+
+## What goes out
+
+Musa CAD writes **AutoCAD R2000** DXF files (version AC1015). Almost every program reads that version.
+
+### What changes on the way out
+
+DXF has no place for a few things Musa CAD can do. They are written as the closest thing DXF has:
+
+| In Musa CAD | In the DXF file |
+|---|---|
+| Table | Not written yet. Keep tables in the `.musa` file. |
+| Multileader | A LEADER and an MTEXT, which look the same |
+| Jogged radius dimension | A radius dimension |
+| Arc length dimension | An aligned dimension showing the arc length as its text |
+| Datum symbol | A one-cell tolerance frame; the triangle on its leader is lost |
+| Dimension with a tolerance, prefix or suffix of its own | The dimension with that text written in; it reads back as text, not as an editable tolerance |
+| Jog line on a dimension, inspection dimension | Not written yet |
+| Layer states | Not written yet |
+| Embedded image | The image is saved as a file beside the DXF |
+| Several layouts | Written as one paper space |
+
+## Next
+
+For DWG files, see [DWG files](/file-formats/dwg/). For fonts and images that come with a drawing, see [Images and fonts](/file-formats/images-and-fonts/).

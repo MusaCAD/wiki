@@ -1,0 +1,55 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: A plot or PDF looks wrong
+description: The plotted page is empty or shows the wrong area, every line has the same thickness, colours should be black, dashed lines look solid, or the drawing is the wrong size. The Plot window setting behind each one.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: troubleshooting
+symptom:
+  affects: Anyone plotting to paper or PDF, from the Plot window or with musacad --plot.
+  cause: Each of these comes from one setting in the Plot window, a layer that is set not to plot, or the linetype scale.
+sidebar:
+  label: Plots and PDFs
+  order: 4
+---
+
+Open the Plot window with `PLOT` (or Ctrl+P), change one setting, and click **Preview…** to check before you plot again.
+
+## The page is empty, or shows the wrong part
+
+- **Plot area.** **Display** plots what is on screen now. **Extents** plots everything in the drawing. **Window** plots a rectangle you pick with **Pick Window &lt;**. Choose **Extents** if you are not sure.
+- **Layers that do not plot.** A layer can be on screen but set not to plot. In the Layer Properties Manager (`LAYER`), check the **Plot** column. Layers that are off or frozen do not plot either.
+- **A layout with nothing in its viewport.** When you plot a layout, Musa CAD plots the sheet at full size, with whatever its viewports show. Open the layout and check that the viewport shows your drawing.
+
+## Every line has the same thickness
+
+Tick **Plot object lineweights** in the Plot window. Then make sure your layers or objects have lineweights set. The **LWT** button on the status bar only changes the screen. It does not change the plot.
+
+## Colours come out in colour, but should be black
+
+Set **Plot style (CTB)** to **Monochrome (all black)**. **Grayscale** turns colours into shades of grey. From the command line, add `--monochrome` to `musacad --plot`.
+
+## Dashed lines look solid, or the dashes are huge
+
+The dashes are scaled by the linetype scale. If they are too small to see, they look solid.
+
+- Type `LTSCALE` and try a bigger value, such as 10 for a drawing in millimetres. A smaller value makes the dashes shorter.
+- In layouts, `PSLTSCALE` set to 1 scales dashes by each viewport's scale, so they look the same in every viewport.
+- `MSLTSCALE` set to 1 makes dashes in model space follow the annotation scale.
+
+## The drawing is the wrong size on paper
+
+**Fit to paper** scales the plot area to fill the sheet. That is quick, but the drawing is not to scale. To plot at a real scale, untick **Fit to paper** and set **Scale**, for example 1 mm on paper to 5 drawing units for 1:5. Tick **Center the plot** to centre it on the sheet.
+
+From the command line, `--fit` fills the sheet and `--scale 1:5` plots at a scale.
+
+## Text is missing or looks different
+
+See [Text looks different from the original](/troubleshooting/text-looks-wrong/).
+
+## Next
+
+The full list of plot options from the command line is in [The command line](/scripting/command-line/).

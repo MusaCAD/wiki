@@ -1,0 +1,111 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Writing a command
+description: Add a command to Musa CAD. One row in the command table, one small state machine, a test, and a line in the docs. The ribbon tooltip, autocomplete and the wiki page follow by themselves.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: developer
+sidebar:
+  label: Writing a command
+  order: 4
+---
+
+A command in Musa CAD is two things: **a row in the command table**, which gives it its name, aliases, icon and one-line description, and **a small state machine**, which asks its prompts and acts on the answers. Parsing is data; behaviour is a state machine. Nothing else needs wiring.
+
+## 1. The state machine
+
+Every command implements `ICommand` (`include/musacad/command/command.hpp`). The command processor drives it:
+
+- `start(ctx)` runs when the command starts. It sets the first prompt.
+- `input(ctx, text)` runs for each line the user enters: a point, a number, an option keyword, or an empty line for Enter.
+- `cancel(ctx)` runs on Esc.
+- `done()` tells the processor the command has finished.
+
+The `CommandContext` is how a command talks to the rest of the program: `set_prompt()` shows a prompt, `echo()` prints a line, `submit()` sends a change to the geometry thread (commands never touch the drawing directly), and `units()`, `last_point()` and the rest read the current state.
+
+ID, which reports a point's coordinates, is a complete command (`src/command/commands.cpp`):
+
+```cpp
+void IdCommand::start(CommandContext& ctx) {
+    ctx.clear_last_point();
+    ctx.set_prompt("Specify point: ");
+}
+
+void IdCommand::input(CommandContext& ctx, const std::string& text) {
+    if (const auto p = read_point(ctx, text)) {
+        const core::DrawingUnits u = ctx.units();
+        ctx.echo("X = " + core::units::format_length(p->x, u) + "     Y = " + core::units::format_length(p->y, u) +
+                 "     Z = " + core::units::format_length(0.0, u));
+        ctx.set_last_point(*p);
+        done_ = true;
+    }
+}
+
+void IdCommand::cancel(CommandContext& ctx) {
+    ctx.echo("*Cancel*");
+    done_ = true;
+}
+```
+
+Its class goes in `include/musacad/command/commands.hpp`. Commands that select objects say so with `wants_selection()` and `in_selection_phase()`, and the drawing area then runs the normal `Select objects:` gestures for them: picks, windows, crossings and lassos.
+
+**Prompts follow AutoCAD's wording and options exactly**, because that is what users' hands know. Write them from Musa CAD's behaviour, never by copying Autodesk's documentation.
+
+## 2. The row in the command table
+
+`CommandRegistry::make_default()` in `src/command/command_registry.cpp` holds every command. One row registers the factory under its aliases, with an icon and a one-sentence description, all required:
+
+```cpp
+reg({"ID"}, [] { return std::make_unique<IdCommand>(); }, "assets/ribbon/measure.svg",
+    "Report the coordinates of a point.");
+```
+
+The first alias is the short form shown in tooltips. Aliases are not case-sensitive. An empty icon path draws a placeholder square.
+
+From this one row:
+
+- the command can be typed, and appears in the autocomplete list with its description;
+- a ribbon button bound to the alias gets its icon and tooltip;
+- the CUI window lists it, so users can give it a shortcut;
+- the wiki gives it a page with its aliases, ribbon location and first prompt, read from the program at the next sync.
+
+## 3. A place on the ribbon (optional)
+
+Ribbon buttons are built in `src/ui/ribbon_layout.cpp` with helpers that take a label and an alias, such as `small(panel, column, QStringLiteral("ID Point"), "ID")`. Put a tool where AutoCAD has it. A tool Musa CAD does not have yet can stand in its place as a disabled placeholder.
+
+## 4. A test
+
+Commands are tested without a window, by driving the command processor and checking what it sends to the geometry thread and prints. The pattern, from `tests/test_command_processor.cpp`:
+
+```cpp
+TEST_CASE("Processor: canonical LINE 0,0 @100,0 ESC draws a horizontal line") {
+    Harness h;
+    h.proc.submit_line("L");
+    h.proc.submit_line("0,0");
+    h.proc.submit_line("@100,0");
+    h.proc.cancel(); // ESC
+
+    REQUIRE(h.cmds.size() == 1);
+    const auto* line = std::get_if<musacad::core::AddLineCommand>(&h.cmds[0]);
+    REQUIRE(line != nullptr);
+    REQUIRE(line->b == Vec2{100.0, 0.0});
+}
+```
+
+A new test file goes in `tests/` and in the `_musacad_test_files` list in `tests/CMakeLists.txt`. See [Tests](/developer/tests/).
+
+## 5. Saving it (only if the command adds a new kind of object)
+
+A new kind of object needs a record in the native format: add it to `include/musacad/core/io/document.hpp` and `src/core/io/native_format.cpp`, raise `kFormatVersion`, and keep reading every older version. Add it to `src/core/io/dxf.cpp` too, or state plainly that DXF does not carry it.
+
+## 6. The docs
+
+Add or change the command's row in `docs/COMMANDS.md`, and an entry in `CHANGELOG.md`. The wiki's page for the command appears by itself; a written explanation can be added to it later.
+
+## Next
+
+- [Tests](/developer/tests/)
+- [Contributing](/developer/contributing/)

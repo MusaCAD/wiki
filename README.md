@@ -41,6 +41,12 @@ node scripts/generate-reference.mjs
 | `src/data/format-history.json` | comments in the Musa CAD source | what each `.musa` format version added |
 | `src/data/releases.json` | by hand, once per release | release dates, format versions, downloads |
 
+Some pages are the developers' own documents from the Musa CAD repository, shown as they are
+at the pinned release: the architecture, the roadmap, the third-party components, the command
+status table, the AutoCAD settings status and every release's notes. `npm run docs` (also run
+before `dev`, `build` and `check`) writes them from a local checkout at `../musa_cad`, or from
+GitHub at the pinned tag. They are not committed; edit them in the Musa CAD repository.
+
 ## Who writes which page
 
 Every page's frontmatter says who owns its words (`tier`), the release it was last checked

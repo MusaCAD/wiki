@@ -1,0 +1,61 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: A file will not open
+description: Musa CAD says Unsupported file format version or expected MUSACAD header, or a drawing opens without its external references and images. What each message means, and what to do about it.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: troubleshooting
+symptom:
+  affects: Drawings saved by a newer Musa CAD, damaged or mislabelled files, and drawings that use files kept beside them.
+  cause: Each Musa CAD release can open drawings from itself and older releases only. Files that are not drawings, or that were cut short, cannot be read.
+sidebar:
+  label: Files that will not open
+  order: 6
+---
+
+## "Unsupported file format version 46."
+
+The drawing was saved by a newer Musa CAD than yours. Musa CAD 0.8.0 opens drawings up to format version 45. [Update Musa CAD](/releases/) and the file will open.
+
+If you need to send a drawing to someone with an older version, export it as DXF. [The .musa format](/file-formats/musa-format/) shows which release writes which format version.
+
+## "Line 1: expected MUSACAD header"
+
+The file is not a Musa CAD drawing, even though its name ends in `.musa`. It may be a different kind of file that was renamed, or a download that did not finish. Check its size, and get a fresh copy if you can.
+
+A message naming a later line, such as `Line 2051:`, means the file was cut short or edited by hand. The line number shows where the problem is. A `.musa` file is plain text, so you can open it in a text editor and look.
+
+## A DXF opens, but things are missing
+
+Musa CAD imports what it supports and tells you what it skipped:
+
+```txt
+Imported 412 entities on 9 layers; skipped 3 unsupported (ACAD_TABLE, MULTILEADER).
+```
+
+[DXF support](/file-formats/dxf/) lists what comes across.
+
+## External references or images are missing
+
+A drawing can use other files kept beside it, such as external references and images. If those files have moved, the drawing opens without them. Put them back in the same place relative to the drawing and open it again. For external references you can also type `XREF`, then `Reload`, without closing the drawing.
+
+### In the Flatpak
+
+The Flatpak only sees the files you pick. When a drawing uses files beside it, Musa CAD asks:
+
+```txt
+plan.musa uses other files kept beside it: external references or images.
+```
+
+Click **Choose Folder…** and pick the folder that holds the drawing. Musa CAD can then load everything in that folder. **Open Without Them** opens just the drawing.
+
+## Keep copies of your work
+
+Musa CAD 0.8.0 does not save automatically, and it has no recovery for unsaved work after a crash. Save often with Ctrl+S, and keep backups of important drawings.
+
+## Next
+
+For DWG files, see [DWG files do nothing or fail](/troubleshooting/dwg-files/).

@@ -1,0 +1,57 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Text looks different from the original
+description: Text from an AutoCAD drawing uses a different font, shows boxes or missing characters, or has lost its formatting. How Musa CAD replaces SHX and missing TrueType fonts, and how to find characters a font cannot draw.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: troubleshooting
+symptom:
+  affects: Drawings made in AutoCAD and other CAD programs, and drawings using fonts that are not installed on this computer.
+  cause: Musa CAD cannot use AutoCAD's SHX font files and draws them with its own single-stroke font. A TrueType font that is not installed is replaced by a lookalike or by the same single-stroke font.
+sidebar:
+  label: Text and fonts
+  order: 5
+---
+
+## SHX fonts become Musa CAD's own font
+
+AutoCAD's classic fonts, such as `txt.shx`, `simplex.shx`, `romans.shx` and `isocp.shx`, are single-stroke fonts in Autodesk's own file format. Musa CAD does not read those files. It draws all of them with its built-in single-stroke font, which looks close to them and keeps the thin "CAD" look.
+
+The text keeps its position, height, width factor and slant. Only the letter shapes differ slightly, so long lines of text may end a little earlier or later than in AutoCAD.
+
+## A TrueType font is not installed
+
+When a drawing asks for a TrueType font your computer does not have, Musa CAD looks for a lookalike:
+
+| Requested | Used instead, if installed |
+|---|---|
+| Arial, Helvetica | Liberation Sans, then DejaVu Sans |
+| Times New Roman | Liberation Serif, then DejaVu Serif |
+| Courier New | Liberation Mono, then DejaVu Sans Mono |
+
+Any other missing font is drawn with the built-in single-stroke font. To get the original look, install the font and open the drawing again.
+
+## Boxes or missing characters
+
+A font may not contain every character in the text, such as a symbol or a letter from another alphabet. You can find every such place with the command line:
+
+```sh
+musacad --check drawing.musa
+```
+
+It reports text that uses a character its font cannot draw, as well as text that overlaps other text or runs outside the drawing frame. It exits with code 4 when it finds a problem. Add `--json` for a report a script can read.
+
+## Symbols such as ° and ± show as codes
+
+Musa CAD understands AutoCAD's text codes, so `%%d` shows as °, `%%p` as ± and `%%c` as ⌀. A code such as `\U+00B0` shows the Unicode character with that number. When you edit the text, you see the codes again. This is on purpose, so the text saves back unchanged.
+
+## Formatted text from AutoCAD
+
+Multiline text keeps AutoCAD's formatting codes, and Musa CAD draws them: heights, colours, fonts, underlines and stacked fractions. Vertical text styles are not supported yet.
+
+## Next
+
+If the text is fine on screen but wrong on paper, see [A plot or PDF looks wrong](/troubleshooting/plot-looks-wrong/).

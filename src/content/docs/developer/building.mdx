@@ -1,0 +1,114 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Building Musa CAD
+description: Build Musa CAD from source on Linux, Windows and macOS. Prerequisites, the CMake presets, where the programs land, DWG support, sanitizer builds and the headless smoke test.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: developer
+sidebar:
+  label: Building
+  order: 1
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Musa CAD builds from a fresh clone. Apart from a C++23 compiler, Qt 6 and the Vulkan headers, everything it needs is fetched by the build itself, and it depends on no other CAD library.
+
+## Prerequisites
+
+| What | Minimum | Notes |
+|---|---|---|
+| C++23 compiler | GCC 13, Clang 17, or MSVC 19.38 (Visual Studio 2022 17.8) | `-std=c++23`, no extensions |
+| CMake | 3.25 | uses presets version 6 |
+| Ninja | 1.10 | the presets' generator |
+| Qt 6 (Core, Gui, Widgets) | 6.4 | the window and the event loop |
+| Vulkan loader and headers | 1.3 | needed to configure; the drawing area itself uses OpenGL, and nothing links Vulkan |
+
+Catch2, for the unit tests, is downloaded by CMake when the tests are built.
+
+## Build
+
+<Tabs>
+<TabItem label="Linux">
+
+On Debian or Ubuntu:
+
+```sh
+sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev libvulkan-dev
+git clone https://github.com/MusaCAD/MusaCAD.git
+cd MusaCAD
+cmake --preset release
+cmake --build --preset release
+```
+
+The program is `build/release/bin/musacad_app`. To draw, it needs a graphics driver with OpenGL 4.5 (Mesa for Intel and AMD, or NVIDIA's driver).
+
+</TabItem>
+<TabItem label="Windows">
+
+You need:
+
+- Visual Studio 2022 (17.8 or newer) with the **Desktop development with C++** workload. The Build Tools edition is enough. Add the **C++ AddressSanitizer** component if you want the `dev` preset.
+- CMake and Ninja (they come with Visual Studio, or install them on their own).
+- Qt 6, from the Qt online installer or with [aqtinstall](https://github.com/miurahr/aqtinstall) as the project's CI does: `aqt install-qt windows desktop 6.8.1 win64_msvc2022_64 -m qtimageformats`.
+- The Vulkan SDK from LunarG is optional.
+
+Build from an **x64 Native Tools Command Prompt**, so the presets find the compiler:
+
+```bat
+cmake --preset release -DCMAKE_PREFIX_PATH=C:/Qt/6.8.1/msvc2022_64
+cmake --build --preset release
+```
+
+The build tree has no Qt DLLs next to the programs. To run one from there, put `C:\Qt\6.8.1\msvc2022_64\bin` on `PATH` (the tests find Qt by themselves). Two programs are built in `build\<preset>\bin`: `musacad_app.exe`, the window, and `musacad.exe`, the console front-end that scripts use (see [the command line](/scripting/command-line/)).
+
+</TabItem>
+<TabItem label="macOS">
+
+With Qt 6, Ninja and `rsvg-convert` (`brew install ninja librsvg`):
+
+```sh
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_SANITIZERS=OFF -DENABLE_TSAN=OFF
+cmake --build build --target musacad_app
+```
+
+The command line works. The drawing area does not open, because macOS has no OpenGL 4.5; see [Install on macOS](/get-started/install-macos/). Making the app bundle and disk image is described in [Packaging](/developer/packaging/#macos-disk-image).
+
+</TabItem>
+</Tabs>
+
+## The presets
+
+| Preset | What it builds |
+|---|---|
+| `release` | Optimised, no sanitizers, no tests. |
+| `dev` | Debug, with AddressSanitizer and UndefinedBehaviorSanitizer (AddressSanitizer only on MSVC), and the unit tests. |
+| `tsan` | ThreadSanitizer, for the concurrency tests. It cannot be combined with the `dev` sanitizers. |
+
+```sh
+cmake --preset dev && cmake --build --preset dev && ctest --preset dev
+```
+
+See [Tests](/developer/tests/) for what the test run covers, and for the ThreadSanitizer setup.
+
+## DWG support
+
+DWG support is not compiled in, and adds nothing to the build. Musa CAD is LGPL; the DWG converters are GPL (LibreDWG) or proprietary (the ODA File Converter), so Musa CAD never links, bundles or ships them. It runs a converter as a separate program and reads the DXF it produces. A fresh build handles DXF straight away; for DWG, see [DWG files](/file-formats/dwg/).
+
+## Check a build without a screen
+
+Setting `MUSACAD_SMOKE` makes the program show its window and quit at once, which checks a clean start:
+
+```sh
+MUSACAD_SMOKE=1 QT_QPA_PLATFORM=offscreen ./build/dev/bin/musacad_app
+```
+
+On a machine with no OpenGL 4.5 (most CI runners), this ends with exit code 2 and the message that the viewport cannot be created. That is expected; the command line still works there.
+
+## Next
+
+- [A tour of the code](/developer/codebase-tour/)
+- [Writing a command](/developer/writing-a-command/)

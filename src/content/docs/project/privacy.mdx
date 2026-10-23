@@ -1,0 +1,60 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Privacy
+description: Musa CAD has no telemetry, no analytics and no account. What the app sends over the network and how to turn it off, where crash reports stay, and what this wiki stores in your browser. No cookies, no tracking.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: project
+sidebar:
+  label: Privacy
+  order: 3
+---
+
+The short version: Musa CAD does not track you, and neither does this wiki. Your drawings never leave your computer unless you send them somewhere.
+
+## The Musa CAD app
+
+### What it never does
+
+Musa CAD has no account, no sign-in, no telemetry, no usage analytics and no ads. It never uploads your drawings. Its settings are kept in an ordinary settings file on your computer.
+
+### The update check
+
+The one thing Musa CAD does over the network on its own is look for a new version, at most once a day. It sends one request to GitHub, or to Flathub if you installed it from there, asking for the latest release. The request carries nothing about you or your drawings. GitHub or Flathub sees your IP address, as with any request on the internet.
+
+The check is on in the packages and off in builds you compile yourself. To turn it off, open **Options** (type `OPTIONS`), or set the environment variable `MUSACAD_NO_UPDATE_CHECK`.
+
+### Downloads you ask for
+
+- **Updating on Windows.** When you accept an update, Musa CAD downloads the new installer and its checksum from the project's GitHub releases.
+- **DWG Setup.** When you ask it to, Musa CAD downloads the ODA File Converter from the Open Design Alliance. The converter is their program, under their terms.
+
+### Crash reports
+
+When Musa CAD crashes, it saves a report on your computer. The report holds the version, your system, your last commands and the drawing's file name, but no drawing contents. It is never sent anywhere. It only leaves your computer if you attach it to an issue yourself. See [How to report a bug](/troubleshooting/bug-reports/).
+
+## This wiki
+
+### No cookies, no analytics
+
+This wiki sets no cookies and uses no analytics, advertising or tracking. Its fonts and its search are served from this site. When you search, your search words stay in your browser.
+
+### What it keeps in your browser
+
+The wiki remembers two things in your browser's local storage, so they stay the same on your next visit:
+
+- your colour theme, if you chose one;
+- your reading settings, such as text size, line spacing, page width, font, contrast and reduced motion.
+
+They never leave your browser. Clearing your browser's site data removes them.
+
+### Hosting
+
+The wiki is hosted on GitHub Pages, with Cloudflare in front of it. To deliver pages and keep them secure, GitHub and Cloudflare process the usual details of each request, such as your IP address, browser and the page you asked for, under their own privacy policies. Cloudflare also asks your browser to report it if a page fails to load. I do not receive visitor logs.
+
+## Contact
+
+If you have a question about privacy, email me at [pranay@weberq.in](mailto:pranay@weberq.in). The main website's [privacy policy](https://musacad.org/privacy/) covers musacad.org and donations.

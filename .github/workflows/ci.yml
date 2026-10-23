@@ -53,6 +53,9 @@ jobs:
       - name: Licence header on every file
         run: npm run check:headers
 
+      - name: Documents kept in the Musa CAD repository, as pages at the pinned release
+        run: npm run docs
+
       - name: Every page has its fields; every command has a page
         run: npm run check:pages
 

@@ -4,9 +4,11 @@
 
 // Where you are (breadcrumbs), the page title, and a status line: whether the page is
 // complete, which Musa CAD release it was checked against and when, and which platforms it
-// is about. Command and system variable pages then show the facts Musa CAD reports about them.
+// is about. Command and system variable pages then show the facts Musa CAD reports about them;
+// release pages their downloads; troubleshooting pages who the problem affects and why.
 import type { WikiRouteData } from '../../route-data';
 import ReferenceHeader from '../reference/ReferenceHeader.astro';
+import ReleaseHeader from '../reference/ReleaseHeader.astro';
 
 type Entry = { type: 'link'; isCurrent: boolean; label: string; href: string } | { type: 'group'; label: string; entries: Entry[] };
 
@@ -15,7 +17,7 @@ const { entry, sidebar, lang } = route;
 const wiki = route.wiki;
 const t = Astro.locals.t;
 const base = import.meta.env.BASE_URL;
-const data = entry.data as typeof entry.data & { platforms?: string[]; kind?: string; command?: string; sysvar?: string };
+const data = entry.data as typeof entry.data & { platforms?: string[]; kind?: string; command?: string; sysvar?: string; release?: string; symptom?: { affects: string; cause: string } };
 
 function trail(entries: Entry[], acc: Entry[] = []): Entry[] | null {
 	for (const e of entries) {
@@ -33,6 +35,7 @@ else if (data.kind === 'sysvar') {
 	crumbs.push({ label: 'Command reference', href: `${base}reference/` });
 	crumbs.push({ label: 'System variables', href: `${base}reference/system-variables/` });
 } else if (entry.id.startsWith('blog/')) crumbs.push({ label: 'Blog', href: `${base}blog/` });
+else if (data.kind === 'release') crumbs.push({ label: 'Releases', href: `${base}releases/` });
 else {
 	const groups = trail(sidebar as Entry[]) ?? [];
 	// A section's overview page carries its section's name as its title; one crumb is enough.
@@ -87,6 +90,23 @@ const refName = data.kind === 'command' ? data.command : data.kind === 'sysvar' 
 }
 
 {refName && <ReferenceHeader name={refName} />}
+{data.kind === 'release' && data.release && <ReleaseHeader version={data.release} />}
+{
+	data.kind === 'troubleshooting' && data.symptom && (
+		<section class="mc-ref not-content" aria-label="About this problem">
+			<dl class="mc-ref-facts">
+				<div>
+					<dt>Who this affects</dt>
+					<dd>{data.symptom.affects}</dd>
+				</div>
+				<div>
+					<dt>Why it happens</dt>
+					<dd>{data.symptom.cause}</dd>
+				</div>
+			</dl>
+		</section>
+	)
+}
 
 <style>
 	@layer starlight.core {

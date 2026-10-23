@@ -1,0 +1,71 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: A tour of the code
+description: How the Musa CAD source is organised. The five CMake targets, the three threads and how they talk, the folders, and where to look first for each kind of change.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: developer
+sidebar:
+  label: A tour of the code
+  order: 3
+---
+
+## The five targets
+
+| Target | Kind | What it holds |
+|---|---|---|
+| `musacad_core` | static library | Maths, the geometry store, the geometry kernel, threading, snapshots, the spatial index, file reading and writing. It does not depend on Qt or on any other target. |
+| `musacad_render` | static library | The GPU layer (an OpenGL 4.6 back end behind a back-end-neutral interface), the camera, the grid and the renderer that draws snapshots. |
+| `musacad_command` | static library | The command table, every command as a small state machine, coordinate parsing, the command processor. |
+| `musacad_ui` | static library | The Qt window: ribbon, drawing area, command line, Dynamic Input, status bar, dialogs, plotting. |
+| `musacad_app` | program | `main()`: the command line (`--check`, `--plot`), then the window. |
+
+`musacad_core` is the headless heart. It never touches Qt, which is why `musacad --check` runs on a machine with no display at all.
+
+## The three threads
+
+Musa CAD runs three long-lived threads that never share data they can both change:
+
+1. **The interface and command thread** runs Qt's event loop. Commands turn what you type and click into messages.
+2. **The geometry thread** owns the drawing. It applies those messages, runs the geometry kernel, and builds a snapshot of what to draw.
+3. **The render thread** owns the GPU and draws the newest snapshot.
+
+Messages go from the interface to the geometry thread through a queue. Snapshots go from the geometry thread to the renderer through a lock-free triple buffer, so drawing never waits for geometry and geometry never waits for drawing. This is why panning and zooming stay smooth while a big edit runs. The [architecture page](/developer/architecture/#threading-model) has the details.
+
+## The folders
+
+```
+src/core/       maths, the geometry store, the kernel, snapshots, the spatial index, undo,
+                file formats (src/core/io/: native .musa, DXF)
+src/render/     the GPU layer and the OpenGL back end, camera, grid, renderer
+src/command/    the command table (command_registry.cpp), every command (commands.cpp),
+                coordinate parsing, the command processor
+src/ui/         the main window, the ribbon (ribbon_layout.cpp), the drawing area,
+                Dynamic Input, dialogs, plotting, the DWG converter, the update check
+src/app/        main(), the command line (cli.cpp), --plot
+include/musacad/  the headers, in the same layout as src/
+shaders/        GLSL, built into the program
+tests/          unit tests (Catch2), the end-to-end command-line test, benchmarks
+docs/           ARCHITECTURE.md, COMMANDS.md, ROADMAP.md, release notes and more
+packaging/      AppImage, Flatpak and Flathub, the Windows installer, macOS
+tools/          screenshot tooling, plot checking, asset provenance
+```
+
+## Where to look first
+
+| You want to | Start in |
+|---|---|
+| Add or change a command | `src/command/command_registry.cpp` (the table) and `commands.cpp` (the behaviour). See [Writing a command](/developer/writing-a-command/). |
+| Change what a ribbon button does or where it is | `src/ui/ribbon_layout.cpp` |
+| Change how something is drawn on screen | `src/core/scene_snapshot.cpp` (what is drawn) and `src/render/` (how) |
+| Change what is saved in a `.musa` file | `src/core/io/native_format.cpp` and `include/musacad/core/io/document.hpp`. Every change raises the format version; see [the .musa format](/file-formats/musa-format/). |
+| Change DXF import or export | `src/core/io/dxf.cpp` |
+| Change plotting | `src/ui/plot.cpp` (shared by PLOT and `--plot`) |
+| Change the command line options | `src/app/cli.cpp` |
+
+## Next
+
+[Writing a command](/developer/writing-a-command/) walks through the smallest complete change.

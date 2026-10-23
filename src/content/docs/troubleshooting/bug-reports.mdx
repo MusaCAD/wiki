@@ -1,0 +1,65 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: How to report a bug
+description: What to do when Musa CAD crashes or misbehaves. The crash report it saves, Save Bug Report in the application menu, where the reports are kept on each system, and what a good issue includes.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: guide
+sidebar:
+  label: Report a bug
+  order: 7
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+A good bug report gets a problem fixed quickly. Musa CAD helps by writing most of it for you.
+
+## After a crash
+
+If Musa CAD closes unexpectedly, it saves a report about what happened. The next time you start it, a window titled **Musa CAD closed unexpectedly** offers that report.
+
+The report holds:
+
+- the Musa CAD version and your system;
+- the last commands you ran;
+- where in the program it stopped.
+
+It holds **no drawing contents**, only the drawing's file name. The window shows the whole report, so you can read it before you share it.
+
+<Steps>
+
+1. In the **Musa CAD closed unexpectedly** window, click **Save Report As…** to save a copy, or **Copy** to copy the text. **Open Folder** shows where the report is kept.
+2. Open [a new issue](https://github.com/MusaCAD/MusaCAD/issues/new) on GitHub.
+3. Say what you were doing when it crashed, and attach the report.
+
+</Steps>
+
+## When it misbehaves without crashing
+
+Choose **Save Bug Report…** from the application menu (the Musa CAD logo at the top left). It writes the same kind of report while Musa CAD is still running: the version, your system and your recent commands. Attach it to your issue.
+
+## Where the reports are kept
+
+Each report is a text file named `musacad-report-` followed by the date. Older reports stay in the same folder.
+
+| Installed as | Folder |
+|---|---|
+| Linux, AppImage | `~/.local/share/Musa-CAD/musa_cad/crash-reports` |
+| Linux, Flatpak | `~/.var/app/org.musacad.MusaCAD/data/Musa-CAD/musa_cad/crash-reports` |
+| Windows | `%LOCALAPPDATA%\Musa-CAD\musa_cad\crash-reports` |
+
+## What a good issue says
+
+- **What you did,** step by step, starting from a new or attached drawing.
+- **What happened,** and **what you expected** instead. Quote any message exactly.
+- **Your version and system:** the Musa CAD version, your operating system, and whether you installed from Flathub, the AppImage, a Flatpak file or the Windows installer.
+- **The drawing,** if you can share it. A small drawing that shows the same problem is even better.
+
+If Musa CAD does something differently from AutoCAD, describe what AutoCAD does in your own words.
+
+## Next
+
+Back to [Troubleshooting](/troubleshooting/), or see [Contributing](/developer/contributing/) if you would like to help fix it.

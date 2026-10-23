@@ -1,0 +1,33 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// A table wider than the page scrolls sideways. To scroll it with the keyboard, it has to be
+// able to take focus, so a table that overflows gets tabindex="0" (and loses it again when the
+// window grows). Tables that fit are left alone, so they add no extra Tab stops.
+---
+
+<script>
+	function mark() {
+		for (const table of document.querySelectorAll<HTMLTableElement>('.sl-markdown-content table')) {
+			if (table.scrollWidth > table.clientWidth + 1) {
+				table.tabIndex = 0;
+				if (!table.hasAttribute('aria-label')) {
+					const caption = table.querySelector('caption')?.textContent;
+					let heading: Element | null = table.previousElementSibling;
+					while (heading && !/^H[2-6]$/.test(heading.tagName) && !heading.classList.contains('sl-heading-wrapper')) heading = heading.previousElementSibling;
+					const label = caption || heading?.textContent?.trim();
+					if (label) table.setAttribute('aria-label', `${label} (table, scrolls sideways)`);
+				}
+			} else if (table.getAttribute('tabindex') === '0') {
+				table.removeAttribute('tabindex');
+			}
+		}
+	}
+	mark();
+	let timer = 0;
+	addEventListener('resize', () => {
+		clearTimeout(timer);
+		timer = window.setTimeout(mark, 150);
+	});
+</script>

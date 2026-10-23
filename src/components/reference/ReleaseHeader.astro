@@ -1,0 +1,82 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// The facts at the top of a release page: when it came out, the file format it saves and
+// which files it opens, what changed for your files since the release before, and the
+// downloads it published. From src/data/releases.json.
+import releases from '../../data/releases.json';
+import { compareVersions } from '../../../wiki.config.mjs';
+
+interface Props {
+	version: string;
+}
+const { version } = Astro.props;
+type Release = (typeof releases)[number] & { windowsInstallerPending?: boolean };
+const sorted = [...(releases as Release[])].sort((a, b) => compareVersions(a.version, b.version));
+const i = sorted.findIndex((r) => r.version === version);
+if (i < 0) throw new Error(`Release ${version} is not in src/data/releases.json`);
+const r = sorted[i]!;
+const prev = sorted[i - 1];
+const newer = sorted.slice(i + 1);
+const formatChanged = prev && prev.formatVersion !== r.formatVersion;
+const url = `https://github.com/MusaCAD/MusaCAD/releases/tag/${r.tag}`;
+const dl = (asset: string) => `https://github.com/MusaCAD/MusaCAD/releases/download/${r.tag}/${asset}`;
+const downloads = [
+	r.assets.includes('exe') && { label: 'Windows installer', href: dl(`MusaCAD-${r.version}-x86_64-setup.exe`) },
+	r.assets.includes('appimage') && { label: 'Linux AppImage', href: dl(`MusaCAD-${r.version}-x86_64.AppImage`) },
+	r.assets.includes('flatpak') && { label: 'Linux Flatpak file', href: dl(`MusaCAD-${r.version}.flatpak`) },
+	r.assets.includes('dmg') && { label: 'macOS disk image (preview)', href: dl(`MusaCAD-${r.version}-arm64.dmg`) },
+].filter(Boolean) as { label: string; href: string }[];
+const date = new Date(r.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<section class="mc-ref not-content" aria-label="About this release">
+	<p class="mc-ref-desc">{r.summary}</p>
+	<dl class="mc-ref-facts">
+		<div>
+			<dt>Released</dt>
+			<dd><time datetime={r.date}>{date}</time></dd>
+		</div>
+		<div>
+			<dt>File format</dt>
+			<dd>
+				Saves <code>.musa</code> version {r.formatVersion}, and opens every version from 1 to {r.formatVersion}.
+				{
+					formatChanged
+						? ` Files saved by ${r.version} need ${r.version} or newer; files from ${prev!.version} open unchanged.`
+						: prev
+							? ` Same format as ${prev.version}, so files move freely between the two.`
+							: ''
+				}
+			</dd>
+		</div>
+		<div>
+			<dt>Downloads</dt>
+			<dd>
+				{downloads.length ? (
+					<ul class="mc-ref-locs">
+						{downloads.map((d) => (
+							<li><a href={d.href}>{d.label}</a></li>
+						))}
+					</ul>
+				) : (
+					'None attached.'
+				)}
+				{r.windowsInstallerPending && <p>The Windows installer is added to this release once it has been tested on real Windows hardware.</p>}
+				<p><a href={url}>The release on GitHub</a>, with checksums and every file.</p>
+			</dd>
+		</div>
+		{
+			newer.length > 0 && (
+				<div>
+					<dt>Newer</dt>
+					<dd>
+						This is not the newest release. <a href={`${import.meta.env.BASE_URL}releases/${sorted.at(-1)!.tag.replace(/\./g, '-')}/`}>Musa CAD {sorted.at(-1)!.version}</a> is.
+					</dd>
+				</div>
+			)
+		}
+	</dl>
+	<p class="mc-ref-source">The notes below are the release notes from the Musa CAD repository, as published with the release.</p>
+</section>

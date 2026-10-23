@@ -11,7 +11,7 @@ import { ENGINE } from '../../wiki.config.mjs';
 
 // /llms-full.txt: the text of every page in one file, in the order of the navigation, with
 // the facts the command pages draw from Musa CAD written out. For AI tools and offline reading.
-const ORDER = ['index', 'get-started', 'user-manual', 'scripting', 'file-formats', 'reference', 'blog'];
+const ORDER = ['index', 'get-started', 'user-manual', 'scripting', 'file-formats', 'troubleshooting', 'reference', 'releases', 'developer', 'project', 'blog'];
 
 export const GET: APIRoute = async ({ site }) => {
   const root = new URL(import.meta.env.BASE_URL, site).href.replace(/\/$/, '');

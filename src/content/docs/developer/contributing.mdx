@@ -1,0 +1,64 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Contributing
+description: How to help with Musa CAD and this wiki. Reporting bugs and asking for features, sending changes, the licence header every file carries, commit style, and getting credited.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: developer
+sidebar:
+  label: Contributing
+  order: 6
+---
+
+Thank you for helping. There are many ways to do it, and most of them need no code.
+
+## Report a bug or ask for a feature
+
+Open an issue on [GitHub](https://github.com/MusaCAD/MusaCAD/issues). A good report says:
+
+- what you did, step by step, and what happened;
+- what you expected instead;
+- your Musa CAD version (`musacad --version`, or **About** in the application menu), your operating system, and how you installed it;
+- the drawing, if you can share it, or a small one that shows the problem.
+
+If Musa CAD crashed, attach the crash report it offers to save the next time it starts. [How to file a useful bug report](/troubleshooting/bug-reports/) has the details.
+
+When Musa CAD does something differently from AutoCAD, say what AutoCAD does in your own words. Please do not paste text from Autodesk's documentation.
+
+## Send a change
+
+1. Open an issue first for anything bigger than a small fix, so the approach can be agreed before you spend time on it.
+2. Fork the repository and make your change on a branch.
+3. Build with the `dev` preset and run the tests (`ctest --preset dev`). Add a test for what you changed. See [Tests](/developer/tests/).
+4. Update `docs/COMMANDS.md` for a command change, and add an entry to `CHANGELOG.md`.
+5. Open a pull request and describe what changed and why.
+
+### Every file carries its licence
+
+Musa CAD is LGPL-3.0-or-later, and every source file starts with two lines saying so:
+
+```cpp
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+```
+
+Use the comment style of the file's language. Keep them on any file you change, and add them to any file you create.
+
+### Commit messages
+
+Look at the history for the style: a short subject that says what changed for the user, for example `fix: closing the window read the Dynamic Input settings from freed memory`, and a body that says why, with the issue number. Do not add AI tools as co-authors of commits.
+
+### No third-party CAD code
+
+Musa CAD has its own geometry kernel and depends on no CAD library. Do not add one, and do not add a GPL library: it would change Musa CAD's licence. DWG stays behind a separate converter program for the same reason.
+
+## Getting credited
+
+Contributors are listed in [CONTRIBUTORS.md](https://github.com/MusaCAD/MusaCAD/blob/main/CONTRIBUTORS.md). To be added, include your entry in your pull request.
+
+## Help with this wiki
+
+This wiki has its own repository, [MusaCAD/wiki](https://github.com/MusaCAD/wiki). Every page has **Edit page** and **Report a problem with this page** links at the bottom. The most useful help right now is writing command pages: each one starts as a page of facts, and needs a plain-English explanation and an example. The wiki's README explains the rules a page follows.

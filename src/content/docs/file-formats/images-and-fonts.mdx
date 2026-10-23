@@ -1,0 +1,81 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Images and fonts
+description: Attaching pictures to a Musa CAD drawing, embedded or kept beside it, and the 8 MB limit. Which fonts Musa CAD can draw, and what happens to AutoCAD SHX fonts and TrueType fonts that are not installed.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: reference
+sidebar:
+  label: Images and fonts
+  order: 4
+---
+
+## Images
+
+You can place a picture in a drawing, such as a logo, a scanned plan or a photo of a site. Type `IMAGEATTACH` (or `IAT`) and pick the file. Type `~` at the first prompt to choose it in a file window.
+
+Musa CAD reads **PNG, JPEG, BMP, GIF and TIFF** images.
+
+### Kept beside the drawing, or inside it
+
+Musa CAD asks:
+
+```txt
+Keep a copy of the image inside the drawing? [Yes/No] <No>:
+```
+
+- **No** keeps a link to the image file. The drawing stays small, and if you change the image, the drawing shows the new version the next time it opens. The image must be in the drawing's folder, or a folder inside it, so the two can move together.
+- **Yes** stores a copy of the image inside the `.musa` file. The drawing then works on its own, anywhere. An embedded image can be up to **8 MB**.
+
+Musa CAD embeds the image anyway in two cases, and says so: when the drawing has not been saved yet, and when the image is outside the drawing's folder.
+
+### Working with images
+
+| Command | What it does |
+|---|---|
+| `IMAGECLIP` | Shows only part of the image, inside a rectangle or a polygon |
+| `IMAGEFRAME` | Shows or hides the frame around images |
+
+Drag an image's corner grips to resize it. Images are included when you plot, behind the line work.
+
+In a DXF file, an embedded image is saved as a separate file beside the DXF, because DXF can only link to images.
+
+## Fonts
+
+Musa CAD draws text with two kinds of font:
+
+- **Its own single-stroke font.** This is what the `Standard` text style uses. It is drawn with thin lines, like classic CAD text, and plots crisply at any size.
+- **Any TrueType or OpenType font on your computer.** Choose it in the Text Style window (`STYLE`) or the Properties palette.
+
+### Fonts from AutoCAD drawings
+
+AutoCAD's classic SHX fonts, such as `txt.shx`, `simplex.shx` and `romans.shx`, are stored in Autodesk's own format. Musa CAD does not read them. It draws them with its own single-stroke font, which looks close.
+
+When a drawing asks for a TrueType font that is not installed, Musa CAD uses a lookalike if it can find one:
+
+| Requested | Used instead, if installed |
+|---|---|
+| Arial, Helvetica | Liberation Sans, then DejaVu Sans |
+| Times New Roman | Liberation Serif, then DejaVu Serif |
+| Courier New | Liberation Mono, then DejaVu Sans Mono |
+
+Any other missing font is drawn with the single-stroke font.
+
+In both cases the drawing keeps the name of the font it asked for. The Properties palette shows that name, and saving the drawing writes it back unchanged. If you install the font later, the text uses it.
+
+### Characters a font does not have
+
+To find text that uses a character its font cannot draw, run:
+
+```sh
+musacad --check drawing.musa
+```
+
+See [Text looks different from the original](/troubleshooting/text-looks-wrong/) for more.
+
+## Next
+
+Moving drawings from AutoCAD? See [Moving projects from AutoCAD](/file-formats/from-autocad/).

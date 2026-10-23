@@ -1,0 +1,39 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Troubleshooting
+description: Fix common Musa CAD problems, sorted by what you see. The app will not start, the drawing area is black or slow, DWG files do nothing, plots or text look wrong, or a file will not open.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: landing
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Find what you are seeing below. Each page starts with the quickest fix and then explains why it happens.
+
+<CardGrid>
+  <LinkCard title="Musa CAD will not start" description="It closes with a message about OpenGL 4.5, or nothing happens at all." href="/troubleshooting/app-will-not-start/" />
+  <LinkCard title="The drawing area is black, blank or slow" description="The window opens, but drawing feels sluggish or shows nothing." href="/troubleshooting/drawing-area/" />
+  <LinkCard title="DWG files do nothing or fail" description="No DWG converter found, the converter times out, or parts of the drawing are missing." href="/troubleshooting/dwg-files/" />
+  <LinkCard title="A plot or PDF looks wrong" description="The page is empty, lines are all the same thickness, colours or dashes are off, or it is the wrong size." href="/troubleshooting/plot-looks-wrong/" />
+  <LinkCard title="Text looks different from the original" description="Fonts from AutoCAD drawings, missing characters, and text that has lost its formatting." href="/troubleshooting/text-looks-wrong/" />
+  <LinkCard title="A file will not open" description="Unsupported file format version, expected MUSACAD header, or missing references and images." href="/troubleshooting/file-will-not-open/" />
+</CardGrid>
+
+## Before anything else
+
+1. **Check your version.** Choose **About Musa CAD…** from the application menu (the Musa CAD logo at the top left), or run `musacad --version`. Many problems are already fixed in the [latest release](/releases/).
+2. **Update.** Musa CAD checks for a new version once a day and shows it in the status bar. You can also choose **Check for Updates…** from the application menu. Flathub installs update with your other apps.
+3. **Read the message.** Musa CAD says what went wrong instead of failing silently. The message usually names the cause, and these pages quote the messages so you can search for them.
+
+## Still stuck?
+
+If Musa CAD crashed, it offers to save a report the next time it starts. Attach it to a new issue. [How to report a bug](/troubleshooting/bug-reports/) explains what to include, and where the reports are kept.
+
+You can also search the [existing issues](https://github.com/MusaCAD/MusaCAD/issues?q=is%3Aissue). Someone may have had the same problem.

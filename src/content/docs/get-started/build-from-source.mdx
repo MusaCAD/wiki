@@ -6,13 +6,13 @@ description: Build Musa CAD yourself from its source code on Linux in three comm
 tier: human
 appliesTo: 0.8.0
 lastVerified: 2026-10-23
-status: partial
+status: complete
 kind: guide
 sidebar:
   order: 5
 ---
 
-You can build Musa CAD from its source code with a few standard tools. It does not depend on any other CAD library. This page covers a Linux desktop. Windows and macOS builds, the debug and sanitizer builds, and packaging are covered in [BUILD.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/BUILD.md) in the source repository for now. That is why this page is marked partial.
+You can build Musa CAD from its source code with a few standard tools. It does not depend on any other CAD library. This page is the quick version for a Linux desktop. [Building](/developer/building/) in the developer guide covers Windows and macOS, the debug and sanitizer builds, and more.
 
 ## What you need
 
@@ -51,8 +51,12 @@ For development, the `dev` preset builds a debug version with memory checks and 
 
 ## DWG support
 
-DWG support is not compiled in, and needs nothing at build time. Musa CAD runs a separate converter program (the ODA File Converter, or LibreDWG's `dwg2dxf`) when you open or save a DWG file. A fresh build handles DXF straight away. For DWG, open **DWG Setup** in the application menu and let it download the converter.
+DWG support is not compiled in, and needs nothing at build time. Musa CAD runs a separate converter program (the ODA File Converter, or LibreDWG's `dwg2dxf`) when you open or save a DWG file. A fresh build handles DXF straight away. For DWG, open **DWG Setup…** in the application menu and let it download the converter. See [DWG files](/file-formats/dwg/).
 
 ## Windows and macOS
 
-Both are built by the project's GitHub workflows. BUILD.md explains how to set up Visual Studio and Qt for a Windows build on your own PC. A Mac build gives you a working command line, but the drawing area cannot open yet (see [Install on macOS](/get-started/install-macos/)).
+Both are built by the project's GitHub workflows. [Building](/developer/building/) explains how to set up Visual Studio and Qt for a Windows build on your own PC. A Mac build gives you a working command line, but the drawing area cannot open yet (see [Install on macOS](/get-started/install-macos/)).
+
+## Next
+
+Draw something: [Your first drawing](/get-started/first-drawing/) takes about ten minutes.

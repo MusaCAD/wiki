@@ -1,0 +1,67 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: DWG files do nothing or fail
+description: Musa CAD says No DWG converter found, the converter times out or exits with an error, or a DWG opens with parts missing. How DWG support works and how to fix each case, including the Flatpak on Wayland.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: troubleshooting
+symptom:
+  affects: Anyone opening or saving DWG files, especially in the Flatpak on a Wayland desktop.
+  cause: Musa CAD reads and writes DWG through a separate converter program, which has to be installed and allowed to run.
+sidebar:
+  label: DWG files
+  order: 3
+---
+
+Musa CAD does not include a DWG reader of its own. It hands DWG files to a free converter program that turns them into DXF, and then reads the DXF. [DWG files](/file-formats/dwg/) explains this in full. Most DWG problems come down to the converter.
+
+## "No DWG converter found"
+
+No converter is installed yet. This is the quickest fix:
+
+1. Choose **DWG Setup…** from the application menu (the Musa CAD logo at the top left).
+2. Click **Download ODA File Converter…** and Musa CAD downloads the free converter from the Open Design Alliance. It sets it up for you.
+3. Open your DWG again.
+
+If you already have the ODA File Converter or LibreDWG's `dwg2dxf` installed, click **Browse…** in DWG Setup and point it at the program instead.
+
+On Windows, Musa CAD finds an ODA File Converter installed in `Program Files\ODA` by itself.
+
+## In the Flatpak on a Wayland desktop
+
+The ODA File Converter needs an X11 display. A Flatpak on a Wayland desktop has none, so the converter has to run outside the sandbox. Allow that once in a terminal:
+
+```sh
+flatpak override --user --talk-name=org.freedesktop.Flatpak org.musacad.MusaCAD
+```
+
+Musa CAD reminds you of this command when a converter run is refused. The same permission lets the Flatpak use a converter installed on your system: turn on **Use a converter installed on the host (Flatpak)** in DWG Setup.
+
+## "Converter timed out after 120s."
+
+The converter took more than two minutes. Very large DWGs can be that slow. Try the file again on a less busy computer. If it always times out, [report it](/troubleshooting/bug-reports/) and say how large the file is.
+
+## "Converter exited with code …"
+
+The converter itself failed. Musa CAD shows a **DWG import** message with what the converter printed. The DWG may be damaged, or saved by a version of AutoCAD newer than your converter knows. Download the converter again from DWG Setup to get its newest version.
+
+## The DWG opens, but something is missing
+
+Musa CAD tells you what it could not bring in. Every import ends with a summary like this:
+
+```txt
+Imported 412 entities on 9 layers (36 block refs over 12 definitions); skipped 3 unsupported (ACAD_TABLE, MULTILEADER).
+```
+
+For a DWG, Musa CAD saves that summary in a log next to the file, named like `plan.dwg.import.log`, and the command line says where. In the Flatpak the summary appears in the command line instead. The object types named after "skipped" are not supported yet. [DXF support](/file-formats/dxf/) lists what comes across.
+
+## A DWG you saved looks different in AutoCAD
+
+Musa CAD saves DWG by writing DXF first and then converting it, in AutoCAD 2018 format. Everything DXF cannot carry is lost on the way. The [DXF page](/file-formats/dxf/#what-changes-on-the-way-out) lists those parts. If the drawing will go back and forth, keep your working copy as `.musa`.
+
+## Next
+
+If the file is a DXF or `.musa` file that will not open, see [A file will not open](/troubleshooting/file-will-not-open/).

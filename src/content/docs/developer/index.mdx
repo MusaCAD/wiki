@@ -1,0 +1,29 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Developer guide
+description: For people who build, change or package Musa CAD. Building it on each platform, how the code is organised, writing a command, the tests, contributing, releasing and packaging.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: landing
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Musa CAD is open source, written in C++23 with Qt 6, and builds from a fresh clone with CMake. This section is for anyone who wants to build it, understand it, change it or package it.
+
+<CardGrid>
+  <LinkCard title="Building" description="Prerequisites and build commands for Linux, Windows and macOS; the dev, release and tsan presets." href="/developer/building/" />
+  <LinkCard title="A tour of the code" description="The five targets, the three threads, and where to find things." href="/developer/codebase-tour/" />
+  <LinkCard title="Writing a command" description="Add a command in one registry row and one state machine; its ribbon tooltip, autocomplete and wiki page follow." href="/developer/writing-a-command/" />
+  <LinkCard title="Tests" description="The unit tests, the end-to-end command-line test, the self-test hooks and the sanitizer builds." href="/developer/tests/" />
+  <LinkCard title="Architecture" description="The developers' own design record, from the repository, as it is in this release." href="/developer/architecture/" />
+  <LinkCard title="Contributing" description="Issues, pull requests, licence headers and commit style." href="/developer/contributing/" />
+  <LinkCard title="Releasing" description="How a release is cut, checked and published." href="/developer/releasing/" />
+  <LinkCard title="Packaging" description="The AppImage, the Flatpak and Flathub, the Windows installer and the macOS disk image." href="/developer/packaging/" />
+</CardGrid>

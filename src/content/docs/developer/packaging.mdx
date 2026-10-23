@@ -1,0 +1,121 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Packaging
+description: How each Musa CAD package is built. The Linux AppImage, the Flatpak and its Flathub listing, the Windows installer, and the macOS disk image, with what each one bundles and how to check it.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: developer
+sidebar:
+  label: Packaging
+  order: 8
+---
+
+Musa CAD ships as four packages. Each one is made by a script in the `packaging/` folder, and CI runs the same scripts. All the app's own files, such as ribbon icons, the logo and the hatch patterns, are compiled into the program, so a package only has to carry the program, its Qt libraries and the desktop integration.
+
+No package includes a DWG converter. DWG support works by running a separate converter program that you install yourself, which keeps every package under the LGPL. See [DWG files](/file-formats/dwg/).
+
+## Linux AppImage
+
+```sh
+packaging/linux/build_appimage.sh 0.8.0
+```
+
+The script builds the `release` preset, downloads `linuxdeploy`, its Qt plugin and `appimagetool` into `packaging/linux/.tools/`, assembles an `AppDir`, and writes `MusaCAD-0.8.0-x86_64.AppImage` in the repository root. It needs `qmake6` on your `PATH` (Debian and Ubuntu: `qt6-base-dev`) and a network connection the first time.
+
+The AppImage bundles Qt and these plugins:
+
+| Plugin | Why |
+|---|---|
+| `qsvg`, `qsvgicon` | the ribbon icons and the logo are SVG |
+| `xcb` | X11 sessions |
+| Wayland platform plugins | runs natively on Wayland, which saves a frame of pointer delay compared with XWayland |
+| `offscreen`, `minimal` | `--plot`, `--check` and other headless runs |
+
+Check it from a folder the build never touched. Start it once with a display, then once without one:
+
+```sh
+cp MusaCAD-0.8.0-x86_64.AppImage /tmp && cd /tmp
+./MusaCAD-0.8.0-x86_64.AppImage
+env -u DISPLAY -u WAYLAND_DISPLAY APPIMAGE_EXTRACT_AND_RUN=1 \
+    ./MusaCAD-0.8.0-x86_64.AppImage --plot drawing.musa out.pdf --paper A4
+```
+
+To check that Wayland is used on a Wayland session, run the self-test from the extracted AppImage and look for `overall: PASS`:
+
+```sh
+QT_QPA_PLATFORM=wayland MUSACAD_SELFTEST=1 ./squashfs-root/AppRun
+```
+
+## Flatpak and Flathub
+
+```sh
+flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install --user -y flathub org.kde.Platform//6.11 org.kde.Sdk//6.11 org.flatpak.Builder
+packaging/flatpak/build_flatpak.sh 0.8.0
+```
+
+The Flatpak builds against the KDE 6.11 runtime, which provides Qt 6. The script copies a clean tree into `packaging/flatpak/.src`, builds it with `flatpak-builder`, and writes the single-file bundle `packaging/flatpak/MusaCAD-0.8.0.flatpak`. Install and run it with:
+
+```sh
+flatpak install --user -y packaging/flatpak/MusaCAD-0.8.0.flatpak
+flatpak run org.musacad.MusaCAD
+```
+
+### What the sandbox allows
+
+- **No file access of its own.** Every file dialog is the desktop's own, through the file chooser portal, so the app only sees the files you pick. When a drawing has external references or images beside it, Musa CAD asks to open its folder instead, so the relative paths still work. A DXF export with images asks for a folder for the same reason.
+- **The graphics card** (`--device=dri`) for the drawing area, and the X11 and Wayland display sockets.
+- **The network**, for the update check and for downloading the ODA File Converter from DWG Setup.
+
+The ODA converter needs an X11 display. On a Wayland session it runs outside the sandbox through `flatpak-spawn --host`, which you allow once:
+
+```sh
+flatpak override --user --talk-name=org.freedesktop.Flatpak org.musacad.MusaCAD
+```
+
+### Flathub
+
+Musa CAD is on Flathub as [org.musacad.MusaCAD](https://flathub.org/apps/org.musacad.MusaCAD). The Flathub manifest lives in [flathub/org.musacad.MusaCAD](https://github.com/flathub/org.musacad.MusaCAD). The copy in `packaging/flatpak/flathub/` is the same manifest, pinned to the release tag and its commit. Flathub verifies the app id through `https://musacad.org/.well-known/org.flathub.VerifiedApps.txt`.
+
+A new release reaches Flathub through a pull request on that repository, opened by the engine's Flathub workflow or by Flathub's own checker. Both are described in [Releasing](/developer/releasing/#after-the-release). Before proposing a manifest by hand, lint it:
+
+```sh
+flatpak run --filesystem="$PWD" --command=flatpak-builder-lint org.flatpak.Builder \
+  --exceptions --exceptions-repo stable manifest "$PWD/packaging/flatpak/flathub/org.musacad.MusaCAD.yml"
+flatpak run --filesystem="$PWD" --command=flatpak-builder-lint org.flatpak.Builder \
+  appstream "$PWD/packaging/flatpak/org.musacad.MusaCAD.metainfo.xml"
+```
+
+## Windows installer
+
+The Windows workflow builds on a Windows runner and packages the result with NSIS, from `packaging/windows/musacad.nsi`. It writes `MusaCAD-<version>-x86_64-setup.exe` and its `.sha256`.
+
+The installer:
+
+- installs into `Program Files\Musa CAD` and asks for administrator rights to do so;
+- installs two programs: `musacad_app.exe`, the app, which opens with no console window, and `musacad.exe`, for the command line, which waits and returns an exit code;
+- offers, unticked by default, to open `.musa` files with Musa CAD and to add Musa CAD to the **Open with** list for `.dxf` and `.dwg`, without taking those over from another program;
+- upgrades an existing installation in the same folder and keeps your file type choice.
+
+A person tests every installer on a real Windows PC before it is published. See [Releasing](/developer/releasing/).
+
+## macOS disk image
+
+The macOS workflow builds on an Apple silicon runner, assembles `MusaCAD.app` with `packaging/macos/build_app.sh` and `macdeployqt`, checks that `--check` and `--plot` work, and writes `MusaCAD-<version>-arm64.dmg`.
+
+The drawing area does not work on macOS yet. It needs OpenGL 4.5, and macOS stops at 4.1. The app says so when it starts and exits with code 2. The command line works. Support needs a second render backend, Metal or a reduced OpenGL 4.1 path, and is tracked in [issue #2](https://github.com/MusaCAD/MusaCAD/issues/2).
+
+To build it on your own Mac:
+
+```sh
+brew install ninja librsvg
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_SANITIZERS=OFF -DENABLE_TSAN=OFF
+cmake --build build --target musacad_app
+QT_ROOT_DIR=~/Qt/6.8.1/macos packaging/macos/build_app.sh 0.8.0 build/bin/musacad_app
+hdiutil create -volname "Musa CAD" -srcfolder MusaCAD.app -ov -format UDZO MusaCAD-0.8.0-arm64.dmg
+```
+
+The workflow signs and notarizes the disk image when the Apple signing secrets are set. Without them the image is unsigned, and macOS asks once before opening it.

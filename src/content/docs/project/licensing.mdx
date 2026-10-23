@@ -1,0 +1,53 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Licensing
+description: Musa CAD's licence, the LGPL-3.0-or-later, in plain words. Use it for any purpose including commercial work, your drawings are yours, what you must do if you share a changed version, and the licence of this wiki.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: project
+sidebar:
+  label: Licensing
+  order: 2
+---
+
+Musa CAD is free software under the **GNU Lesser General Public License, version 3 or later** (LGPL-3.0-or-later). This page explains what that means in plain words. The [licence itself](https://www.gnu.org/licenses/lgpl-3.0.html) is what counts, and where this page and the licence ever seem to differ, the licence wins.
+
+## Using Musa CAD
+
+- **Use it for anything.** Personal projects, school, and paid commercial work are all fine. There is no licence key, no fee and no sign-in.
+- **Your drawings are yours.** The licence covers the program, not what you draw with it. You owe nothing to anyone for drawings made in Musa CAD.
+- **Install it on as many computers as you like,** and give copies to anyone.
+
+## No warranty
+
+Musa CAD comes with no warranty, as the licence says. Check your drawings, especially dimensions and anything converted from another format, before anyone builds from them. Keep backups of drawings that matter.
+
+## Changing and sharing Musa CAD
+
+- **You can change it.** The source code is on [GitHub](https://github.com/MusaCAD/MusaCAD).
+- **If you share a changed version of Musa CAD,** you must share your changes to Musa CAD under the same licence, and keep the licence notices.
+- **You can use Musa CAD's code in your own program,** even a closed-source one, as long as your users can still replace the Musa CAD part with their own version of it. Linking to it as a separate library is the usual way to do that.
+
+## Why DWG is a separate program
+
+The libraries that read DWG are either proprietary or under the GPL, and building one in would change Musa CAD's licence. So Musa CAD runs a separate converter program instead, which you download yourself. See [DWG files](/file-formats/dwg/).
+
+## Third-party components
+
+Musa CAD uses Qt 6, which is also under the LGPL. It is linked as a separate library, so you can replace it. The [third-party components](/project/third-party-components/) page lists each one with its licence.
+
+## Every file says so
+
+Each source file starts with two lines that name its licence and copyright:
+
+```cpp
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+```
+
+## This wiki
+
+The text of this wiki is free documentation under the LGPL-3.0-or-later, the same licence as Musa CAD. The example drawings and code samples are also yours under [CC0](https://creativecommons.org/publicdomain/zero/1.0/): copy them into your own work without credit.

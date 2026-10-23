@@ -52,7 +52,7 @@ It is marked partial because a command-by-command comparison will come from the 
 
 - **The native format is `.musa`, not DWG.** It is a readable text file. DXF is read and written directly. DWG goes through the free ODA File Converter, which Musa CAD downloads for you from **DWG Setup**. When a file is imported, Musa CAD tells you anything it could not bring across, rather than dropping it silently.
 - **The interface is dark,** dialogs included.
-- **Fonts:** text uses Musa CAD's built-in line font or any TrueType or OpenType font on your computer. SHX font files are not read; a drawing that asks for one gets a close substitute, and Musa CAD says which.
+- **Fonts:** text uses Musa CAD's built-in line font or any TrueType or OpenType font on your computer. SHX font files are not read. A drawing that asks for one is drawn with Musa CAD's own line font, and the Properties palette still shows the font it asked for. See [Images and fonts](/file-formats/images-and-fonts/).
 - **New releases change the file format.** A file saved by a newer version needs that version or newer to open. Older files always open.
 
 ## What is not there yet
@@ -61,13 +61,13 @@ It is marked partial because a command-by-command comparison will come from the 
 - **AutoLISP, VBA, .NET and ObjectARX.** None of these run inside Musa CAD. Automation is done from outside, by programs that write drawings and call the `musacad` command. For many jobs this goes further than a LISP routine: it can build a whole drawing set. See [Scripting and automation](/scripting/).
 - **Parametric constraints.** The Parametric tab is there, but its buttons are greyed out, and each tooltip says the tool is not built yet.
 - **Sheet sets, dynamic blocks, annotative objects, named plot styles (STB) and real SHX fonts** are not in version 0.8.0.
-- **Every last option.** Most draw, modify and annotate commands follow AutoCAD option for option, but some settings are still to come. The source repository's [COMMANDS.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/COMMANDS.md) tracks every command, and [AUTOCAD_CONFIG.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/AUTOCAD_CONFIG.md) tracks the dimension style and options settings one by one.
+- **Every last option.** Most draw, modify and annotate commands follow AutoCAD option for option, but some settings are still to come. The [command status table](/reference/command-status/) tracks every command, and the [AutoCAD settings status](/reference/autocad-settings-status/) tracks the dimension style and options settings one by one.
 
 ## Bring your work across
 
 <Steps>
 
-1. **Your files.** Open DXF files directly. For DWG, open **DWG Setup** once and let it download the converter, then use **File ▸ Import ▸ DWG…**. Read the import message: it lists anything that could not be brought across.
+1. **Your files.** Choose **Import ▸ DXF…** from the application menu for DXF files. For DWG, open **DWG Setup…** once and let it download the converter, then choose **Import ▸ DWG…** to open a drawing. Read the import message: it lists anything that could not be brought across. [Moving projects from AutoCAD](/file-formats/from-autocad/) goes through this in detail.
 
 2. **Your aliases.** Type `ALIASEDIT` and load your `acad.pgp`.
 

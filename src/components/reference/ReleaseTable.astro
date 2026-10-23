@@ -1,0 +1,44 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// Every release, newest first: date, file format, what it was about, and its page.
+import releases from '../../data/releases.json';
+import { compareVersions } from '../../../wiki.config.mjs';
+
+const base = import.meta.env.BASE_URL;
+const rows = [...releases].sort((a, b) => compareVersions(b.version, a.version));
+const platforms = (a: string[]) =>
+	[a.includes('exe') && 'Windows', (a.includes('appimage') || a.includes('flatpak')) && 'Linux', a.includes('dmg') && 'macOS (preview)']
+		.filter(Boolean)
+		.join(', ');
+---
+
+<div class="mc-table-wrap not-content" role="region" aria-label="Every release" tabindex="0">
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Release</th>
+				<th scope="col">Date</th>
+				<th scope="col">File format</th>
+				<th scope="col">For</th>
+				<th scope="col">What it brought</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				rows.map((r) => (
+					<tr>
+						<th scope="row">
+							<a href={`${base}releases/${r.tag.replace(/\./g, '-')}/`}>{r.version}</a>
+						</th>
+						<td class="mc-mono">{r.date}</td>
+						<td class="mc-mono">v{r.formatVersion}</td>
+						<td>{platforms(r.assets)}</td>
+						<td>{r.summary}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>
