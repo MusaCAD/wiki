@@ -1,0 +1,79 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// The ribbon, tab by tab and panel by panel, with every tool linked to its command's page.
+// Tools Musa CAD does not have yet are listed too, marked as such.
+import data from '../../data/wiki-data.json';
+import { indexData, pathOf } from '../../lib/reference.mjs';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { byAlias } = indexData(data);
+type Item = { label: string; command?: string; macro?: string[]; menu?: Item[] };
+type Tool = Item & { placeholder?: boolean; slideout?: boolean; tooltip?: string };
+type Tab = { title: string; contextual?: boolean; panels: { title: string; tools: Tool[] }[] };
+const tabs = data.ui.ribbon as Tab[];
+const link = (alias?: string) => {
+	const c = alias ? byAlias.get(alias.toUpperCase()) : undefined;
+	return c ? { href: base + pathOf(c), name: c.name } : null;
+};
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const fixed = tabs.filter((t) => !t.contextual);
+const contextual = tabs.filter((t) => t.contextual);
+const placeholderCount = tabs.reduce((n, t) => n + t.panels.reduce((m, p) => m + p.tools.filter((x) => x.placeholder).length, 0), 0);
+// Two tabs can share a title (the contextual ones); name them by their panels as well, so
+// each section is told apart by screen readers and in the outline.
+const titleCount = new Map<string, number>();
+for (const t of tabs) titleCount.set(t.title, (titleCount.get(t.title) ?? 0) + 1);
+const headingOf = (t: Tab) => (titleCount.get(t.title)! > 1 ? `${t.title}: ${t.panels.map((p) => p.title).join(', ')}` : t.title);
+---
+
+<div class="not-content mc-ribbon">
+	<p>
+		{fixed.length} tabs, plus {contextual.length} that appear while you work on something. {placeholderCount} tools are
+		shown greyed out on the ribbon because Musa CAD does not have them yet; they are marked below.
+	</p>
+	{
+		[...fixed, ...contextual].map((tab, ti) => (
+			<section class="mc-ribbon-tab" aria-labelledby={`tab-${slug(tab.title)}-${ti}`}>
+				<h2 id={`tab-${slug(tab.title)}-${ti}`}>
+					{headingOf(tab)}
+					{tab.contextual && <span class="mc-ribbon-note"> (appears while you work on it)</span>}
+				</h2>
+				<div class="mc-ribbon-panels">
+					{tab.panels.map((p) => (
+						<div class="mc-ribbon-panel">
+							<h3>{p.title}</h3>
+							<ul>
+								{p.tools.map((tool) => {
+									const l = link(tool.command);
+									return (
+										<li class:list={{ 'is-placeholder': tool.placeholder }}>
+											{l ? <a href={l.href}>{tool.label}</a> : <span>{tool.label}</span>}
+											{l && <span class="mc-ribbon-cmd"> {l.name}</span>}
+											{tool.placeholder && <span class="mc-ribbon-note"> not in Musa CAD yet</span>}
+											{tool.slideout && <span class="mc-ribbon-note"> (slide-out)</span>}
+											{tool.menu && tool.menu.length > 0 && (
+												<ul>
+													{tool.menu.map((m) => {
+														const ml = link(m.command);
+														return (
+															<li>
+																{ml ? <a href={ml.href}>{m.label}</a> : <span>{m.label}</span>}
+																{ml && <span class="mc-ribbon-cmd"> {ml.name}</span>}
+															</li>
+														);
+													})}
+												</ul>
+											)}
+										</li>
+									);
+								})}
+							</ul>
+						</div>
+					))}
+				</div>
+			</section>
+		))
+	}
+</div>

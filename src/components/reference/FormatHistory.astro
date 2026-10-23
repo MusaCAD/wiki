@@ -1,0 +1,36 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// The .musa format's versions, newest first, with the release that first wrote each one and
+// what it added, taken from the comments in Musa CAD's source (scripts/sync-engine.mjs).
+import history from '../../data/format-history.json';
+
+type Entry = { version: number; release: string | null; notes: string[] };
+const rows = [...(history.history as Entry[])].reverse();
+// Source comments wrap across lines; keep the sentence, drop a dangling tail.
+const tidy = (s: string) => s.replace(/\s*(--|;|,)?\s*(the|a|an|and|or|of|written only|only)?\s*$/i, '').replace(/\s+--\s+/g, ': ');
+---
+
+<div class="mc-table-wrap not-content" role="region" aria-label="Format versions" tabindex="0">
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Format</th>
+				<th scope="col">First written by</th>
+				<th scope="col">What it added (from the source)</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				rows.map((r) => (
+					<tr>
+						<th scope="row" class="mc-mono">v{r.version}</th>
+						<td class="mc-mono">{r.release ? `Musa CAD ${r.release}` : 'not released yet'}</td>
+						<td>{r.notes.length ? r.notes.slice(0, 2).map(tidy).join('. ') + '.' : 'No note in the source.'}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>

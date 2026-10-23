@@ -1,0 +1,109 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// The facts at the top of every command and system variable page, drawn from what Musa CAD
+// itself reports (src/data/wiki-data.json): how to type it, where it is on the ribbon, the
+// release it arrived in, the window it opens, or what it asks first. Written by nobody, so it
+// cannot disagree with the application.
+import { Code } from '@astrojs/starlight/components';
+import data from '../../data/wiki-data.json';
+import origins from '../../data/command-origins.json';
+import { indexData, isSysvar, defaultOf, locationText, windowText } from '../../lib/reference.mjs';
+import { ENGINE } from '../../../wiki.config.mjs';
+
+interface Props {
+	name: string;
+}
+const { name } = Astro.props;
+const { byName, ribbon } = indexData(data);
+const c = byName.get(name);
+if (!c) throw new Error(`No command or system variable called ${name} in src/data/wiki-data.json`);
+const sysvar = isSysvar(c);
+const since = (origins as Record<string, string | null>)[c.name];
+const locations = ribbon.get(c.name) ?? [];
+const window = windowText(c);
+const others = c.aliases.filter((a: string) => a !== c.name);
+const echo = (c.opening.echo ?? []).filter((l: string) => !l.startsWith('Command:'));
+const transcript = [`Command: ${c.name}`, ...echo, ...(c.opening.prompt ? [c.opening.prompt.trimEnd()] : [])].join('\n');
+const startsAs = sysvar ? defaultOf(c) : null;
+const releaseUrl = since ? ENGINE.releaseUrl(`v${since}`) : null;
+---
+
+<section class="mc-ref not-content" aria-label={sysvar ? 'About this system variable' : 'About this command'}>
+	<p class="mc-ref-desc">{c.description}</p>
+	<dl class="mc-ref-facts">
+		<div>
+			<dt>Type</dt>
+			<dd data-pagefind-weight="10">
+				<kbd class="mc-kbd">{c.name}</kbd>
+				{others.map((a: string) => (
+					<>
+						{' or '}
+						<kbd class="mc-kbd">{a}</kbd>
+					</>
+				))}
+			</dd>
+		</div>
+		{
+			sysvar && (
+				<div>
+					<dt>Starts as</dt>
+					<dd>{startsAs !== null && startsAs !== '' ? <code>{startsAs}</code> : 'Not reported'}</dd>
+				</div>
+			)
+		}
+		{
+			!sysvar && (
+				<div>
+					<dt>On the ribbon</dt>
+					<dd>
+						{locations.length ? (
+							<ul class="mc-ref-locs">
+								{locations.map((l: Parameters<typeof locationText>[0]) => (
+									<li>{locationText(l)}</li>
+								))}
+							</ul>
+						) : (
+							'Not on the ribbon. Type it, or find it with the command search above the ribbon.'
+						)}
+					</dd>
+				</div>
+			)
+		}
+		{
+			window && (
+				<div>
+					<dt>What it does first</dt>
+					<dd>It {window}.</dd>
+				</div>
+			)
+		}
+		{
+			c.setvar && !sysvar && (
+				<div>
+					<dt>Also</dt>
+					<dd>
+						A system variable: <code>SETVAR {c.name}</code> sets it too.
+					</dd>
+				</div>
+			)
+		}
+		<div>
+			<dt>Since</dt>
+			<dd>{since ? <a href={releaseUrl!}>Musa CAD {since}</a> : `Musa CAD ${data.version}`}</dd>
+		</div>
+	</dl>
+	{
+		!window && (c.opening.prompt || echo.length > 0) && (
+			<div class="mc-ref-transcript">
+				<p class="mc-ref-label">{sysvar ? 'How to set it' : c.opening.prompt ? 'What it asks first' : 'What it says'}</p>
+				<Code code={transcript} lang="musacad" title="Command line" />
+			</div>
+		)
+	}
+	<p class="mc-ref-source">
+		Read from Musa CAD {data.version} itself (<code>musacad --dump-wiki-data</code>), so these facts always match the
+		release this wiki is built for ({ENGINE.version}).
+	</p>
+</section>

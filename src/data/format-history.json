@@ -1,0 +1,375 @@
+{
+  "current": 45,
+  "from": "v0.8.0",
+  "history": [
+    {
+      "version": 1,
+      "release": "0.1.0",
+      "notes": [
+        "geometry only"
+      ]
+    },
+    {
+      "version": 2,
+      "release": "0.1.0",
+      "notes": [
+        "layer table + per-entity properties"
+      ]
+    },
+    {
+      "version": 3,
+      "release": "0.1.0",
+      "notes": [
+        "text + dimensions + dimension styles"
+      ]
+    },
+    {
+      "version": 4,
+      "release": "0.1.0",
+      "notes": [
+        "leaders + expanded DIMSTYLE (per-element colours, dim lineweight, arrow types)"
+      ]
+    },
+    {
+      "version": 5,
+      "release": "0.1.0",
+      "notes": [
+        "polyline per-vertex arc bulges",
+        "per-vertex arc bulges appended after props (only when any are present)",
+        "per-vertex bulges follow the properties"
+      ]
+    },
+    {
+      "version": 6,
+      "release": "0.1.0",
+      "notes": [
+        "MTEXT (paragraph text) + MLEADER (editable leaders)",
+        "MTEXT and MLEADER. The MTextBlock numeric fields are written inline; the"
+      ]
+    },
+    {
+      "version": 7,
+      "release": "0.1.0",
+      "notes": [
+        "global LTSCALE. Readers reject newer versions; older files load fine (no layers => layer 0; no dims; no bulges => straight polylines; no mtext/mleader; no LTSCALE => 1.0)"
+      ]
+    },
+    {
+      "version": 8,
+      "release": "0.1.0",
+      "notes": [
+        "per-dimension style overrides (no overrides => ByStyle)"
+      ]
+    },
+    {
+      "version": 9,
+      "release": "0.1.0",
+      "notes": [
+        "block definitions (BLOCKDEF..ENDBLOCKDEF) + block references (INSERT). Older files have no blocks; the keys simply never appear",
+        "model-space block references, then the block-definition table. A block's"
+      ]
+    },
+    {
+      "version": 10,
+      "release": "0.1.0",
+      "notes": [
+        "a font-name line after the content of TEXT/MTEXT/LEADER/MLEADER records (older files have none => stroke font)",
+        "font name on its own line (single-line; \"\" = stroke)",
+        "a font-name line follows the content of TEXT/MTEXT/LEADER/MLEADER. Older files"
+      ]
+    },
+    {
+      "version": 11,
+      "release": "0.1.0",
+      "notes": [
+        "saved plot page setups (PAGESETUP records; older files have none)"
+      ]
+    },
+    {
+      "version": 12,
+      "release": "0.1.0",
+      "notes": [
+        "per-entity CELTSCALE (linetype scale) for line/circle/arc/polyline, written as trailing CELTSCALE records (older files have none => 1.0); the LTSCALE global is still the LTSCALE record",
+        "per-entity CELTSCALE (linetype scale) for the dashing kinds. Decoupled trailing",
+        "per-entity linetype scale; kindcode + ordinal into the top-level vectors"
+      ]
+    },
+    {
+      "version": 13,
+      "release": "0.1.0",
+      "notes": [
+        "per-leader arrow override block appended to LEADER/MLEADER records (the same override block dimensions use; detected by token count, older files => ByStyle)",
+        "per-leader arrow override block"
+      ]
+    },
+    {
+      "version": 14,
+      "release": "0.1.0",
+      "notes": [
+        "HATCH entities (boundary loops + pattern name/scale/angle/origin). Older files simply have no HATCH records",
+        "HATCH. One line: loop count, then each loop (vertex count + x y pairs), then"
+      ]
+    },
+    {
+      "version": 15,
+      "release": "0.2.0",
+      "notes": [
+        "dimension text decoration -- three trailing fields on the DIM record (tolerance mode, upper, lower) plus a prefix line and a suffix line after it. Detected by token count (34 vs the v8 31 vs the pre-v8 16); v1-v14 dimensions load undecorated"
+      ]
+    },
+    {
+      "version": 16,
+      "release": "0.2.0",
+      "notes": [
+        "ISO 129-1 narrow-dimension fit. The shared DimOverrides block gains a 16th field (text_fit), so DIM goes 34 -> 35 tokens and LEADER/MLEADER 29 -> 30; DIMSTYLE gains text_fit BEFORE its name (the name absorbs the rest of the line, so a trailing field would be ambiguous) and is read by version, not token count. v1-v15 files load with text_fit = Auto, which is the default -- so older drawings simply stop colliding",
+        "text_fit sits BEFORE the name, and its presence is keyed to the file"
+      ]
+    },
+    {
+      "version": 17,
+      "release": "0.2.0",
+      "notes": [
+        "GD&T entities -- FCF records (cell count, then one cell string per following line) and DATUM records. Older files simply have no FCF/DATUM records",
+        "GD&T. FCF <cellcount> px py rot style <props7> <override16>; then one RAW cell"
+      ]
+    },
+    {
+      "version": 18,
+      "release": "0.2.0",
+      "notes": [
+        "raster IMAGE entities. IMAGEDEF records carry the payload (an external source path relative to the drawing, or base64 chunked across following lines because the format is line-oriented); IMAGE records place a definition with a transform + clip. Older files simply have no IMAGEDEF/IMAGE records",
+        "raster images. IMAGEDEF <pixel_w> <pixel_h> <b64chunks> <sourcelen>; then the"
+      ]
+    },
+    {
+      "version": 19,
+      "release": "0.2.0",
+      "notes": [
+        "dimension text override + text offset -- two trailing fields on the DIM record (the offset) plus a third content line (the raw override, which may contain spaces). Detected by token count; v1-v18 dimensions load with no override and a zero offset, i.e. exactly today's derived placement",
+        "the label displacement inline, the raw override on its own line (it may"
+      ]
+    },
+    {
+      "version": 20,
+      "release": "0.2.0",
+      "notes": [
+        "TABLE entities + the TABLESTYLE table. A TABLE record carries the grid shape and the column/row sizes, then one line per cell (`span_cols span_rows align` followed by the raw text on the next line, since it may contain spaces). Older files simply have no TABLESTYLE/TABLE records",
+        "TABLESTYLE + TABLE. The style table first, so a TABLE can reference it"
+      ]
+    },
+    {
+      "version": 21,
+      "release": "0.4.0",
+      "notes": []
+    },
+    {
+      "version": 22,
+      "release": "0.4.0",
+      "notes": []
+    },
+    {
+      "version": 23,
+      "release": "0.4.0",
+      "notes": [
+        "the extra datum (ordinate axis / jog position / arc end angle)"
+      ]
+    },
+    {
+      "version": 24,
+      "release": "0.4.0",
+      "notes": [
+        "VIEW cx cy scale name and GROUP selectable n k1 i1 ... kn in name description"
+      ]
+    },
+    {
+      "version": 25,
+      "release": "0.4.0",
+      "notes": [
+        "UNITSFMT linear precision angular aprecision clockwise base_angle"
+      ]
+    },
+    {
+      "version": 26,
+      "release": "0.4.0",
+      "notes": [
+        "text style index (14th token)",
+        "TEXTSTYLE height width_factor oblique name font (strings space-escaped), and"
+      ]
+    },
+    {
+      "version": 27,
+      "release": "0.4.0",
+      "notes": [
+        "the GRADIENT second colour"
+      ]
+    },
+    {
+      "version": 28,
+      "release": "0.4.0",
+      "notes": [
+        "ATTDEF = a TEXT record (+ modes as a 15th token) whose content line is the",
+        "attribute lines that follow the name"
+      ]
+    },
+    {
+      "version": 29,
+      "release": "0.4.0",
+      "notes": []
+    },
+    {
+      "version": 30,
+      "release": "0.4.0",
+      "notes": [
+        "layouts -- id, then the same fields a PAGESETUP record carries"
+      ]
+    },
+    {
+      "version": 31,
+      "release": "0.4.0",
+      "notes": [
+        "paper-space viewports"
+      ]
+    },
+    {
+      "version": 32,
+      "release": "0.4.0",
+      "notes": []
+    },
+    {
+      "version": 33,
+      "release": "0.4.0",
+      "notes": [
+        "the polygonal clip boundary, in image fractions, on the next line"
+      ]
+    },
+    {
+      "version": 34,
+      "release": "0.5.0",
+      "notes": [
+        "VPLAYER -- a VPFREEZE line after a VIEWPORT record (the layers frozen in it) and VPFRZNEW lines after the layer table (layers frozen in viewports created later)",
+        "VPFRZNEW idx -- the layer is frozen in every viewport created afterwards",
+        "VPFREEZE n idx... belongs to the record above"
+      ]
+    },
+    {
+      "version": 35,
+      "release": "0.5.0",
+      "notes": [
+        "VPORTS -- VPORT records (the model window's tiles) with VPORTACTIVE, and saved configurations as VPORTSAVE <name> <n> followed by n VPORTCFG records",
+        "VPORTS -- the model window's tiles, then the saved configurations"
+      ]
+    },
+    {
+      "version": 36,
+      "release": "0.5.0",
+      "notes": [
+        "LTSCALEMODE psltscale msltscale",
+        "TIMES created updated edit_seconds; DWGPROP key value (strings space-escaped"
+      ]
+    },
+    {
+      "version": 37,
+      "release": "0.6.0",
+      "notes": [
+        "a polyline's widths (\"W\" and two per vertex) and its elevation and thickness",
+        "\"W\" and 2n widths, \"Z\" and elevation + thickness may end the record"
+      ]
+    },
+    {
+      "version": 38,
+      "release": "0.6.0",
+      "notes": [
+        "a text's alignment point and own width factor -- three more tokens, written only",
+        "the decimal separator (its character code) and DIMZIN, before the name",
+        "the decimal separator, DIMZIN and DIMTMOVE",
+        "the alignment point and the text's own width factor"
+      ]
+    },
+    {
+      "version": 39,
+      "release": "0.7.0",
+      "notes": [
+        "the label's angle and an arc-length dimension's leader"
+      ]
+    },
+    {
+      "version": 40,
+      "release": "0.8.0",
+      "notes": [
+        "the dash pattern starts again at each vertex",
+        "NOPLOT idx -- the layer is not plotted; LAYERDESC idx text -- its description",
+        "LAYERTPY idx percent",
+        "LTYPEDEF name description n e1..en (spaces as 0x1f): a loaded linetype, in the",
+        "LAYERFILTER name layer... (spaces as 0x1f): a layer group filter",
+        "LAYERSTATE name current (spaces as 0x1f, \"-\" = empty), then one LSLAYER per",
+        "DIMJUST idx just -- a style whose text is not centred along its line",
+        "DIMUNITS idx lunit frac rnd lfac aunit adec+1 alt altu altd altf altrnd post apost",
+        "DIMTOL idx method upper lower precision+1 -- a style's Tolerances tab, when set",
+        "the page setup the layout was given",
+        "its own knots after the properties, as a count and the values",
+        "DIMJOGLINE's place along the line",
+        "DIMINSPECT's frame; its label and rate follow the override line",
+        "the DIM just written is not associative",
+        "its flipped arrowheads",
+        "its own DIMTMOVE (outside the override block's fixed fields)",
+        "DIMBREAKS n x y ... -- the breaks of the DIM just written",
+        "the leader's form (spline, no line, no arrowhead, landing)",
+        "MLEADEREDIT's added leaders, by their arrowheads",
+        "the HATCH just written does not follow its boundary",
+        "the block unit",
+        "the generation flags, 2 backwards, 4 upside down",
+        "POINTMODE pdmode pdsize and LIMITS x0 y0 x1 y1 on",
+        "INSUNITS (older readers stop at 7)",
+        "the layer snapshot",
+        "the view category",
+        "TABLESTYLE's current style",
+        "MLEADERSTYLE arrow size landing distance text_height gap max_points text leader_type <name>",
+        "PATTERN <name>, then a PATLINE angle ox oy dx dy [dashes...] for each family --",
+        "DATALINK <name> <path> (spaces escaped as in PAGESETUP); a linked TABLE carries",
+        "the sheet and the range"
+      ]
+    },
+    {
+      "version": 41,
+      "release": "0.8.0",
+      "notes": [
+        "LTBUILTIN i n e1..en -- the drawing's own Dashed (0), Center (1) and Hidden (2)",
+        "DIMTFAC idx factor -- a style whose tolerance is not the value's height",
+        "DIMTXTDIR idx -- a style whose text reads right to left (View Direction)",
+        "an ordinate dimension's origin",
+        "its standard pattern at acadiso.pat's size",
+        "MEASUREMENT"
+      ]
+    },
+    {
+      "version": 42,
+      "release": "0.8.0",
+      "notes": [
+        "MLSTYLE flags start end fill_mode r g b n [offset color_mode r g b lt_mode lt]... name desc"
+      ]
+    },
+    {
+      "version": 43,
+      "release": "0.8.0",
+      "notes": [
+        "PLFIT fit n x y ... -- PEDIT Fit / Spline's vertices placed; PLTAN n t ... -- the"
+      ]
+    },
+    {
+      "version": 44,
+      "release": "0.8.0",
+      "notes": [
+        "a spline by fit points -- knots tolerance closed, the start and end tangents",
+        "the multileader style it follows"
+      ]
+    },
+    {
+      "version": 45,
+      "release": "0.8.0",
+      "notes": [
+        "the objects' own transparency and ByBlock properties, where they have any --",
+        "bottom first"
+      ]
+    }
+  ]
+}

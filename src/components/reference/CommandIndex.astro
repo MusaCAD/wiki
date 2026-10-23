@@ -1,0 +1,154 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// The table of every command (or every system variable), filterable by name, alias, words
+// in its description, ribbon tab and page status. Works without JavaScript as a plain table;
+// the filters only hide rows.
+import { getCollection } from 'astro:content';
+import data from '../../data/wiki-data.json';
+import origins from '../../data/command-origins.json';
+import { indexData, isSysvar, defaultOf, pathOf } from '../../lib/reference.mjs';
+
+interface Props {
+	/** 'command' or 'sysvar' */
+	kind: 'command' | 'sysvar';
+}
+const { kind } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { ribbon } = indexData(data);
+const pages = await getCollection('docs', (e) => e.data.kind === kind);
+const statusOf = new Map(
+	pages.map((p) => [(p.data as { command?: string; sysvar?: string }).command ?? (p.data as { sysvar?: string }).sysvar, p.data.status])
+);
+const items = data.commands
+	.filter((c) => (kind === 'sysvar') === isSysvar(c))
+	.map((c) => {
+		const locs = ribbon.get(c.name) ?? [];
+		return {
+			c,
+			href: base + pathOf(c),
+			status: (statusOf.get(c.name) ?? 'stub') as 'complete' | 'partial' | 'stub',
+			tab: locs[0]?.tab ?? '',
+			where: locs[0] ? `${locs[0].tab} › ${locs[0].panel}` : '',
+			since: (origins as Record<string, string | null>)[c.name] ?? data.version,
+			startsAs: kind === 'sysvar' ? defaultOf(c) : null,
+		};
+	})
+	.sort((a, b) => a.c.name.replace(/^-/, '').localeCompare(b.c.name.replace(/^-/, '')) || a.c.name.localeCompare(b.c.name));
+const counts = { complete: 0, partial: 0, stub: 0 };
+for (const i of items) counts[i.status]++;
+const tabs = [...new Set(items.map((i) => i.tab).filter(Boolean))];
+const label = kind === 'sysvar' ? 'system variables' : 'commands';
+const statusWord = { complete: 'Complete', partial: 'Partial', stub: 'Not written yet' };
+const id = `mc-index-${kind}`;
+---
+
+<div class="mc-index not-content" id={id}>
+	<p class="mc-coverage">
+		<strong>{items.length} {label}</strong> in Musa CAD {data.version}.{' '}
+		{`Written so far: ${counts.complete} complete and ${counts.partial} partial; ${counts.stub} not written yet.`}{' '}
+		Every one of them has a page with the facts Musa CAD reports about it.
+	</p>
+
+	<form class="mc-index-filters" role="search" aria-label={`Filter ${label}`} onsubmit="return false">
+		<label>
+			<span>Find</span>
+			<input type="search" name="q" placeholder={kind === 'sysvar' ? 'Name or words, e.g. PICK or grip' : 'Name, alias or words, e.g. REC or trim'} autocomplete="off" />
+		</label>
+		{
+			kind === 'command' && (
+				<label>
+					<span>Ribbon tab</span>
+					<select name="tab">
+						<option value="">Any</option>
+						{tabs.map((t) => (
+							<option value={t}>{t}</option>
+						))}
+						<option value="-">Not on the ribbon</option>
+					</select>
+				</label>
+			)
+		}
+		<label>
+			<span>Page</span>
+			<select name="status">
+				<option value="">Any</option>
+				<option value="complete">Complete</option>
+				<option value="partial">Partial</option>
+				<option value="stub">Not written yet</option>
+			</select>
+		</label>
+		<output class="mc-index-count" aria-live="polite">{items.length} shown</output>
+	</form>
+
+	<div class="mc-table-wrap" role="region" aria-label={`All ${label}`} tabindex="0">
+		<table>
+			<thead>
+				<tr>
+					<th scope="col">{kind === 'sysvar' ? 'Variable' : 'Command'}</th>
+					{kind === 'command' && <th scope="col">Also type</th>}
+					<th scope="col">What it does</th>
+					{kind === 'command' ? <th scope="col">On the ribbon</th> : <th scope="col">Starts as</th>}
+					<th scope="col">Since</th>
+					<th scope="col">Page</th>
+				</tr>
+			</thead>
+			<tbody>
+				{
+					items.map((i) => (
+						<tr
+							data-search={[i.c.name, ...i.c.aliases, i.c.description, i.where].join(' ').toLowerCase()}
+							data-tab={i.tab || '-'}
+							data-status={i.status}
+						>
+							<th scope="row">
+								<a href={i.href}>{i.c.name}</a>
+							</th>
+							{kind === 'command' && <td class="mc-mono">{i.c.aliases.filter((a: string) => a !== i.c.name).join(', ')}</td>}
+							<td>{i.c.description}</td>
+							{kind === 'command' ? <td>{i.where}</td> : <td class="mc-mono">{i.startsAs ?? ''}</td>}
+							<td class="mc-mono">{i.since}</td>
+							<td>
+								<span class="mc-dot" data-status={i.status}>
+									{statusWord[i.status]}
+								</span>
+							</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script>
+	for (const root of document.querySelectorAll<HTMLElement>('.mc-index')) {
+		const form = root.querySelector('form')!;
+		const rows = [...root.querySelectorAll<HTMLTableRowElement>('tbody tr')];
+		const out = root.querySelector('output')!;
+		const apply = () => {
+			const q = (form.elements.namedItem('q') as HTMLInputElement).value.trim().toLowerCase();
+			const tab = (form.elements.namedItem('tab') as HTMLSelectElement | null)?.value ?? '';
+			const status = (form.elements.namedItem('status') as HTMLSelectElement).value;
+			const words = q.split(/\s+/).filter(Boolean);
+			let shown = 0;
+			for (const r of rows) {
+				const hay = r.dataset.search ?? '';
+				const ok =
+					words.every((w) => hay.includes(w)) &&
+					(!tab || r.dataset.tab === tab) &&
+					(!status || r.dataset.status === status);
+				r.hidden = !ok;
+				if (ok) shown++;
+			}
+			out.textContent = `${shown} shown`;
+		};
+		form.addEventListener('input', apply);
+		const fromUrl = new URLSearchParams(location.search).get('q');
+		if (fromUrl) {
+			(form.elements.namedItem('q') as HTMLInputElement).value = fromUrl;
+			apply();
+		}
+	}
+</script>

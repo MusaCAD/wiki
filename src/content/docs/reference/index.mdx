@@ -1,0 +1,30 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Command reference
+description: Every Musa CAD command in one table, with its aliases, what it does, where it is on the ribbon and the release it arrived in. Filter by name, alias or words.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: partial
+kind: reference
+tableOfContents: false
+sidebar:
+  label: All commands
+  order: 0
+---
+
+import CommandIndex from '../../../components/reference/CommandIndex.astro';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Every command in Musa CAD is listed here. Type part of a name, an alias or a word from the description in the box below, and the table narrows down. For example, `REC` finds RECTANG, and `dim` finds every dimension command. Click a command to open its page.
+
+Each page shows what Musa CAD itself reports about the command: how to type it, where it is on the ribbon, what it asks first, and the release it arrived in. Pages that also have a written explanation are marked **Complete** or **Partial**. That writing is being added, starting with the commands people use every day.
+
+<CardGrid>
+  <LinkCard title="System variables" description="The settings you change by typing their name, like PICKBOX or OSMODE." href="/reference/system-variables/" />
+  <LinkCard title="Keyboard shortcuts" description="Function keys, Ctrl shortcuts and the keys the drawing area reads." href="/reference/keyboard-shortcuts/" />
+  <LinkCard title="The ribbon, tab by tab" description="Every button on every tab, and the command behind it." href="/reference/ribbon/" />
+</CardGrid>
+
+<CommandIndex kind="command" />

@@ -1,0 +1,30 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: System variables
+description: Every Musa CAD system variable, with what it controls and the value it starts with on a fresh install. Change one by typing its name, or with SETVAR.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: partial
+kind: reference
+tableOfContents: false
+sidebar:
+  label: System variables
+  order: 1
+---
+
+import CommandIndex from '../../../../components/reference/CommandIndex.astro';
+
+A system variable is a setting with a name, like `PICKBOX` (the size of the pick box) or `OSMODE` (which object snaps are on). To change one, type its name and press <kbd>Enter</kbd>. Musa CAD shows the current value in angle brackets and asks for a new one:
+
+```musacad
+Command: PICKBOX
+Enter new value for PICKBOX <10>: 6
+```
+
+You can also use `SETVAR`, which asks for the variable's name first. `SETVAR ?` lists the variables it knows.
+
+The **Starts as** column is the value a fresh install begins with. It is read from Musa CAD itself when this wiki is built. Some variables are kept between sessions, some with each drawing, and some only until you close the program; each variable's page will say which as the pages are written.
+
+<CommandIndex kind="sysvar" />

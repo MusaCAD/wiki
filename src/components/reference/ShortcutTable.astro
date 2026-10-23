@@ -1,0 +1,90 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// Every keyboard shortcut, from what Musa CAD reports: the keys its actions answer to, and
+// the keys the drawing area reads itself.
+import data from '../../data/wiki-data.json';
+import { indexData, pathOf } from '../../lib/reference.mjs';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { byAlias } = indexData(data);
+type Shortcut = { keys: string[]; action: string; description?: string; command?: string };
+const shortcuts = (data.ui.shortcuts as Shortcut[]).map((s) => {
+	// Mode keys carry "OSNAP (F3) Snap the cursor ..." as their tooltip: keep what it does.
+	const what = s.description ? s.description.replace(/^[A-Z0-9]+ \([^)]*\)\s*/, '') : '';
+	const cmd = byAlias.get(s.action.toUpperCase());
+	return { ...s, what, href: cmd ? base + pathOf(cmd) : null };
+});
+const fkeys = shortcuts.filter((s) => s.keys.some((k) => /^F\d+$/.test(k))).sort((a, b) => Number(a.keys[0]!.slice(1)) - Number(b.keys[0]!.slice(1)));
+const others = shortcuts.filter((s) => !fkeys.includes(s));
+const viewport = data.ui.viewportKeys as { keys: string; action: string }[];
+const keyParts = (k: string) => k.split('+');
+---
+
+<div class="not-content mc-shortcuts">
+	<h2 id="function-keys">Function keys</h2>
+	<div class="mc-table-wrap" role="region" aria-label="Function keys" tabindex="0">
+		<table>
+			<thead><tr><th scope="col">Key</th><th scope="col">Switches</th><th scope="col">What it does</th></tr></thead>
+			<tbody>
+				{
+					fkeys.map((s) => (
+						<tr>
+							<td>{s.keys.map((k) => <kbd class="mc-kbd">{k}</kbd>)}</td>
+							<th scope="row">{s.href ? <a href={s.href}>{s.action}</a> : s.action}</th>
+							<td>{s.what}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<h2 id="other-shortcuts">Other shortcuts</h2>
+	<div class="mc-table-wrap" role="region" aria-label="Other shortcuts" tabindex="0">
+		<table>
+			<thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead>
+			<tbody>
+				{
+					others.map((s) => (
+						<tr>
+							<td>
+								{s.keys.map((k, i) => (
+									<>
+										{i > 0 && ' or '}
+										{keyParts(k).map((p, j) => (
+											<>
+												{j > 0 && '+'}
+												<kbd class="mc-kbd">{p}</kbd>
+											</>
+										))}
+									</>
+								))}
+							</td>
+							<td>{s.href ? <a href={s.href}>{s.action}</a> : s.action}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<h2 id="drawing-area-keys">Keys in the drawing area</h2>
+	<p>The drawing area reads these keys itself, while you work on the drawing.</p>
+	<div class="mc-table-wrap" role="region" aria-label="Keys in the drawing area" tabindex="0">
+		<table>
+			<thead><tr><th scope="col">Keys</th><th scope="col">What they do</th></tr></thead>
+			<tbody>
+				{
+					viewport.map((v) => (
+						<tr>
+							<td class="mc-mono">{v.keys}</td>
+							<td>{v.action}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+</div>

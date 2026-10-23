@@ -1,0 +1,39 @@
+---
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2026 Pranay Kiran
+
+// The `musacad --help` text and the exit codes, exactly as the program prints them.
+import { Code } from '@astrojs/starlight/components';
+import data from '../../data/wiki-data.json';
+import { exitCodes } from '../../lib/reference.mjs';
+
+interface Props {
+	show?: 'help' | 'exit-codes';
+}
+const { show = 'help' } = Astro.props;
+const codes = exitCodes(data.cli.help);
+---
+
+{show === 'help' && <Code code={data.cli.help.trimEnd()} lang="text" title={`musacad --help  (${data.cli.version})`} />}
+{
+	show === 'exit-codes' && (
+		<div class="mc-table-wrap not-content" role="region" aria-label="Exit codes" tabindex="0">
+			<table>
+				<thead>
+					<tr>
+						<th scope="col">Exit code</th>
+						<th scope="col">Meaning</th>
+					</tr>
+				</thead>
+				<tbody>
+					{codes.map((c) => (
+						<tr>
+							<th scope="row" class="mc-mono">{c.code}</th>
+							<td>{c.meaning}</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
+	)
+}

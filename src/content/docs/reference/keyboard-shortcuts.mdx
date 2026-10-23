@@ -1,0 +1,31 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Keyboard shortcuts
+description: Every keyboard shortcut in Musa CAD, from F3 (object snap) to Ctrl+P (plot), plus the keys the drawing area reads and the Shift keys that change snapping for a moment.
+tier: human
+appliesTo: 0.8.0
+lastVerified: 2026-10-23
+status: complete
+kind: reference
+sidebar:
+  label: Keyboard shortcuts
+  order: 2
+---
+
+import ShortcutTable from '../../../components/reference/ShortcutTable.astro';
+
+These are the keyboard shortcuts Musa CAD answers to on a fresh install. The tables are read from Musa CAD itself when this wiki is built, so they match the release.
+
+Most commands do not need a shortcut, because you start them by typing their alias at the cursor: `L` for LINE, `C` for CIRCLE, `TR` for TRIM. See the [command reference](/reference/) for every alias.
+
+:::note[Windows, Linux and macOS]
+The list was made on Linux. A few shortcuts follow each operating system's own standard. **Redo** is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> on Linux and <kbd>Ctrl</kbd>+<kbd>Y</kbd> on Windows. On a Mac, <kbd>Cmd</kbd> takes the place of <kbd>Ctrl</kbd>.
+:::
+
+<ShortcutTable />
+
+## Make your own
+
+- Give any command a key of your own with `CUI` (Manage tab ▸ Customization). If the key is already used, Musa CAD tells you what uses it and asks before taking it.
+- Add your own aliases with `ALIASEDIT`. It can load an AutoCAD `acad.pgp` file.
