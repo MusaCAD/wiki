@@ -52,7 +52,11 @@ export async function ensureEngine(version = ENGINE.version) {
   const v = run(['--version']);
   const printed = (v.stdout || '').trim();
   if (v.status !== 0 || printed !== `Musa CAD ${version}`) {
-    throw new Error(`engine: ${asset} reports "${printed}" (exit ${v.status}), expected "Musa CAD ${version}"`);
+    throw new Error(
+      `engine: ${asset} reports "${printed}" (exit ${v.status}${v.error ? ', ' + v.error.message : ''}), expected "Musa CAD ${version}".` +
+        (v.stderr ? `\nstderr: ${v.stderr.trim()}` : '') +
+        '\nA missing shared library means the host lacks a runtime package the AppImage does not bundle (see .github/workflows/ci.yml).'
+    );
   }
   return { version, appimage, size: statSync(appimage).size, run };
 }
