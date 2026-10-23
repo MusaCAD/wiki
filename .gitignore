@@ -11,3 +11,5 @@ dist/
 public/rendered/
 public/examples/
 src/data/rendered.json
+# The Musa CAD source, checked out by the sync workflow
+.engine-src/

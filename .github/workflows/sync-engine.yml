@@ -1,0 +1,110 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+
+# When Musa CAD makes a release, bring the wiki up to it and open a pull request.
+#
+# The release's AppImage reports its commands, ribbon and shortcuts (musacad --dump-wiki-data);
+# the generated pages follow; the pull request lists what changed and which written pages need
+# a person. Generated pages may be merged once the checks pass. Written pages never change
+# without review.
+#
+# Runs when Musa CAD's release workflow sends the event:
+#   gh api repos/MusaCAD/wiki/dispatches -f event_type=engine-release -f 'client_payload[tag]=v0.9.0'
+# when started by hand (Actions > Sync with a Musa CAD release), and once a day as a fallback.
+name: Sync with a Musa CAD release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag, e.g. v0.9.0 (leave empty for the newest release)'
+        required: false
+  repository_dispatch:
+    types: [engine-release]
+  schedule:
+    - cron: '23 4 * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-engine
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check out the Musa CAD source (its tags date each command)
+        uses: actions/checkout@v4
+        with:
+          repository: MusaCAD/MusaCAD
+          path: .engine-src
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install poppler and the runtime libraries the AppImage leaves to the host
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends poppler-utils libfuse2 \
+            libglvnd0 libopengl0 libegl1 libglx0 libgl1 \
+            libfontconfig1 libfreetype6 libharfbuzz0b libgraphite2-3 \
+            libx11-6 libxcb1 libxcb-cursor0 libxkbcommon0 libdbus-1-3 libglib2.0-0
+
+      - run: npm ci
+
+      - name: Sync
+        id: sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.event.client_payload.tag }}
+        run: |
+          node scripts/sync-release.mjs ${TAG:+--tag "$TAG"} --src .engine-src | tee sync.log
+          if grep -qE "already current|nothing to do" sync.log; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "version=$(node -e "import('./wiki.config.mjs').then(m => console.log(m.ENGINE.version))")" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check and build
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          npm run check:headers
+          npm run check:pages
+          npm run check:staleness
+          npm run build
+          npm run check:links
+
+      - name: Open the pull request
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.sync.outputs.version }}
+        run: |
+          BRANCH="sync/v${VERSION}"
+          if [ -n "$(gh pr list --head "$BRANCH" --state open --json number -q '.[].number')" ]; then
+            echo "::notice::A pull request for $BRANCH is already open."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add -A -- src/data src/content/docs/reference wiki.config.mjs
+          git commit -m "Sync with Musa CAD ${VERSION}" -m "Wiki-Sync: automated"
+          git push --force origin "$BRANCH"
+          {
+            cat .cache/sync-report.md
+            echo
+            echo "_The checks above ran in the sync job (headers, pages, staleness, build, links). Pull requests opened by this workflow do not start the CI workflow by themselves: push a commit or re-run it to run the full audit._"
+          } > pr-body.md
+          gh pr create --base main --head "$BRANCH" --title "Sync with Musa CAD ${VERSION}" --body-file pr-body.md
