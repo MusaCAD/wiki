@@ -69,6 +69,45 @@ board.musa: 38 texts checked, 2 problems
 
 Add `--json` to get the same report as JSON, for a program to read. Each problem has a `kind` (`overlap`, `outside-frame`, `crosses-line` or `missing-glyph`), the text's layer, position and exact box, and what it collides with.
 
+### The JSON report
+
+```json
+{
+  "file": "board.musa",
+  "texts": 38,
+  "problems_found": 2,
+  "frames": [
+    {"space": 0, "from": "rectangle", "min": [0, 0], "max": [420, 297]}
+  ],
+  "problems": [
+    {"kind": "overlap",
+     "text": {"index": 3, "type": "TEXT", "layer": "NOTES", "text": "R1 750 Ω", "font": "",
+              "space": 0, "entity": 3,
+              "box": [[10.2, 10], [21.1, 10], [21.1, 12.5], [10.2, 12.5]],
+              "bounds": [10.2, 10, 21.1, 12.5]},
+     "with": {"index": 4, "type": "TEXT", "text": "C3", ...}},
+    {"kind": "outside-frame", "text": {...}, "frame": {"min": [0, 0], "max": [420, 297]}}
+  ]
+}
+```
+
+Each problem also has what it is about:
+
+| `kind` | Also has |
+|---|---|
+| `overlap` | `with`: the other text |
+| `outside-frame` | `frame`: the rectangle the text leaves |
+| `crosses-line` | `line`: its `type`, `layer`, and the crossing segment's `from` and `to` |
+| `missing-glyph` | `missing`: a list of `{"character", "code"}` |
+
+In each text:
+
+- `box` is the box of its letters in drawing units, corner by corner from the left end of the baseline (baseline left, baseline right, top right, top left), so it is exact for a turned text. `bounds` is `[xmin, ymin, xmax, ymax]`.
+- `space` is 0 for model space, otherwise the layout's number. Texts are compared only with the texts and lines in their own space.
+- `entity` numbers the objects that hold text, so two problems with the same `entity` are two lines of one multiline text.
+
+Text means single-line text, attribute definitions, each line of a multiline text and of a multileader, dimension values and leader labels, on layers that are on and thawed. The box is the box of the letters as the plot draws them, at the text's height, width factor, obliquing and rotation, so a short word in a wide table cell is not reported for the cell's empty part. Text in a TrueType font is measured as the built-in font draws it.
+
 ## Print to PDF
 
 ```sh
