@@ -1,7 +1,7 @@
 {
   "cli": {
     "help": "Musa CAD -- 2D CAD engine\n\nUsage:\n  musacad [<drawing>]              open a drawing in the GUI\n  musacad --check <drawing> [check options]\n                                   read a drawing, check its text, report, exit\n  musacad --plot <drawing> <out.pdf> [plot options]\n                                   plot to PDF headlessly (no display needed)\n  musacad --dump-wiki-data <out.json>\n                                   write the commands, ribbon and keyboard\n                                   shortcuts as JSON, for the documentation\n  musacad --help                   show this help\n  musacad --version                show the version\n\n<drawing> is a .musa file, or a .dxf file (loaded through the DXF importer).\n\nPlot options:\n  --paper <name>    sheet: A4 A3 A2 A1 A0 Letter Tabloid   (default A4)\n  --landscape       sheet orientation                      (default)\n  --portrait        sheet orientation\n  --extents         plot the drawing's extents             (default)\n  --window x0,y0,x1,y1   plot an explicit world rectangle\n  --fit             scale the area to fill the sheet       (default)\n  --scale <n:m>     plot n mm per m drawing units, e.g. 1:5\n  --monochrome      plot everything black (the mono CTB style)\n\nCheck options:\n  --window x0,y0,x1,y1   the frame text must stay inside (default: the\n                    drawing's largest rectangle)\n  --lines           also report text that a line crosses\n  --json            print the report as JSON\n\nExit codes:\n  0  success\n  1  usage error (bad command line)\n  2  the drawing could not be read or parsed\n  3  the output could not be written\n  4  --check: text overlaps text, leaves the frame, crosses a line (--lines)\n     or uses a character the font has no glyph for\n\nSingle-dash options are passed through to Qt (e.g. -platform offscreen).\n",
-    "version": "Musa CAD 0.8.0"
+    "version": "Musa CAD 0.9.0"
   },
   "commands": [
     {
@@ -514,6 +514,23 @@
     },
     {
       "aliases": [
+        "ALIGNSPACE"
+      ],
+      "description": "Pan and scale a layout viewport so points of the model fall on points of the sheet.",
+      "dimvar": false,
+      "name": "ALIGNSPACE",
+      "opening": {
+        "echo": [
+          "Command: ALIGNSPACE",
+          "ALIGNSPACE aligns a viewport on a layout: switch to a layout tab first."
+        ],
+        "finished": true
+      },
+      "primaryAlias": "ALIGNSPACE",
+      "setvar": false
+    },
+    {
+      "aliases": [
         "A",
         "ARC"
       ],
@@ -528,6 +545,23 @@
         "prompt": "Specify start point of arc or [Center]: "
       },
       "primaryAlias": "A",
+      "setvar": false
+    },
+    {
+      "aliases": [
+        "ARCTEXT"
+      ],
+      "description": "Place text along an arc, each character turned to it.",
+      "dimvar": false,
+      "icon": "assets/ribbon/text.svg",
+      "name": "ARCTEXT",
+      "opening": {
+        "echo": [
+          "Command: ARCTEXT"
+        ],
+        "prompt": "Select an arc: "
+      },
+      "primaryAlias": "ARCTEXT",
       "setvar": false
     },
     {
@@ -1206,6 +1240,22 @@
         "prompt": "Enter new value for CHAMFERD <0>: "
       },
       "primaryAlias": "CHAMFERD",
+      "setvar": true
+    },
+    {
+      "aliases": [
+        "CHAMMODE"
+      ],
+      "description": "CHAMFER's method: 0 two distances, 1 a length and an angle.",
+      "dimvar": false,
+      "name": "CHAMMODE",
+      "opening": {
+        "echo": [
+          "Command: CHAMMODE"
+        ],
+        "prompt": "Enter new value for CHAMMODE <0>: "
+      },
+      "primaryAlias": "CHAMMODE",
       "setvar": true
     },
     {
@@ -3034,7 +3084,7 @@
       "opening": {
         "echo": [
           "Command: GRADIENT",
-          "Pattern: GRADIENT"
+          "Pattern: GR_LINEAR"
         ],
         "prompt": "Pick internal point or [Select objects/Undo/seTtings]: "
       },
@@ -3363,7 +3413,7 @@
         "ICL",
         "IMAGECLIP"
       ],
-      "description": "Clip an image to a rectangular boundary, or delete, switch on or off its boundary.",
+      "description": "Clip an image to a rectangular or polygonal boundary, or delete, switch on or off its boundary.",
       "dimvar": false,
       "name": "IMAGECLIP",
       "opening": {
@@ -3816,6 +3866,23 @@
     },
     {
       "aliases": [
+        "LAYOUTMERGE",
+        "-LAYOUTMERGE"
+      ],
+      "description": "Merge layouts into one: their objects onto its sheet, and the layouts deleted.",
+      "dimvar": false,
+      "name": "LAYOUTMERGE",
+      "opening": {
+        "echo": [
+          "Command: LAYOUTMERGE"
+        ],
+        "prompt": "Enter layout name(s) to merge, separated by commas, or [*] <*>: "
+      },
+      "primaryAlias": "LAYOUTMERGE",
+      "setvar": false
+    },
+    {
+      "aliases": [
         "LAYTHW"
       ],
       "description": "Thaw every layer.",
@@ -4217,6 +4284,23 @@
     },
     {
       "aliases": [
+        "MLEADERCOLLECT",
+        "MLC"
+      ],
+      "description": "Collects multileaders with blocks into one, the blocks in a row, a column or rows.",
+      "dimvar": false,
+      "name": "MLEADERCOLLECT",
+      "opening": {
+        "echo": [
+          "Command: MLEADERCOLLECT"
+        ],
+        "prompt": "Select multileaders: "
+      },
+      "primaryAlias": "MLEADERCOLLECT",
+      "setvar": false
+    },
+    {
+      "aliases": [
         "MLEADEREDIT",
         "MLE"
       ],
@@ -4563,6 +4647,22 @@
       },
       "primaryAlias": "O",
       "setvar": false
+    },
+    {
+      "aliases": [
+        "OFFSETDIST"
+      ],
+      "description": "The distance OFFSET offers; a negative value offers Through.",
+      "dimvar": false,
+      "name": "OFFSETDIST",
+      "opening": {
+        "echo": [
+          "Command: OFFSETDIST"
+        ],
+        "prompt": "Enter new value for OFFSETDIST <-1.0000>: "
+      },
+      "primaryAlias": "OFFSETDIST",
+      "setvar": true
     },
     {
       "aliases": [
@@ -5614,6 +5714,23 @@
     },
     {
       "aliases": [
+        "RTEXT"
+      ],
+      "description": "Place text that shows a file's contents (read again when the file changes) or a DIESEL expression.",
+      "dimvar": false,
+      "icon": "assets/ribbon/text.svg",
+      "name": "RTEXT",
+      "opening": {
+        "echo": [
+          "Command: RTEXT"
+        ],
+        "prompt": "Enter an option [Style/Height/Rotation/File/Diesel] <File>: "
+      },
+      "primaryAlias": "RTEXT",
+      "setvar": false
+    },
+    {
+      "aliases": [
         "SAVEAS",
         "SAVE"
       ],
@@ -5952,6 +6069,42 @@
         "window": "Text Style"
       },
       "primaryAlias": "ST",
+      "setvar": false
+    },
+    {
+      "aliases": [
+        "SUPERHATCH"
+      ],
+      "description": "Fill an area with copies of a block or an image side by side, or with a wipeout.",
+      "dimvar": false,
+      "icon": "assets/ribbon/hatch.svg",
+      "name": "SUPERHATCH",
+      "opening": {
+        "echo": [
+          "Command: SUPERHATCH"
+        ],
+        "prompt": "Enter a pattern type [Block/Wipeout/Select existing] <Block>: "
+      },
+      "primaryAlias": "SUPERHATCH",
+      "setvar": false
+    },
+    {
+      "aliases": [
+        "SYSVDLG"
+      ],
+      "description": "Open the System Variables window: every system variable with its value, to see and change.",
+      "dimvar": false,
+      "icon": "assets/ribbon/settings.svg",
+      "name": "SYSVDLG",
+      "opening": {
+        "echo": [
+          "Command: SYSVDLG",
+          "SYSVDLG needs the drawing window."
+        ],
+        "finished": true,
+        "window": "window:SYSVDLG"
+      },
+      "primaryAlias": "SYSVDLG",
       "setvar": false
     },
     {
@@ -6805,7 +6958,7 @@
     "DIMTXTDIRECTION",
     "DIMTFAC"
   ],
-  "formatVersion": 45,
+  "formatVersion": 49,
   "generator": "musacad --dump-wiki-data",
   "schema": 1,
   "setvarNames": [
@@ -6819,6 +6972,7 @@
     "CHAMFERB",
     "CHAMFERC",
     "CHAMFERD",
+    "CHAMMODE",
     "CMLJUST",
     "CMLSCALE",
     "DYNDIGRIP",
@@ -6860,6 +7014,7 @@
     "LWDISPLAY",
     "MIRRTEXT",
     "MSLTSCALE",
+    "OFFSETDIST",
     "OSMODE",
     "PDMODE",
     "PDSIZE",
@@ -8212,6 +8367,10 @@
               {
                 "command": "AIMLEADEREDITREMOVE",
                 "label": "Remove Leader"
+              },
+              {
+                "command": "MLEADERCOLLECT",
+                "label": "Collect"
               }
             ]
           },
@@ -8386,14 +8545,14 @@
                     "command": "Z",
                     "label": "Zoom In",
                     "macro": [
-                      "2"
+                      "2x"
                     ]
                   },
                   {
                     "command": "Z",
                     "label": "Zoom Out",
                     "macro": [
-                      "0.5"
+                      "0.5x"
                     ]
                   },
                   {
@@ -8669,8 +8828,11 @@
             "title": "Boundary",
             "tools": [
               {
-                "command": "H",
-                "label": "Re-hatch"
+                "command": "HATCHEDIT",
+                "label": "Pick Points",
+                "macro": [
+                  "AD"
+                ]
               }
             ]
           }
@@ -8721,7 +8883,7 @@
             ]
           }
         ],
-        "title": "Block Editor"
+        "title": "Block Reference"
       },
       {
         "contextual": true,
@@ -8786,6 +8948,8 @@
       {
         "action": "Redo",
         "keys": [
+          "Ctrl+Y",
+          "Alt+Shift+Backspace",
           "Ctrl+Shift+Z"
         ]
       },
@@ -8877,6 +9041,12 @@
         "action": "Help",
         "keys": [
           "F1"
+        ]
+      },
+      {
+        "action": "Properties",
+        "keys": [
+          "Ctrl+1"
         ]
       },
       {
@@ -8989,10 +9159,10 @@
       }
     ]
   },
-  "version": "0.8.0",
+  "version": "0.9.0",
   "generatedFrom": {
-    "engine": "~/projects/musa_cad/build/wiki/bin/musacad_app",
-    "reports": "Musa CAD 0.8.0",
-    "source": "v0.8.0-8-g5a108fd"
+    "engine": "the v0.9.0 release AppImage",
+    "reports": "Musa CAD 0.9.0",
+    "source": "v0.9.0-4-g1697cfc"
   }
 }

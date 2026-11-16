@@ -11,8 +11,8 @@ export const BASE = '/';
 
 /** The engine release the wiki is built against: pinned binary for renders, default `appliesTo`. */
 export const ENGINE = {
-  version: '0.8.0',
-  tag: 'v0.8.0',
+  version: '0.9.0',
+  tag: 'v0.9.0',
   repo: 'https://github.com/MusaCAD/MusaCAD',
   /** Release asset names the wiki knows how to run headlessly, by platform. */
   appimage: (v) => `MusaCAD-${v}-x86_64.AppImage`,
