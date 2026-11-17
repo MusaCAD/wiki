@@ -1,6 +1,6 @@
 {
-  "current": 45,
-  "from": "v0.8.0",
+  "current": 49,
+  "from": "v0.9.0",
   "history": [
     {
       "version": 1,
@@ -370,6 +370,31 @@
         "the objects' own transparency and ByBlock properties, where they have any --",
         "bottom first"
       ]
+    },
+    {
+      "version": 46,
+      "release": null,
+      "notes": []
+    },
+    {
+      "version": 47,
+      "release": null,
+      "notes": [
+        "block content -- how collected blocks are laid out, the name",
+        "Multileader type Block, its source block"
+      ]
+    },
+    {
+      "version": 48,
+      "release": null,
+      "notes": [
+        "LTTEXT after scale rotation flags x y style text -- the text the linetype just"
+      ]
+    },
+    {
+      "version": 49,
+      "release": null,
+      "notes": []
     }
   ]
 }
