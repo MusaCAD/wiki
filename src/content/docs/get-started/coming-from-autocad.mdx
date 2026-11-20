@@ -4,8 +4,8 @@
 title: Coming from AutoCAD
 description: Switching from AutoCAD? Most of your habits work in Musa CAD as they are. Here is what carries over, where Musa CAD goes further, what is different, what is missing, and how to bring your work across.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -69,16 +69,16 @@ These are the commands most drafters use every day. All of them are in Musa CAD,
 - **New releases change the file format.** A file saved by a newer version needs that version or newer to open. Older files always open.
 - **Arrays are plain copies.** ARRAY makes ordinary objects, not an associative array, so there is no ARRAYEDIT. Change one copy and the others stay as they are.
 - **Dimension variables change the style.** Typing `DIMTXT` or another dimension variable changes the current dimension style itself, where AutoCAD would keep it as an override. To give one dimension a setting of its own, use DIMOVERRIDE or the Properties palette.
-- **Blocks hold the common objects.** A block can contain lines, arcs, circles, polylines, text, multiline text, attributes and other blocks. Hatches, dimensions and other objects stay outside the block when you make it, and Musa CAD says how many.
+- **Blocks hold the common objects.** A block can contain common geometry, text, attributes, nested blocks, hatches and multilines. Unsupported objects are reported. Imported dimensions inside blocks may keep only their drawn appearance; see [DXF limits](/file-formats/dxf/).
 - **Plot styles are three built-in choices:** in colour, monochrome or grayscale. CTB and STB files are not read.
-- **Musa CAD 0.8.0 does not save automatically.** Save often with <kbd>Ctrl</kbd>+<kbd>S</kbd>.
+- **Musa CAD 0.9.0 does not save automatically.** Save often with <kbd>Ctrl</kbd>+<kbd>S</kbd>.
 
 ## What is not there yet
 
 - **3D.** Musa CAD is for 2D only.
 - **AutoLISP, VBA, .NET and ObjectARX.** None of these run inside Musa CAD. Automation is done from outside, by programs that write drawings and call the `musacad` command. For many jobs this goes further than a LISP routine: it can build a whole drawing set. See [Scripting and automation](/scripting/).
 - **Parametric constraints.** The Parametric tab is there, but its buttons are greyed out, and each tooltip says the tool is not built yet.
-- **Sheet sets, dynamic blocks, annotative objects, named plot styles (STB) and real SHX fonts** are not in version 0.8.0.
+- **Sheet sets, dynamic blocks, annotative objects, named plot styles (STB) and real SHX fonts** are not in version 0.9.0.
 - **Every last option.** Most draw, modify and annotate commands follow AutoCAD option for option, but some settings are still to come. The [command status table](/reference/command-status/) tracks every command, and the [AutoCAD settings status](/reference/autocad-settings-status/) tracks the dimension style and options settings one by one.
 
 The [roadmap](/project/roadmap/) lists what is still missing, theme by theme, with an issue for each.

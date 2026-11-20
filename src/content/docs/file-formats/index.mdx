@@ -4,8 +4,8 @@
 title: File formats and other CAD programs
 description: The file types Musa CAD reads and writes. Its own .musa format, DXF built in, DWG through the free ODA File Converter, PDF output, images and fonts, and moving projects from AutoCAD.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: landing
 sidebar:
@@ -17,7 +17,7 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 | Format | Read | Write | Notes |
 |---|---|---|---|
-| `.musa` | Yes | Yes | Musa CAD's own format. Plain text. |
+| `.musa` | Yes | Yes | Musa CAD's own format. Version 0.9.0 saves format 49. |
 | `.dxf` | Yes | Yes | Built in, nothing to install. Writes AutoCAD R2000 files. |
 | `.dwg` | Yes | Yes | Through the free ODA File Converter, which Musa CAD downloads for you from **DWG Setup…** in the application menu. Writes AutoCAD 2018 files. |
 | PDF | No | Yes | Plot or export. Real vector output. |

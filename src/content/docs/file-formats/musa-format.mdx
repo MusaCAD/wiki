@@ -4,8 +4,8 @@
 title: The .musa format
 description: Musa CAD's own drawing format is plain text. Which versions open in which release, what each format version added, and how to write one from a program.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: reference
 sidebar:
@@ -18,7 +18,7 @@ import formats from '../../../data/format-history.json';
 import releases from '../../../data/releases.json';
 import { compareVersions } from '../../../../wiki.config.mjs';
 
-A `.musa` file is Musa CAD's own drawing format. It is plain text: you can open one in any text editor and read it. Each line is one record, such as a layer, a line, a circle or a dimension. The first line says which version of the format the file uses, for example `MUSACAD 45`, and the last line is `END`.
+A `.musa` file is Musa CAD's own drawing format. It is plain text: you can open one in any text editor and read it. Each line is one record, such as a layer, a line, a circle or a dimension. The first line says which version of the format the file uses, for example `MUSACAD 49`, and the last line is `END`.
 
 ## Which files open where
 
@@ -41,6 +41,8 @@ So if you share drawings with someone, check that they have the same Musa CAD ve
 </div>
 
 To give a drawing to someone with an older release, export it as DXF, which every version reads.
+
+Version 0.9.0 writes **format 49**, up from format 45 in 0.8.0. Keep a backup before saving a drawing that still needs to open in an older release. A DXF export is an exchange copy; check its appearance because some objects and settings change during export.
 
 ## Version history
 

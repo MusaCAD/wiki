@@ -4,8 +4,8 @@
 title: Install on Windows
 description: How to install Musa CAD on Windows, what the security warnings mean, how updates work, and how to use it from a script.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 platforms: [windows]
@@ -20,14 +20,14 @@ import { Steps } from '@astrojs/starlight/components';
 
 Musa CAD for Windows comes as a normal installer, `MusaCAD-<version>-x86_64-setup.exe`. You download it from the release page on GitHub.
 
-:::note[Version 0.8.0 on Windows]
-Version 0.8.0 came out on 22 October 2026 for Linux and macOS first. The Windows installer is added to the same release once it has been tested on a real Windows PC. When it arrives, an installed 0.7.0 offers the update by itself. Until then, the newest Windows version is [0.7.0](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.7.0).
+:::note[Windows 0.9.0]
+The [0.9.0 release](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.9.0) includes `MusaCAD-0.9.0-x86_64-setup.exe` and its SHA-256 checksum. The installer was built in CI. Runtime testing on physical Windows hardware is still pending.
 :::
 
 ## What you need
 
 - Windows 10 or 11, 64-bit.
-- A graphics driver that supports **OpenGL 4.5**. Current Intel, AMD and NVIDIA drivers all do. If yours does not, Musa CAD tells you so when it starts.
+- A graphics driver that supports **OpenGL 4.5**. Support depends on the graphics card as well as the driver. Musa CAD can try software rendering if the driver cannot provide it.
 - Nothing else. There is no account, licence key or internet connection needed to use it.
 
 ## Install it
@@ -54,7 +54,7 @@ The installer is not yet signed with a code-signing certificate. Without one, Wi
 - SmartScreen says "Windows protected your PC". Click **More info**, then **Run anyway**.
 - The administrator prompt says **Publisher: Unknown**.
 
-This does not mean Windows found anything harmful. It only means the file is new to Windows. Getting the installer signed is planned; the options are written up in [WINDOWS_SIGNING.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/WINDOWS_SIGNING.md).
+A publisher or reputation warning is different from a malware detection. Check that the installer came from the official release page before continuing. Getting the installer signed is planned; the options are written up in [WINDOWS_SIGNING.md](https://github.com/MusaCAD/MusaCAD/blob/main/docs/WINDOWS_SIGNING.md).
 
 ## Two programs, and why
 

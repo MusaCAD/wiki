@@ -1,0 +1,52 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Musa CAD 0.9.0 is out
+description: Clearer Dynamic Input, better DXF exchange, hatches and multilines in blocks, and more drawing tools in Musa CAD 0.9.0.
+tier: assisted
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
+status: complete
+kind: blog
+date: 2026-11-13
+authors: pranay
+tags: [release]
+excerpt: Clearer Dynamic Input, better drawing interchange and more tools for everyday drafting.
+---
+
+import Screenshot from '../../../components/Screenshot.astro';
+import dynamicInput from '../../../assets/screenshots/dynamic-input-0.9.0.png';
+
+Musa CAD 0.9.0 makes Dynamic Input easier to read and improves how drawings move between CAD programs. It was released on **13 November 2026**.
+
+## Clearer input at the cursor
+
+The old thin digits have been replaced with readable UI text. Fields now have labels such as **Length**, **Width**, **Angle**, **Radius** and **Diameter**. The active live value is selected in blue, and a padlock marks a valid typed constraint. Prompts have their own row with keyboard hints.
+
+<Screenshot src={dynamicInput} alt="Dynamic Input beside a floor plan, with Length selected in blue, Angle at 45 degrees and keyboard hints below the prompt." caption="Named fields make it easier to see what you are entering." capturedWith="0.9.0" />
+
+The familiar keys still work: Tab and Shift+Tab change fields, Enter accepts, Esc cancels, and F12 switches Dynamic Input on or off. The [Dynamic Input guide](/user-manual/dynamic-input/) walks through it.
+
+## Drawing and file exchange
+
+- **Blocks** can keep hatches and multilines. Multileaders can use block content, and [MLEADERCOLLECT](/reference/commands/mleadercollect/) gathers matching block multileaders into rows or columns.
+- **Hatches** have better pick previews, all nine gradient patterns and more editing options.
+- **DXF** export uses consistent AutoCAD 2000 structure. Import better preserves radial and angular dimensions, dimension text overrides, bent leaders and mirrored objects.
+- **More tools** include [ALIGNSPACE](/reference/commands/alignspace/), [RTEXT](/reference/commands/rtext/), [SUPERHATCH](/reference/commands/superhatch/), [ARCTEXT](/reference/commands/arctext/), [SYSVDLG](/reference/commands/sysvdlg/) and [LAYOUTMERGE](/reference/commands/layoutmerge/).
+- **The interface** has dimension, multileader and table style galleries, extended ribbon tooltips and floating panels.
+
+There are also fixes for closing the app, hidden windows and point entry on systems that use decimal commas. Older graphics hardware can try software rendering.
+
+## Install or update
+
+The [0.9.0 release](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.9.0) has the Windows installer, Linux AppImage and Flatpak bundle. Musa CAD is also available on [Flathub](https://flathub.org/apps/org.musacad.MusaCAD). The Windows installer was built in CI; testing on physical Windows hardware is still pending.
+
+For existing installations, see [Updating Musa CAD](/get-started/updating/).
+
+**Drawing compatibility:** 0.9.0 saves native format **49**, up from 45 in 0.8.0. Older files open normally. Files saved by 0.9.0 need 0.9.0 or newer.
+
+## Mac preview update
+
+A separate [experimental Mac build](/get-started/install-macos/) followed on 14 November. It targets Apple silicon and macOS 12 or later, with an OpenGL 4.1 drawing window. A tester has confirmed that it opens. Wider testing is still needed, and the app is not Apple-notarized.
+
+The [release notes](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.9.0) have the full change list and testing details.

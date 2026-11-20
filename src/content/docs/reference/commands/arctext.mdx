@@ -1,15 +1,41 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
-title: "ARCTEXT"
-description: "The ARCTEXT command in Musa CAD: Place text along an arc, each character turned to it. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+title: ARCTEXT
+description: How to use ARCTEXT in Musa CAD 0.9.0. Place grouped text characters along an arc.
+tier: assisted
 appliesTo: 0.9.0
-lastVerified: 2026-11-13
-status: stub
+lastVerified: 2026-11-21
+status: complete
 kind: command
 command: "ARCTEXT"
-tableOfContents: false
 ---
+
+ARCTEXT places lettering along an existing arc. It creates separate TEXT characters and puts them in a group.
+
+## How to use it
+
+1. Draw an arc with [ARC](/reference/commands/arc/).
+2. Type `ARCTEXT` and select the arc.
+3. Enter the words and a positive text height.
+4. Choose **Outward** or **Inward**.
+5. Choose **Fit**, **Left**, **Right** or **Center**.
+6. Enter the offset from the arc, or press Enter for zero.
+
+## Options
+
+| Option | Meaning |
+|---|---|
+| Outward | Places the text on the outside of the arc. This is the default. |
+| Inward | Places the text toward the inside of the arc. |
+| Fit | Spreads the characters across the arc. |
+| Left / Right / Center | Positions the lettering at its normal character spacing. |
+| Offset | Distance from the arc to the text baseline. Must be zero or positive. |
+
+For a simple example, place `MUSA CAD` on an arc with height `2.5`, Outward, Center and offset `1`.
+
+## Good to know
+
+The selected object must be an arc, not a circle or a polyline arc segment. An inward offset must leave a positive baseline radius.
+
+The result is a group of ordinary text objects. It does not follow later edits to the source arc, and it is not one editable curved-text object. Undo removes the lettering as one operation. Use [TEXTEDIT](/reference/commands/textedit/) for individual characters, or recreate the lettering to change the whole phrase.

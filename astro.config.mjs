@@ -104,6 +104,7 @@ export default defineConfig({
             { slug: 'get-started/install-windows' },
             { slug: 'get-started/install-linux' },
             { slug: 'get-started/install-macos' },
+            { slug: 'get-started/updating' },
             { slug: 'get-started/build-from-source' },
             { slug: 'get-started/first-drawing' },
             { slug: 'get-started/interface-tour' },

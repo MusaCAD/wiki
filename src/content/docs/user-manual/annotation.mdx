@@ -4,8 +4,8 @@
 title: Annotation
 description: Adding words and sizes to a Musa CAD drawing. Single-line and multiline text, text styles and symbols, every kind of dimension and dimension styles, leaders and multileaders, tables, fields, and GD&T frames.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -25,6 +25,8 @@ Musa CAD has two kinds of text:
 - **Multiline text** (`MT` for MTEXT). One object holding a whole paragraph, which wraps to a width you set. Good for longer notes. It keeps formatting such as heights, colours, fonts, underlines and stacked fractions.
 
 Double-click a text, or type `ED`, to change its words.
+
+For lettering along a curve, use [ARCTEXT](/reference/commands/arctext/). For a note read from a text file, use [RTEXT](/reference/commands/rtext/).
 
 ### Symbols
 
@@ -73,6 +75,8 @@ A leader is an arrow pointing at something, with a note at its other end.
 
 <CommandList label="Leader commands" names={['MLEADER', 'MLEADERSTYLE', 'MLEADEREDIT', 'MLEADERALIGN', 'QLEADER', 'LEADER']} />
 
+Use [MLEADERCOLLECT](/reference/commands/mleadercollect/) to collect two or more multileaders that use the same block into a row, a column or wrapped rows. Text-content multileaders cannot be collected this way.
+
 ## Tables
 
 Tables hold rows and columns of text, such as a parts list, a bill of materials or a revision block. Their borders and text sizes come from a table style, and cells can be merged.
@@ -87,7 +91,7 @@ A feature control frame shows a geometric tolerance: the symbol, the tolerance v
 
 ## Sizes on paper
 
-Text heights, arrow sizes and dimension sizes are in drawing units. Plan them for the scale you will plot at: text 2.5 high on paper is 25 high in a drawing plotted at 1:10. Annotative objects, which resize themselves for each viewport scale, are not in Musa CAD 0.8.0 yet.
+Text heights, arrow sizes and dimension sizes are in drawing units. Plan them for the scale you will plot at: text 2.5 high on paper is 25 high in a drawing plotted at 1:10. Annotative objects, which resize themselves for each viewport scale, are not in Musa CAD 0.9.0 yet.
 
 ## Next
 

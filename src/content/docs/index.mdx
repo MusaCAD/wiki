@@ -4,8 +4,8 @@
 title: Musa CAD Wiki
 description: The official guide to Musa CAD, the free 2D CAD program that works like AutoCAD. Install it, draw your first part, look up any command, and automate your drawings.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: landing
 tableOfContents: false
@@ -17,7 +17,7 @@ head:
 import { CardGrid, Card, LinkCard } from '@astrojs/starlight/components';
 
 <p class="mc-home-intro">
-  Musa CAD is a free program for 2D technical drawings: parts, plans, sections and sheets. If you have used AutoCAD, you already know how to use it. The commands, prompts, ribbon and keyboard shortcuts are the same. This wiki shows you how to install it, how to draw with it, and what every command does.
+  Musa CAD is a free program for 2D technical drawings: parts, plans, sections and sheets. Many commands, prompts and shortcuts will be familiar if you have used AutoCAD. This wiki shows you how to install it, how to draw with it, and what every command does.
 </p>
 
 ## Start here
@@ -28,6 +28,12 @@ import { CardGrid, Card, LinkCard } from '@astrojs/starlight/components';
   <LinkCard title="Coming from AutoCAD" description="What works the same, what is different, and what is not there yet." href="/get-started/coming-from-autocad/" />
   <LinkCard title="Find a command" description="Every command and setting, with its shortcut and where it is on the ribbon." href="/reference/" />
 </CardGrid>
+
+## Current downloads
+
+- [Windows installer](/get-started/install-windows/) and [Linux packages](/get-started/install-linux/): **0.9.0**.
+- [macOS experimental build](/get-started/install-macos/): **0.9.0-1**, for Apple silicon and macOS 12 or later.
+- [Updating an existing installation](/get-started/updating/): check your version, update your package and keep drawings compatible.
 
 ## What makes Musa CAD different
 
@@ -48,7 +54,7 @@ import { CardGrid, Card, LinkCard } from '@astrojs/starlight/components';
 
 ## News
 
-New releases and longer write-ups are on the [blog](/blog/). The latest: [Musa CAD 0.8.0 is out](/blog/musa-cad-0-8-0/).
+New releases and longer write-ups are on the [blog](/blog/). The latest release is [Musa CAD 0.9.0](/blog/musa-cad-0-9-0/), with clearer Dynamic Input and better drawing interchange.
 
 ## How to read this wiki
 
@@ -57,7 +63,7 @@ Every page tells you how far to trust it, just under its title:
 - **Complete** means the page covers its topic.
 - **Partial** means it covers part of it, and says what is missing.
 - **Not written yet** means the page only shows what Musa CAD itself reports, such as a command's name, shortcut and first prompt.
-- **Checked against Musa CAD 0.8.0** is the release the page was last tested with. If a newer release comes out and the page has not been checked again, a note at the top says so.
+- **Checked against Musa CAD 0.9.0** is the release the page was last tested with. If a newer release comes out and the page has not been checked again, a note at the top says so.
 
 The command lists and the pictures of drawings are made by Musa CAD itself whenever the wiki is built, so they always match the release it was built for.
 

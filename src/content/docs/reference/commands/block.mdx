@@ -4,8 +4,8 @@
 title: "BLOCK"
 description: "The BLOCK (B) command in Musa CAD turns selected objects into a named block that you can insert again and again. How to name it, choose its base point, which objects it can hold, and what replaces the originals."
 tier: assisted
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: command
 command: "BLOCK"
@@ -41,9 +41,9 @@ At **Select objects** you can click objects one by one or drag a window around t
 
 ## What a block can hold
 
-Lines, circles, arcs, polylines, text, multiline text, other blocks and attribute definitions can go into a block. An attribute definition made with [ATTDEF](/reference/commands/attdef/) becomes an attribute: INSERT asks for its value each time.
+Lines, circles, arcs, polylines, text, multiline text, other blocks, attribute definitions, hatches and multilines can go into a block. An attribute definition made with [ATTDEF](/reference/commands/attdef/) becomes an attribute: INSERT asks for its value each time.
 
-Points, ellipses, splines, hatches, dimensions, leaders, multileaders, tables, images, construction lines, multilines and geometric tolerances cannot go into a block yet. If your selection has some, they stay in the drawing as they are, and the message adds how many, such as `(2 unsupported left in place)`.
+Points, ellipses, splines, dimensions, leaders, multileaders, tables, images, construction lines and geometric tolerances cannot go into a block yet. If your selection has some, they stay in the drawing as they are, and the message adds how many, such as `(2 unsupported left in place)`.
 
 ## Good to know
 
@@ -51,13 +51,13 @@ Points, ellipses, splines, hatches, dimensions, leaders, multileaders, tables, i
 - With nothing selected when you press <kbd>Enter</kbd>, Musa CAD says `Nothing selected.` and the command ends.
 - If none of the selected objects can go into a block, Musa CAD says `Block: none of the selected objects can go into a block yet (lines, circles, arcs, polylines, text, mtext and inserts can).`
 - A name that is already a block is redefined without asking first: Musa CAD says `Block "HOUSE" redefined with 3 objects.`, and every copy of that block in the drawing changes to the new objects.
-- Block names are case-sensitive: `HOUSE` and `house` are two different blocks.
+- Block names are matched without regard to case: `HOUSE` and `house` refer to the same block.
 - The block takes the drawing's units. When it is inserted into a drawing in other units, it is scaled to match.
 - `-BLOCK` is the same command.
 
 ## Compared with AutoCAD
 
-In Musa CAD, BLOCK and -BLOCK are the same command and both ask at the command line. The selected objects are always replaced by a block reference in place, and a name already in use is redefined without asking. Some kinds of object, such as hatches and dimensions, cannot go into a block yet.
+In Musa CAD, BLOCK and -BLOCK are the same command and both ask at the command line. The selected objects are always replaced by a block reference in place, and a name already in use is redefined without asking. Some kinds of object, such as dimensions and images, cannot go into a block yet. Hatches and multilines are supported in 0.9.0.
 
 ## Next
 

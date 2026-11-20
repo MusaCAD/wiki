@@ -4,8 +4,8 @@
 title: Moving projects from AutoCAD
 description: A step-by-step guide to bringing AutoCAD drawings, blocks, external references, fonts, plot settings and command aliases into Musa CAD, and checking that everything came across.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -30,7 +30,7 @@ This page is about your files. For how the commands and the screen compare, see 
 4. **Read the import message.** It ends with what was skipped, if anything:
 
    ```txt
-   Imported 412 entities on 9 layers (36 block refs over 12 definitions); skipped 3 unsupported (ACAD_TABLE, MULTILEADER).
+   Imported 412 entities on 9 layers (36 block refs over 12 definitions); skipped 3 unsupported (ACAD_TABLE, 3DSOLID).
    ```
 
    [DXF files](/file-formats/dxf/#what-is-skipped) explains each kind of object that can be skipped.
@@ -46,12 +46,13 @@ This page is about your files. For how the commands and the screen compare, see 
 | From AutoCAD | In Musa CAD |
 |---|---|
 | Layers, with colour, linetype, lineweight, plot setting and description | The same |
-| Blocks and attributes | The same. A block holds lines, arcs, circles, polylines, text and other blocks; other objects inside blocks are skipped and listed. |
+| Blocks and attributes | Common geometry, text, attributes, nested blocks, hatches and multilines are supported. Some objects are converted or skipped; see the [DXF limits](/file-formats/dxf/#what-is-skipped). |
 | External references to DWG files | Convert the referenced files to DXF or `.musa` first. Musa CAD attaches `.musa` and `.dxf` files as references. |
 | Dimension styles and text styles | The same |
 | Layouts and viewports | The same, including per-viewport layer freezing |
 | Hatches, gradients and wipeouts | The same |
-| Tables and multileaders | Skipped on import in 0.8.0 |
+| Multileaders | Text and block content are imported in 0.9.0; check the result against the original. |
+| Tables | ACAD_TABLE is still skipped on import. |
 | SHX fonts | Drawn with Musa CAD's own single-stroke font. See [Images and fonts](/file-formats/images-and-fonts/). |
 | Plot style tables (CTB and STB files) | Not read. Musa CAD plots in colour, monochrome or greyscale, chosen in the Plot window. |
 | 3D objects | Skipped. Musa CAD is 2D only. |

@@ -1,15 +1,41 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
-title: "RTEXT"
-description: "The RTEXT command in Musa CAD: Place text that shows a file's contents (read again when the file changes) or a DIESEL expression. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+title: RTEXT
+description: How to use RTEXT in Musa CAD 0.9.0. Place text from a file or a DIESEL expression.
+tier: assisted
 appliesTo: 0.9.0
-lastVerified: 2026-11-13
-status: stub
+lastVerified: 2026-11-21
+status: complete
 kind: command
 command: "RTEXT"
-tableOfContents: false
 ---
+
+RTEXT creates multiline text containing a field. The field reads a text file or evaluates a DIESEL expression.
+
+## Read a text file
+
+1. Save a plain text file, such as `notes.txt`.
+2. Type `RTEXT`.
+3. Set **Height** or **Rotation** if needed. Each option returns to the main prompt.
+4. Choose **File**, or press Enter for the default.
+5. Enter the file's path. An absolute path is easiest to check; a path with spaces can be quoted.
+6. Pick the start point for the text.
+
+The file must exist. Keep it available to Musa CAD, including inside the Flatpak sandbox. A linked note is not a substitute for sending its source file with the drawing.
+
+## Options
+
+| Option | What it does |
+|---|---|
+| Height | Sets a positive text height. |
+| Rotation | Sets the rotation in degrees. |
+| File | Reads the contents of a file into a field. |
+| Diesel | Takes a DIESEL expression instead of a file path. |
+| Style | Uses the current text style. The entered name does not select a different style in 0.9.0. |
+
+Set the current style before running RTEXT if needed. The drawing stores the field expression in an MTEXT object. The supported DIESEL expressions are a subset; check the displayed result before relying on it in a title block.
+
+## When sharing a drawing
+
+Keep a copy of the text source alongside the project and check the note after moving the drawing to another computer. For a fixed note that should not depend on another file, use [MTEXT](/reference/commands/mtext/) instead.

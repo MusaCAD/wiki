@@ -1,15 +1,41 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
-title: "LAYOUTMERGE"
-description: "The LAYOUTMERGE (-LAYOUTMERGE) command in Musa CAD: Merge layouts into one: their objects onto its sheet, and the layouts deleted. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+title: LAYOUTMERGE
+description: How to use LAYOUTMERGE in Musa CAD 0.9.0. Move objects from several layouts onto one sheet.
+tier: assisted
 appliesTo: 0.9.0
-lastVerified: 2026-11-13
-status: stub
+lastVerified: 2026-11-21
+status: complete
 kind: command
 command: "LAYOUTMERGE"
-tableOfContents: false
 ---
+
+LAYOUTMERGE moves paper-space objects from selected layouts to a destination layout, then deletes the source layouts. Model-space geometry stays in model space.
+
+:::caution[Save a copy first]
+In 0.9.0, **UNDO does not restore a merged layout**. Save a separate copy of the drawing before using this command.
+:::
+
+## How to use it
+
+1. Switch to the layout you want to keep, or note its name.
+2. Type `LAYOUTMERGE`.
+3. Enter the source layout names separated by commas. Enter `*`, or press Enter, to include all layouts.
+4. Enter the destination layout's name, or press Enter for **Current**.
+
+The destination must already exist. If it is also in the source list, it is kept rather than deleted. Names are matched without regard to case.
+
+## Example
+
+With `Layout1`, `Layout2` and `Details` in the drawing, enter:
+
+```musacad
+Command: LAYOUTMERGE
+Enter layout name(s) to merge, separated by commas, or [*] <*>: Layout1,Layout2
+Enter destination layout name or [Current] <Current>: Details
+```
+
+The objects from Layout1 and Layout2 move to Details, and the two source tabs are removed. Review the sheet afterwards: this command does not lay out the moved objects as neatly arranged pages, so objects may overlap.
+
+See [Layouts and plotting](/user-manual/layouts-and-plotting/) to prepare the resulting sheet for output.

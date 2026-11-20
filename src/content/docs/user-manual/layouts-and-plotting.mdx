@@ -4,8 +4,8 @@
 title: Layouts, viewports and plotting
 description: Turning a Musa CAD drawing into sheets. Model space and layouts, viewports at a scale, per-viewport layers, page setups, the Plot window, PDF output, batch plotting to one PDF, and plotting from the command line.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -35,7 +35,13 @@ Each viewport can hide layers of its own with VPLAYER, or with the **VP Freeze**
 
 In model space itself, VPORTS splits the window into tiles that each show the drawing from their own view. That is for working, not for plotting.
 
-<CommandList label="Layout and viewport commands" names={['LAYOUT', 'MODEL', 'MVIEW', 'MSPACE', 'PSPACE', 'VPLAYER', 'VPSCALE', 'VPSYNC', 'VPORTS', 'VIEW']} />
+<CommandList label="Layout and viewport commands" names={['LAYOUT', 'MODEL', 'MVIEW', 'MSPACE', 'PSPACE', 'VPLAYER', 'VPSCALE', 'VPSYNC', 'VPORTS', 'VIEW', 'ALIGNSPACE', 'LAYOUTMERGE']} />
+
+## Align or combine sheets
+
+[ALIGNSPACE](/reference/commands/alignspace/) aligns points shown through a viewport to points on the sheet. One point pair pans the view; two pairs also set its scale. It does not rotate the view in 0.9.0.
+
+[LAYOUTMERGE](/reference/commands/layoutmerge/) moves objects from several layouts to one destination sheet and removes the source layouts. Save a separate copy first: Undo cannot restore a merged layout. Check the resulting sheet for overlapping objects.
 
 ## Plotting
 

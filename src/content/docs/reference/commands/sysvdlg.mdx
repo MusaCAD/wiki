@@ -1,15 +1,30 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
-title: "SYSVDLG"
-description: "The SYSVDLG command in Musa CAD: Open the System Variables window: every system variable with its value, to see and change. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+title: SYSVDLG
+description: Find and change system variables in a searchable window.
+tier: assisted
 appliesTo: 0.9.0
-lastVerified: 2026-11-13
-status: stub
+lastVerified: 2026-11-21
+status: complete
 kind: command
 command: "SYSVDLG"
-tableOfContents: false
 ---
+
+SYSVDLG opens the **System Variables** window. It lists the variables known to Musa CAD with their current values.
+
+## Find a setting
+
+1. Type `SYSVDLG` and press Enter.
+2. Type part of a variable name in the filter. The match ignores letter case.
+3. Read its current value in the table.
+
+For example, filter for `DYN` to find the Dynamic Input settings.
+
+## Change a value
+
+Double-click the value, type a replacement and finish editing the cell. The same validation as the command-line variable applies. A refused value produces a message, and the table refreshes to the actual value.
+
+Changes apply as you edit; **Close** closes the window rather than applying or discarding a batch. Make a note of the old value if you may want to restore it.
+
+Whether a value is stored in the drawing, kept between sessions or read-only depends on the variable. Use the [system variable reference](/reference/system-variables/) for its meaning and allowed values. [Settings and system variables](/user-manual/settings/) explains the common groups.

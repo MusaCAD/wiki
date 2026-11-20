@@ -1,15 +1,37 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
-title: "MLEADERCOLLECT"
-description: "The MLEADERCOLLECT (MLC) command in Musa CAD: Collects multileaders with blocks into one, the blocks in a row, a column or rows. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+title: MLEADERCOLLECT
+description: Collect matching block multileaders into a row, column or wrapped rows.
+tier: assisted
 appliesTo: 0.9.0
-lastVerified: 2026-11-13
-status: stub
+lastVerified: 2026-11-21
+status: complete
 kind: command
 command: "MLEADERCOLLECT"
-tableOfContents: false
 ---
+
+MLEADERCOLLECT (`MLC`) combines two or more multileaders that use the **same block**. The first selected multileader supplies the block and leader; the matching items are collected at a new location.
+
+## How to use it
+
+1. Create at least two multileaders with block content.
+2. Type `MLC`, select the multileaders and press Enter. A selection made before starting the command also works.
+3. Choose **Horizontal**, **Vertical** or **Wrap**.
+4. Pick the location for the collected blocks.
+
+Text-content multileaders do not qualify. Multileaders using a different block are left in place.
+
+## Arrangement
+
+| Option | Result |
+|---|---|
+| Horizontal (`H`) | A row of blocks. |
+| Vertical (`V`) | A column of blocks. |
+| Wrap (`W`) | Rows with a maximum number of blocks in each row. |
+
+For Wrap, choose **Number** (`N`) at the next prompt, then enter a whole number from **2 to 99**. Version 0.9.0 asks about wrap width, but only the Number option is implemented; a physical width is not accepted.
+
+For example, select six matching block multileaders, choose Wrap, Number and `3`, then pick the location to arrange them in two rows.
+
+Use [U](/reference/commands/u/) to undo the collection. For moving leaders into alignment without collecting their block content, see [MLEADERALIGN](/reference/commands/mleaderalign/).

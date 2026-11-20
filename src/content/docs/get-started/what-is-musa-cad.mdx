@@ -4,8 +4,8 @@
 title: What Musa CAD is
 description: Musa CAD is a free, open-source 2D CAD program that works like AutoCAD. Here is what it can do, what makes it different, what it runs on, and what it does not do yet.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -15,7 +15,7 @@ sidebar:
 import Screenshot from '../../../components/Screenshot.astro';
 import overview from '../../../assets/screenshots/overview.png';
 
-Musa CAD is a free program for making 2D technical drawings: mechanical parts, floor plans, sections, wiring layouts and the sheets they are printed on. It works the way AutoCAD works. The commands, the aliases (like `L` for LINE), the prompts, the ribbon and the keyboard shortcuts are the same. So if you know AutoCAD, you can sit down and draw.
+Musa CAD is a free program for making 2D technical drawings: mechanical parts, floor plans, sections, wiring layouts and the sheets they are printed on. Many commands, aliases (like `L` for LINE), prompts and shortcuts are familiar from AutoCAD. The [comparison guide](/get-started/coming-from-autocad/) explains the differences.
 
 It is open source under the LGPL-3.0-or-later licence. It costs nothing, needs no account and has no licence key.
 
@@ -53,18 +53,18 @@ This is enough for an AI agent to produce complete drawing sets. One real exampl
 |---|---|
 | **Windows** | A 64-bit installer, `MusaCAD-<version>-x86_64-setup.exe`. |
 | **Linux** | Flathub (`org.musacad.MusaCAD`, for x86_64 and ARM64), an AppImage, and a Flatpak file on each release page. |
-| **macOS** | A preview for Apple silicon. The command line works, but the drawing area does not open yet, because it needs OpenGL 4.5 and macOS does not provide it. |
+| **macOS** | An [experimental build for Apple silicon and macOS 12 or later](/get-started/install-macos/). The drawing window opens; wider testing is still needed. |
 
 ## What it does not do (yet)
 
 - **3D.** Musa CAD is for 2D drawings only. There is no 3D modelling, and none is planned at the moment.
 - **AutoLISP, VBA or plug-ins.** These do not run inside Musa CAD. Automation works from the outside instead: a program writes the drawing file and calls the `musacad` command to check and print it. See [Scripting and automation](/scripting/).
 - **DWG on its own.** Musa CAD's own format is `.musa`. DWG files go through the free ODA File Converter, which Musa CAD downloads for you. DXF needs nothing extra.
-- **Everything AutoCAD has.** Musa CAD is at version 0.8.0, released on 22 October 2026, the eighth release since June. Most everyday drafting is covered. Some tools are still missing. On the ribbon, those tools appear greyed out, and their tooltip says they are not built yet.
+- **Everything AutoCAD has.** Musa CAD is at version 0.9.0, released on 13 November 2026. Most everyday drafting is covered. Some tools are still missing. On the ribbon, those tools appear greyed out, and their tooltip says they are not built yet.
 
 ## How it is built
 
-For the curious: Musa CAD is written in C++23 with Qt 6. It splits work across three threads: one for the interface and commands, one for geometry, and one for drawing on screen. That is why a drawing with a million lines still pans and zooms smoothly. It has its own geometry engine, so it does not depend on any other CAD library. The details are in [Architecture](/developer/architecture/) in the developer guide.
+For the curious: Musa CAD is written in C++23 with Qt 6. It splits work across three threads: one for the interface and commands, one for geometry, and one for drawing on screen. Drawing performance also depends on the graphics driver and the contents of the drawing. It has its own geometry engine, so it does not depend on any other CAD library. The details are in [Architecture](/developer/architecture/) in the developer guide.
 
 ## Where to go next
 

@@ -4,8 +4,8 @@
 title: Packaging
 description: How each Musa CAD package is built. The Linux AppImage, the Flatpak and its Flathub listing, the Windows installer, and the macOS disk image, with what each one bundles and how to check it.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: developer
 sidebar:
@@ -20,10 +20,10 @@ No package includes a DWG converter. DWG support works by running a separate con
 ## Linux AppImage
 
 ```sh
-packaging/linux/build_appimage.sh 0.8.0
+packaging/linux/build_appimage.sh 0.9.0
 ```
 
-The script builds the `release` preset, downloads `linuxdeploy`, its Qt plugin and `appimagetool` into `packaging/linux/.tools/`, assembles an `AppDir`, and writes `MusaCAD-0.8.0-x86_64.AppImage` in the repository root. It needs `qmake6` on your `PATH` (Debian and Ubuntu: `qt6-base-dev`) and a network connection the first time.
+The script builds the `release` preset, downloads `linuxdeploy`, its Qt plugin and `appimagetool` into `packaging/linux/.tools/`, assembles an `AppDir`, and writes `MusaCAD-0.9.0-x86_64.AppImage` in the repository root. It needs `qmake6` on your `PATH` (Debian and Ubuntu: `qt6-base-dev`) and a network connection the first time.
 
 The AppImage bundles Qt and these plugins:
 
@@ -37,10 +37,10 @@ The AppImage bundles Qt and these plugins:
 Check it from a folder the build never touched. Start it once with a display, then once without one:
 
 ```sh
-cp MusaCAD-0.8.0-x86_64.AppImage /tmp && cd /tmp
-./MusaCAD-0.8.0-x86_64.AppImage
+cp MusaCAD-0.9.0-x86_64.AppImage /tmp && cd /tmp
+./MusaCAD-0.9.0-x86_64.AppImage
 env -u DISPLAY -u WAYLAND_DISPLAY APPIMAGE_EXTRACT_AND_RUN=1 \
-    ./MusaCAD-0.8.0-x86_64.AppImage --plot drawing.musa out.pdf --paper A4
+    ./MusaCAD-0.9.0-x86_64.AppImage --plot drawing.musa out.pdf --paper A4
 ```
 
 To check that Wayland is used on a Wayland session, run the self-test from the extracted AppImage and look for `overall: PASS`:
@@ -54,13 +54,13 @@ QT_QPA_PLATFORM=wayland MUSACAD_SELFTEST=1 ./squashfs-root/AppRun
 ```sh
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install --user -y flathub org.kde.Platform//6.11 org.kde.Sdk//6.11 org.flatpak.Builder
-packaging/flatpak/build_flatpak.sh 0.8.0
+packaging/flatpak/build_flatpak.sh 0.9.0
 ```
 
-The Flatpak builds against the KDE 6.11 runtime, which provides Qt 6. The script copies a clean tree into `packaging/flatpak/.src`, builds it with `flatpak-builder`, and writes the single-file bundle `packaging/flatpak/MusaCAD-0.8.0.flatpak`. Install and run it with:
+The Flatpak builds against the KDE 6.11 runtime, which provides Qt 6. The script copies a clean tree into `packaging/flatpak/.src`, builds it with `flatpak-builder`, and writes the single-file bundle `packaging/flatpak/MusaCAD-0.9.0.flatpak`. Install and run it with:
 
 ```sh
-flatpak install --user -y packaging/flatpak/MusaCAD-0.8.0.flatpak
+flatpak install --user -y packaging/flatpak/MusaCAD-0.9.0.flatpak
 flatpak run org.musacad.MusaCAD
 ```
 
@@ -89,6 +89,8 @@ flatpak run --filesystem="$PWD" --command=flatpak-builder-lint org.flatpak.Build
   appstream "$PWD/packaging/flatpak/org.musacad.MusaCAD.metainfo.xml"
 ```
 
+The source-build script above is separate from the GitHub 0.9.0 bundle: that bundle packages the verified Linux CI binary against the KDE 6.11 runtime. Flathub builds from its own pinned source manifest. Check the release notes for the build and test results of each package.
+
 ## Windows installer
 
 The Windows workflow builds on a Windows runner and packages the result with NSIS, from `packaging/windows/musacad.nsi`. It writes `MusaCAD-<version>-x86_64-setup.exe` and its `.sha256`.
@@ -100,22 +102,22 @@ The installer:
 - offers, unticked by default, to open `.musa` files with Musa CAD and to add Musa CAD to the **Open with** list for `.dxf` and `.dwg`, without taking those over from another program;
 - upgrades an existing installation in the same folder and keeps your file type choice.
 
-A person tests every installer on a real Windows PC before it is published. See [Releasing](/developer/releasing/).
+The 0.9.0 installer is published with its CI build results. Runtime testing on physical Windows hardware is still pending. See [Releasing](/developer/releasing/).
 
 ## macOS disk image
 
 The macOS workflow builds on an Apple silicon runner, assembles `MusaCAD.app` with `packaging/macos/build_app.sh` and `macdeployqt`, checks that `--check` and `--plot` work, and writes `MusaCAD-<version>-arm64.dmg`.
 
-The drawing area does not work on macOS yet. It needs OpenGL 4.5, and macOS stops at 4.1. The app says so when it starts and exits with code 2. The command line works. Support needs a second render backend, Metal or a reduced OpenGL 4.1 path, and is tracked in [issue #2](https://github.com/MusaCAD/MusaCAD/issues/2).
+The stable 0.9.0 release has no Mac disk image. The separate `macos-experimental-0.9.0-1` release adds an OpenGL 4.1 drawing window for Apple silicon and macOS 12 or later. It is ad-hoc signed and not Apple-notarized. See [Install on macOS](/get-started/install-macos/) and [issue #2](https://github.com/MusaCAD/MusaCAD/issues/2).
 
-To build it on your own Mac:
+To build the experimental package on your own Mac, first check out `macos-experimental-0.9.0-1` and install Qt 6. Then:
 
 ```sh
 brew install ninja librsvg
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_SANITIZERS=OFF -DENABLE_TSAN=OFF
 cmake --build build --target musacad_app
-QT_ROOT_DIR=~/Qt/6.8.1/macos packaging/macos/build_app.sh 0.8.0 build/bin/musacad_app
-hdiutil create -volname "Musa CAD" -srcfolder MusaCAD.app -ov -format UDZO MusaCAD-0.8.0-arm64.dmg
+QT_ROOT_DIR=~/Qt/6.8.1/macos packaging/macos/build_app.sh 0.9.0 build/bin/musacad_app
+hdiutil create -volname "Musa CAD" -srcfolder MusaCAD.app -ov -format UDZO MusaCAD-0.9.0-arm64.dmg
 ```
 
-The workflow signs and notarizes the disk image when the Apple signing secrets are set. Without them the image is unsigned, and macOS asks once before opening it.
+Signing and notarization depend on the release configuration. The published experimental build uses ad-hoc signing; it has no Apple notarization.
