@@ -4,8 +4,8 @@
 title: Troubleshooting
 description: Fix common Musa CAD problems, sorted by what you see. The app will not start, the drawing area is black or slow, DWG files do nothing, plots or text look wrong, or a file will not open.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: landing
 sidebar:
@@ -18,6 +18,7 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 Find what you are seeing below. Each page starts with the quickest fix and then explains why it happens.
 
 <CardGrid>
+  <LinkCard title="An update is missing" description="Flatpak says Nothing to do, About shows an older version, or a shortcut opens the wrong copy." href="/get-started/updating/" />
   <LinkCard title="Musa CAD will not start" description="It closes with a message about OpenGL 4.5, or nothing happens at all." href="/troubleshooting/app-will-not-start/" />
   <LinkCard title="The drawing area is black, blank or slow" description="The window opens, but drawing feels sluggish or shows nothing." href="/troubleshooting/drawing-area/" />
   <LinkCard title="DWG files do nothing or fail" description="No DWG converter found, the converter times out, or parts of the drawing are missing." href="/troubleshooting/dwg-files/" />

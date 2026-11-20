@@ -4,8 +4,8 @@
 title: Dynamic Input
 description: Dynamic Input lets you type commands, answer prompts, pick options and enter exact lengths, angles and coordinates right next to the cursor in Musa CAD. How it works, every key, and every setting.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -15,7 +15,7 @@ sidebar:
 
 import Screenshot from '../../../components/Screenshot.astro';
 import commandEntry from '../../../assets/screenshots/command-entry.png';
-import dynamicInput from '../../../assets/screenshots/dynamic-input.png';
+import dynamicInput from '../../../assets/screenshots/dynamic-input-0.9.0.png';
 
 **Dynamic Input** means you work at the cursor. You type commands there, read the prompt there, pick options there, and type exact sizes there. Your eyes stay on the drawing instead of going back and forth to a command line at the bottom of the screen.
 
@@ -59,25 +59,46 @@ Specify next point or [Close/Undo]:
 
 ## Type exact sizes while you draw
 
-<Screenshot src={dynamicInput} alt="A thick polyline being drawn away from a house plan. Next to the cursor, two boxes show the segment's length and angle, and a dashed line shows polar tracking holding the segment at 45 degrees." caption="Drawing a polyline: its length and angle wait at the cursor for a typed value." capturedWith="0.8.0" />
+<Screenshot src={dynamicInput} alt="Musa CAD 0.9.0 drawing a line beside a floor plan. The Length field is selected in blue, Angle shows 45 degrees, and the prompt lists the Tab, Enter and down-arrow keys." caption="Dynamic Input in 0.9.0: named fields, a blue active value and keyboard hints beside the drawing." capturedWith="0.9.0" />
 
 While you draw, Musa CAD shows the size of what you are drawing in small boxes stuck to the shape:
 
 | Command | The boxes show |
 |---|---|
 | LINE, PLINE | the length and the angle of the segment |
-| CIRCLE | the radius |
-| RECTANG | the width and the height |
+| CIRCLE | Radius, or Diameter when using the Diameter option |
+| RECTANG | Length and Width |
 
 You do not need to click into a box. Just type a number and it goes into the first box. Then:
 
 - <kbd>Tab</kbd> moves to the next box, and <kbd>Shift</kbd>+<kbd>Tab</kbd> moves back.
-- A value you type is **locked**, and the mouse still controls the other boxes. Type a length of `50`, then swing the mouse to choose the direction.
+- A valid value you type becomes a **constraint**. Its padlock stays visible after you press Tab. The mouse still controls dimensions you have not constrained.
 - <kbd>Enter</kbd> or <kbd>Space</kbd> commits the values and the command carries on, ready for the next point.
 - Pressing <kbd>Enter</kbd> with nothing typed ends the step. At LINE's next-point prompt, that ends the command.
 - Ortho, polar tracking and snaps still apply, so a typed length follows the angle they give.
 
-Other commands show their prompt and value at the cursor in the same way. The boxes stuck to the shape are available for LINE, PLINE, CIRCLE and RECTANG in version 0.8.0.
+Other commands show their prompt and value at the cursor in the same way. The boxes stuck to the shape are available for LINE, PLINE, CIRCLE and RECTANG in version 0.9.0.
+
+## Read and edit a field
+
+Version 0.9.0 uses readable UI text for the fields and tracking tips. Each dimension has a label, such as **Length**, **Width**, **Angle**, **Radius** or **Diameter**. Live angles include a degree sign.
+
+- A **blue selection** marks the active live value. Start typing to replace it.
+- A **caret** appears at the end of a typed value. Use Backspace to remove the last character. In 0.9.0, these on-canvas fields do not support moving the caret with the arrow keys.
+- A **padlock** marks a valid typed constraint. It remains visible when you move to another field.
+- The prompt and value use separate rows. The hints below the prompt show how to switch fields, accept input or open options.
+
+Fields move to avoid covering one another and stay within the drawing area near its edges. A shortened display does not shorten the value being entered.
+
+### Example: a line 50 units long at 30 degrees
+
+1. Start `LINE` and pick the first point.
+2. Type `50` in Length.
+3. Press <kbd>Tab</kbd> to move to Angle, then type `30`.
+4. Press <kbd>Enter</kbd> to place the next point.
+5. Press <kbd>Esc</kbd> to finish.
+
+If you enter only a length, use the mouse, ortho or polar tracking to choose the direction.
 
 ## Type coordinates (pointer input)
 

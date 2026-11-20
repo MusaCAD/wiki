@@ -4,8 +4,8 @@
 title: Building Musa CAD
 description: Build Musa CAD from source on Linux, Windows and macOS. Prerequisites, the CMake presets, where the programs land, DWG support, sanitizer builds and the headless smoke test.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: developer
 sidebar:
@@ -15,7 +15,7 @@ sidebar:
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Musa CAD builds from a fresh clone. Apart from a C++23 compiler, Qt 6 and the Vulkan headers, everything it needs is fetched by the build itself, and it depends on no other CAD library.
+Musa CAD builds from a fresh clone. Apart from a C++23 compiler and Qt 6, everything it needs is fetched by the build itself, and it depends on no other CAD library.
 
 ## Prerequisites
 
@@ -24,8 +24,8 @@ Musa CAD builds from a fresh clone. Apart from a C++23 compiler, Qt 6 and the Vu
 | C++23 compiler | GCC 13, Clang 17, or MSVC 19.38 (Visual Studio 2022 17.8) | `-std=c++23`, no extensions |
 | CMake | 3.25 | uses presets version 6 |
 | Ninja | 1.10 | the presets' generator |
-| Qt 6 (Core, Gui, Widgets) | 6.4 | the window and the event loop |
-| Vulkan loader and headers | 1.3 | needed to configure; the drawing area itself uses OpenGL, and nothing links Vulkan |
+| Qt 6 (Core, Gui, Widgets, OpenGL, OpenGLWidgets, PrintSupport, Network) | 6.4 | the window and the event loop |
+| Vulkan loader and headers | Optional | Detected when present; the active renderer uses OpenGL |
 
 Catch2, for the unit tests, is downloaded by CMake when the tests are built.
 
@@ -37,8 +37,8 @@ Catch2, for the unit tests, is downloaded by CMake when the tests are built.
 On Debian or Ubuntu:
 
 ```sh
-sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev libvulkan-dev
-git clone https://github.com/MusaCAD/MusaCAD.git
+sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev libqt6opengl6-dev qt6-svg-dev
+git clone --branch v0.9.0 https://github.com/MusaCAD/MusaCAD.git
 cd MusaCAD
 cmake --preset release
 cmake --build --preset release
@@ -68,14 +68,17 @@ The build tree has no Qt DLLs next to the programs. To run one from there, put `
 </TabItem>
 <TabItem label="macOS">
 
-With Qt 6, Ninja and `rsvg-convert` (`brew install ninja librsvg`):
+Use the experimental Mac tag rather than the stable `v0.9.0` tag. With Qt 6, Ninja and `rsvg-convert` installed:
 
 ```sh
+brew install qt ninja librsvg
+git clone --branch macos-experimental-0.9.0-1 https://github.com/MusaCAD/MusaCAD.git
+cd MusaCAD
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_SANITIZERS=OFF -DENABLE_TSAN=OFF
 cmake --build build --target musacad_app
 ```
 
-The command line works. The drawing area does not open, because macOS has no OpenGL 4.5; see [Install on macOS](/get-started/install-macos/). Making the app bundle and disk image is described in [Packaging](/developer/packaging/#macos-disk-image).
+This experimental tag adds an OpenGL 4.1 drawing window for Apple silicon Macs. The stable v0.9.0 tag predates that work. See [Install on macOS](/get-started/install-macos/) for requirements and testing status. Making the app bundle and disk image is described in [Packaging](/developer/packaging/#macos-disk-image).
 
 </TabItem>
 </Tabs>
@@ -106,7 +109,7 @@ Setting `MUSACAD_SMOKE` makes the program show its window and quit at once, whic
 MUSACAD_SMOKE=1 QT_QPA_PLATFORM=offscreen ./build/dev/bin/musacad_app
 ```
 
-On a machine with no OpenGL 4.5 (most CI runners), this ends with exit code 2 and the message that the viewport cannot be created. That is expected; the command line still works there.
+The offscreen platform may not provide the OpenGL context the window needs. A viewport failure there does not test the interactive renderer. Use a display with a suitable driver for GUI tests, and run `--check` and `--plot` separately to verify the headless path.
 
 ## Next
 

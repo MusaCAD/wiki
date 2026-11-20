@@ -1,0 +1,106 @@
+---
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2026 Pranay Kiran
+title: Updating Musa CAD
+description: Update Musa CAD to 0.9.0, check which copy is running and understand Flatpak updates, version numbers and drawing compatibility.
+tier: assisted
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
+status: complete
+kind: guide
+sidebar:
+  order: 9
+---
+
+The latest stable release is **0.9.0**. Save your drawings and close Musa CAD before replacing an installed package.
+
+## Check the version you are running
+
+Open the application menu (the Musa CAD logo) and choose **About**. Read the **Version** line. You can also check from a terminal:
+
+```sh
+flatpak run org.musacad.MusaCAD --version
+```
+
+For an AppImage, use its full path:
+
+```sh
+./MusaCAD-0.9.0-x86_64.AppImage --version
+```
+
+Both 0.9.0 packages print `Musa CAD 0.9.0`. On Windows, use `musacad.exe --version` from the install folder.
+
+The **Built** date in About is not a reliable way to identify the 0.9.0 package. Reproducible package builds can replace compiler timestamps with a fixed date. Use the version and the package source instead.
+
+## Flathub
+
+Update the installed app:
+
+```sh
+flatpak update org.musacad.MusaCAD
+```
+
+Then close any open Musa CAD window and start it again. A running window continues to use the old program until it exits.
+
+### If Flatpak says “Nothing to do”
+
+This means your installation has no update available from its configured remote. It does not check an AppImage or another copy of Musa CAD.
+
+Check the installed version and its origin:
+
+```sh
+flatpak info org.musacad.MusaCAD
+flatpak remotes
+```
+
+If you have both user and system installations, inspect each one:
+
+```sh
+flatpak --user info org.musacad.MusaCAD
+flatpak --system info org.musacad.MusaCAD
+```
+
+Update and launch the same installation, for example:
+
+```sh
+flatpak --user update org.musacad.MusaCAD
+flatpak --user run org.musacad.MusaCAD --version
+```
+
+Use `--system` for a system installation. An error saying the app is not installed for one scope simply means that copy is absent.
+
+If the Flatpak version is current but About shows an older version, check whether your launcher opens an AppImage, a source build or the other Flatpak installation. If you installed a `.flatpak` bundle, check its origin; a standalone bundle does not necessarily receive Flathub updates. See [Install on Linux](/get-started/install-linux/) for the Flathub command.
+
+Flathub builds and publishes separately from GitHub. A release appearing on GitHub does not mean its Flathub update is already available. Check the [Flathub listing](https://flathub.org/apps/org.musacad.MusaCAD) and try again after publication.
+
+## AppImage or Flatpak bundle
+
+Download the new package and its `.sha256` file from the [0.9.0 release](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.9.0). Keep both files in the same folder and verify the AppImage with:
+
+```sh
+sha256sum -c MusaCAD-0.9.0-x86_64.AppImage.sha256
+chmod +x MusaCAD-0.9.0-x86_64.AppImage
+./MusaCAD-0.9.0-x86_64.AppImage
+```
+
+Update any shortcut that still points to the old AppImage. For a bundle, verify its matching checksum and install it with:
+
+```sh
+flatpak install --user MusaCAD-0.9.0.flatpak
+```
+
+## Windows
+
+Download and run the new installer over the existing installation. Musa CAD's **Check for Updates** window can also download and run the installer after checking its size, checksum and version. See [Install on Windows](/get-started/install-windows/).
+
+## macOS
+
+Use the separate [experimental Mac release](/get-started/install-macos/). Its app version is 0.9.0, but its release name is `macos-experimental-0.9.0-1`. Stable release notifications do not identify every experimental build.
+
+## Update notifications
+
+In **0.9.0**, the daily update check shows a notice in the **status bar** when a newer stable version is available. Click it for details, or use **Check for Updates** in the application menu. Automatic checks can be turned off in Options.
+
+## Keep drawings compatible
+
+Version 0.9.0 opens older drawings and saves **format 49**. A drawing saved by it needs 0.9.0 or newer. Keep a backup if someone still needs the older native file. You can send a DXF exchange copy, but check the exported drawing for any changes. See [The .musa format](/file-formats/musa-format/) and [DXF files](/file-formats/dxf/).

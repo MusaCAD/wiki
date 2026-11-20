@@ -4,8 +4,8 @@
 title: Install on Linux
 description: Install Musa CAD on Linux from Flathub, as an AppImage, or from a Flatpak file, and learn what each one means for files, DWG and scripts.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 platforms: [linux]
@@ -19,7 +19,7 @@ import Platforms from '../../../components/Platforms.astro';
 
 There are three ways to install Musa CAD on Linux. Most people should use Flathub. All three include everything Musa CAD needs, so you do not have to install Qt or anything else.
 
-Your graphics driver must support **OpenGL 4.5**. Mesa (for Intel and AMD graphics) and NVIDIA's driver both do. If yours does not, Musa CAD says so when it starts.
+The drawing area needs **OpenGL 4.5**. Use a current driver for your graphics card. On older hardware, Musa CAD can try software rendering; this may be slower.
 
 ## Option 1: Flathub (recommended)
 
@@ -58,11 +58,11 @@ The DWG Setup window tells you when this is needed. If you already have a DWG co
 
 ## Option 2: the AppImage
 
-One file you download and run. It works on most Linux distributions from the last few years (x86_64 only). Get it from the [latest release](https://github.com/MusaCAD/MusaCAD/releases/latest):
+One file you download and run. It works on most Linux distributions from the last few years (x86_64 only). Get it from the [0.9.0 release](https://github.com/MusaCAD/MusaCAD/releases/tag/v0.9.0):
 
 ```sh
-chmod +x MusaCAD-0.8.0-x86_64.AppImage
-./MusaCAD-0.8.0-x86_64.AppImage
+chmod +x MusaCAD-0.9.0-x86_64.AppImage
+./MusaCAD-0.9.0-x86_64.AppImage
 ```
 
 Good to know:
@@ -73,7 +73,7 @@ Good to know:
 - It is the best choice for scripts and servers, because it runs headless (with no screen at all):
 
 ```sh
-./MusaCAD-0.8.0-x86_64.AppImage --plot part.musa part.pdf --paper A3 --landscape
+./MusaCAD-0.9.0-x86_64.AppImage --plot part.musa part.pdf --paper A3 --landscape
 ```
 
 ## Option 3: the Flatpak file
@@ -81,7 +81,7 @@ Good to know:
 Each release also has a file called `MusaCAD-<version>.flatpak`. Use it to install one exact version, for example on a computer without internet. It still needs the KDE runtime, which Flatpak downloads from Flathub if it can:
 
 ```sh
-flatpak install --user MusaCAD-0.8.0.flatpak
+flatpak install --user MusaCAD-0.9.0.flatpak
 flatpak run org.musacad.MusaCAD
 ```
 
@@ -91,10 +91,10 @@ Installed this way, Musa CAD still tells you about new versions, but it does not
 
 ```sh
 flatpak run org.musacad.MusaCAD --version
-./MusaCAD-0.8.0-x86_64.AppImage --version
+./MusaCAD-0.9.0-x86_64.AppImage --version
 ```
 
-Both print `Musa CAD 0.8.0`.
+For these packages, both print `Musa CAD 0.9.0`. To update an existing installation or investigate a version mismatch, see [Updating Musa CAD](/get-started/updating/).
 
 ## Next
 

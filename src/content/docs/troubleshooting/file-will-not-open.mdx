@@ -4,8 +4,8 @@
 title: A file will not open
 description: Musa CAD says Unsupported file format version or expected MUSACAD header, or a drawing opens without its external references and images. What each message means, and what to do about it.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: troubleshooting
 symptom:
@@ -18,7 +18,7 @@ sidebar:
 
 ## "Unsupported file format version 46."
 
-The drawing was saved by a newer Musa CAD than yours. Musa CAD 0.8.0 opens drawings up to format version 45. [Update Musa CAD](/releases/) and the file will open.
+The drawing was saved by a newer Musa CAD than yours. Musa CAD 0.9.0 opens drawings up to format version 49. Check the first line of the file and [update Musa CAD](/get-started/updating/) to a release that supports that format.
 
 If you need to send a drawing to someone with an older version, export it as DXF. [The .musa format](/file-formats/musa-format/) shows which release writes which format version.
 
@@ -33,7 +33,7 @@ A message naming a later line, such as `Line 2051:`, means the file was cut shor
 Musa CAD imports what it supports and tells you what it skipped:
 
 ```txt
-Imported 412 entities on 9 layers; skipped 3 unsupported (ACAD_TABLE, MULTILEADER).
+Imported 412 entities on 9 layers; skipped 3 unsupported (ACAD_TABLE, 3DSOLID).
 ```
 
 [DXF support](/file-formats/dxf/) lists what comes across.
@@ -54,7 +54,7 @@ Click **Choose Folder…** and pick the folder that holds the drawing. Musa CAD 
 
 ## Keep copies of your work
 
-Musa CAD 0.8.0 does not save automatically, and it has no recovery for unsaved work after a crash. Save often with Ctrl+S, and keep backups of important drawings.
+Musa CAD 0.9.0 does not save automatically, and it has no recovery for unsaved work after a crash. Save often with Ctrl+S, and keep backups of important drawings.
 
 ## Next
 

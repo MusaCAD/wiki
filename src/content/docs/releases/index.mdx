@@ -4,8 +4,8 @@
 title: Releases
 description: Every Musa CAD release with its date, file format and release notes, which files open in which version, and how to upgrade safely.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: landing
 sidebar:
@@ -15,13 +15,13 @@ sidebar:
 
 import ReleaseTable from '../../../components/reference/ReleaseTable.astro';
 
-Since September 2026, a new Musa CAD release has come out every one to two weeks. Each one has its own page here with the full release notes, the downloads, and what it means for your files.
+The latest stable release is **0.9.0**, released on **13 November 2026**. The pages below include release notes, downloads and file compatibility. The [experimental Mac build](/get-started/install-macos/) is published separately.
 
 <ReleaseTable />
 
 ## Upgrading
 
-Upgrading is safe for your drawings: **a newer Musa CAD always opens files from an older one.** Two things to know:
+Newer releases can open older drawings. Keep a backup before saving important files with a new version. Two things to know:
 
 - **Files saved by a newer release may not open in an older one.** When a release changes the file format, its page says so. If you share drawings with someone on an older version, either both upgrade, or send them a DXF, which every version reads.
 - **Your settings carry over.** Your shortcuts, aliases, workspaces and preferences are kept when you upgrade.
@@ -34,9 +34,11 @@ How to upgrade:
 | The Windows installer | Click the update notice in the status bar; the Update window downloads and installs the new version. Or run the new installer over the old one. |
 | The AppImage | Download the new AppImage and use it instead of the old one. |
 | The Flatpak file | Install the new file with `flatpak install --user`. |
-| Source | `git pull`, then build again. |
+| Source | Fetch the release tags, check out the required tag and rebuild. The `main` branch may contain unreleased changes. |
 
 Musa CAD checks once a day whether a new release is out, and says so in the status bar. You can turn that off in **Options** (`OP`).
+
+For version checks, Flatpak troubleshooting and package-specific steps, see [Updating Musa CAD](/get-started/updating/).
 
 ## Which files open where
 

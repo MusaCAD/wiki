@@ -4,8 +4,8 @@
 title: DXF files
 description: How Musa CAD reads and writes DXF, the exchange format most CAD programs understand. Which objects come in, which are skipped and reported, the AutoCAD R2000 files it writes, and what changes on the way out.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: reference
 sidebar:
@@ -31,7 +31,7 @@ Musa CAD reads these DXF objects:
 |---|---|
 | Lines and curves | LINE, LWPOLYLINE, 2D POLYLINE, CIRCLE, ARC, ELLIPSE, SPLINE, XLINE, RAY, POINT, MLINE |
 | Text | TEXT, MTEXT, with their text styles |
-| Dimensions and notes | DIMENSION (every kind), LEADER, TOLERANCE, with the dimension styles |
+| Dimensions and notes | DIMENSION (every kind), LEADER, MULTILEADER (text and block content), TOLERANCE, with the dimension styles |
 | Fills | HATCH (solid, patterns, user-defined and gradients), WIPEOUT |
 | Blocks | BLOCK definitions, INSERT, ATTDEF, ATTRIB, external references |
 | Images | IMAGE with its IMAGEDEF |
@@ -44,14 +44,18 @@ It also reads the layer, linetype, text style, dimension style and viewport tabl
 Anything Musa CAD cannot read is skipped and named, never dropped silently. Every import ends with a line like this:
 
 ```txt
-Imported 412 entities on 9 layers (36 block refs over 12 definitions); skipped 3 unsupported (ACAD_TABLE, MULTILEADER).
+Imported 412 entities on 9 layers (36 block refs over 12 definitions); skipped 3 unsupported (ACAD_TABLE, 3DSOLID).
 ```
 
-These are not read in version 0.8.0:
+These limits apply in version 0.9.0:
 
-- **Tables** (ACAD_TABLE) and **multileaders** (MULTILEADER).
+- **Tables** (ACAD_TABLE) are not imported. Multileaders are now read, including block content.
 - **3D objects:** 3D polylines, meshes, 3D faces, solids, regions and surfaces. Musa CAD is a 2D program.
-- **Inside block definitions:** dimensions, leaders, points, hatches and images. A block in Musa CAD holds lines, arcs, circles, polylines, text and nested blocks, so these are skipped there. Ellipses and splines inside a block come in as polylines that follow the same curve.
+- **Inside block definitions:** hatches and multilines are supported. Points and images are still skipped. Dimensions can use their DXF dimension blocks for their drawn appearance, rather than remaining editable dimensions. Ellipses and splines become polylines that follow the curve. Check the import report and compare complex blocks with the original.
+
+### Improvements in 0.9.0
+
+Radial and angular dimensions, dimension text overrides, bent leader vertices and mirrored entities are better preserved. Dimension and hatch associations are also carried through DXF where supported. After import, compare dimensions, text and blocks before using the drawing for production.
 
 ## What goes out
 
@@ -64,7 +68,7 @@ DXF has no place for a few things Musa CAD can do. They are written as the close
 | In Musa CAD | In the DXF file |
 |---|---|
 | Table | Not written yet. Keep tables in the `.musa` file. |
-| Multileader | A LEADER and an MTEXT, which look the same |
+| Multileader | LEADER geometry with MTEXT for text content or block references for block content. It does not remain a native MULTILEADER object in the exported R2000 file. |
 | Jogged radius dimension | A radius dimension |
 | Arc length dimension | An aligned dimension showing the arc length as its text |
 | Datum symbol | A one-cell tolerance frame; the triangle on its leader is lost |

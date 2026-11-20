@@ -4,8 +4,8 @@
 title: The command line
 description: Use the musacad command to check drawings and print them to PDF without opening a window, in scripts, on servers and in CI. Every option, the exit codes, and ready-to-use recipes.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -15,7 +15,7 @@ sidebar:
 
 import CliHelp from '../../../components/reference/CliHelp.astro';
 
-The `musacad` program can do three things from a terminal or a script, without opening a window:
+The `musacad` program can do three things from a terminal or a script:
 
 - **open** a drawing in the normal window: `musacad part.musa`
 - **check** a drawing and report problems: `musacad --check part.musa`
@@ -28,7 +28,7 @@ The `musacad` program can do three things from a terminal or a script, without o
 | Install | Run |
 |---|---|
 | Windows | `"C:\Program Files\Musa CAD\musacad.exe"`. Use `musacad.exe`, not `musacad_app.exe`, so scripts wait for it and see its exit code. |
-| Linux AppImage | `./MusaCAD-0.8.0-x86_64.AppImage`. On a server without FUSE, put `APPIMAGE_EXTRACT_AND_RUN=1` in front. |
+| Linux AppImage | `./MusaCAD-0.9.0-x86_64.AppImage`. On a server without FUSE, put `APPIMAGE_EXTRACT_AND_RUN=1` in front. |
 | Linux Flatpak | `flatpak run --filesystem=home org.musacad.MusaCAD`. The `--filesystem` part lets it read your files. |
 | macOS | `/Applications/MusaCAD.app/Contents/MacOS/musacad_app` |
 | Built from source | `build/release/bin/musacad_app` |
@@ -150,7 +150,7 @@ done
 - name: Check drawings
   run: |
     for f in drawings/*.musa; do
-      ./MusaCAD-0.8.0-x86_64.AppImage --check "$f" --lines || exit 1
+      ./MusaCAD-0.9.0-x86_64.AppImage --check "$f" --lines || exit 1
     done
   env:
     APPIMAGE_EXTRACT_AND_RUN: 1

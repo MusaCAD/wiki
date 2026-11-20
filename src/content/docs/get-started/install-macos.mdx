@@ -1,11 +1,11 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-title: Install on macOS (preview)
-description: The Mac version of Musa CAD is a preview. The command line works, but the drawing area cannot open yet because macOS does not support OpenGL 4.5. Here is what you can do with it today.
-tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+title: Install on macOS (experimental)
+description: Install the experimental Musa CAD 0.9.0 Mac build on Apple silicon, verify the download, open it through macOS security settings and report problems.
+tier: assisted
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 platforms: [macos]
@@ -17,25 +17,45 @@ import Platforms from '../../../components/Platforms.astro';
 
 <Platforms items={['macos']} />
 
-:::caution[Please read this first]
-On a Mac, Musa CAD's drawing area does not open yet. The drawing area needs OpenGL 4.5, and macOS stops at OpenGL 4.1. When you start the app, it shows a message explaining this and closes. Mac support is tracked in [issue #2](https://github.com/MusaCAD/MusaCAD/issues/2).
-:::
+The **experimental 0.9.0-1 build** can open the drawing window on macOS. It uses an OpenGL 4.1 rendering path. A Mac tester has [confirmed that the app opens](https://github.com/MusaCAD/MusaCAD/issues/2#issuecomment-6879777908); drawing, editing and plotting still need wider testing on physical Macs.
 
-What does work on a Mac is the command line. You can check drawings and print them to PDF without opening a window, which is useful for scripts and automation.
+This download is a separate prerelease. The regular 0.9.0 release has Windows and Linux packages, so use the link below for the Mac build.
 
-## What you get
+## What you need
 
-Each release page has a disk image for Apple silicon Macs, `MusaCAD-<version>-arm64.dmg`. It contains `MusaCAD.app`.
+- An **Apple silicon Mac** (M1 or later).
+- **macOS 12 or later**.
 
-## Install it
+This build does not support Intel Macs. Test with copies of drawings while the Mac build is experimental.
 
-1. Download the disk image from the [latest release](https://github.com/MusaCAD/MusaCAD/releases/latest) and open it.
-2. Drag `MusaCAD.app` into Applications.
-3. If macOS refuses to open it because it cannot check the developer, right-click the app and choose **Open** once.
+## Download and install
+
+1. Open the [experimental Mac release](https://github.com/MusaCAD/MusaCAD/releases/tag/macos-experimental-0.9.0-1).
+2. Download `MusaCAD-0.9.0-arm64.dmg` and `MusaCAD-0.9.0-arm64.dmg.sha256` to the same folder.
+3. In Terminal, change to that folder and check the download:
+
+   ```sh
+   cd ~/Downloads
+   shasum -a 256 -c MusaCAD-0.9.0-arm64.dmg.sha256
+   ```
+
+   Continue only if the result says `OK`.
+4. Open the disk image and drag `MusaCAD.app` into **Applications**.
+5. Start the app from Applications.
+
+## If macOS blocks it
+
+The app is ad-hoc signed but is **not notarized by Apple**. After checking the download, open **System Settings ▸ Privacy & Security** and choose **Open Anyway** if offered. Then try opening the app again. There is no need to disable Gatekeeper for the whole computer.
+
+## Try a drawing
+
+Create a small drawing, use LINE and CIRCLE, enter a length with Dynamic Input, and try zooming and panning. Save it, reopen it and export a PDF. Keep the originals of any existing drawings you test.
+
+Report launch problems, incorrect drawing, missing icons or crashes in [issue #2](https://github.com/MusaCAD/MusaCAD/issues/2). Include your Mac model, macOS version, the steps that show the problem and a screenshot or sample drawing where possible.
 
 ## Use the command line
 
-The program sits inside the app bundle:
+The executable is inside the application bundle:
 
 ```sh
 /Applications/MusaCAD.app/Contents/MacOS/musacad_app --version
@@ -43,8 +63,8 @@ The program sits inside the app bundle:
 /Applications/MusaCAD.app/Contents/MacOS/musacad_app --plot part.musa part.pdf --paper A4
 ```
 
-It works exactly as on Windows and Linux. The [command line page](/scripting/command-line/) explains every option.
+The app reports `Musa CAD 0.9.0`; include the full release name **macos-experimental-0.9.0-1** when reporting a problem. The [command line guide](/scripting/command-line/) explains the options.
 
-## When will the drawing area work?
+## Updates
 
-The drawing area needs a second graphics back end, either Metal or a simpler OpenGL 4.1 path. The code is already split so that one can be added. When it lands, the release notes and this page will say so.
+The regular update check follows stable releases. Check the [Mac release page](https://github.com/MusaCAD/MusaCAD/releases/tag/macos-experimental-0.9.0-1) and [issue #2](https://github.com/MusaCAD/MusaCAD/issues/2) for experimental Mac updates.

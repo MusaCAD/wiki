@@ -4,8 +4,8 @@
 title: Drawing
 description: How drawing works in Musa CAD. Starting commands, answering prompts and options, and the tools for lines, polylines, circles, arcs, rectangles, curves, hatches, construction lines and points.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -64,9 +64,11 @@ CIRCLE remembers the last radius and offers it as the default next time. ARC has
 
 A hatch fills an area with a pattern, a solid colour or a gradient. The easiest way is to click inside a closed area: Musa CAD finds the boundary around the point, and leaves holes such as circles inside unfilled. You can also select closed objects as the boundary.
 
-Hatches are drawn as real lines in a plot, so a PDF stays sharp at any zoom.
+Pattern hatches are drawn as lines in a plot, so a PDF stays sharp at any zoom. In 0.9.0, picking an internal point shows a boundary preview, all nine gradient patterns are available, and HATCHEDIT has more options. Hatches can also be stored inside blocks.
 
-<CommandList label="Hatch and fill commands" names={['HATCH', 'GRADIENT', 'HATCHEDIT', 'BOUNDARY', 'SOLID', 'WIPEOUT']} />
+For a fill made from repeated blocks or images, use [SUPERHATCH](/reference/commands/superhatch/). It creates copies of those objects rather than a normal hatch.
+
+<CommandList label="Hatch and fill commands" names={['HATCH', 'GRADIENT', 'HATCHEDIT', 'BOUNDARY', 'SOLID', 'WIPEOUT', 'SUPERHATCH']} />
 
 ## Construction lines, points and centre marks
 

@@ -1,15 +1,40 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
-title: "SUPERHATCH"
-description: "The SUPERHATCH command in Musa CAD: Fill an area with copies of a block or an image side by side, or with a wipeout. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+title: SUPERHATCH
+description: Fill a closed area with blocks, images or a wipeout.
+tier: assisted
 appliesTo: 0.9.0
-lastVerified: 2026-11-13
-status: stub
+lastVerified: 2026-11-21
+status: complete
 kind: command
 command: "SUPERHATCH"
-tableOfContents: false
 ---
+
+SUPERHATCH fills a closed area with repeated blocks or images, or creates a wipeout. The result is a group of objects rather than a normal HATCH entity.
+
+## Fill with a block
+
+1. Create a small tile as a named [BLOCK](/reference/commands/block/).
+2. Draw a closed boundary for the area to fill.
+3. Type `SUPERHATCH` and choose **Block**.
+4. Enter the block name. Enter `?` to list available blocks.
+5. Give a positive scale and a rotation angle in degrees.
+6. Pick a point inside the boundary. Pick more areas if needed, then press Enter.
+
+## Other fill types
+
+- **Select existing:** select a block reference or an image already in the drawing, then pick an internal point for the fill.
+- **Wipeout:** pick an internal point to make a masking area.
+
+To use an image, attach it first and choose Select existing; there is no separate Image file option in this command.
+
+## Limits and corrections
+
+The command needs a closed boundary. If it reports `Valid hatch boundary not found.`, check for gaps or an internal point outside the area.
+
+Copies at the edge are clipped. A clipped block may become line geometry rather than remain a block reference. Inspect the edges of detailed tiles after filling.
+
+A fill is limited to 20,000 copies. Increase the tile scale for a large area. The result does not automatically follow later boundary edits; undo or remove it and create a new fill when needed.
+
+For a normal associative pattern or gradient, use [HATCH](/reference/commands/hatch/).

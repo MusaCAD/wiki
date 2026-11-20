@@ -1,15 +1,38 @@
 ---
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2026 Pranay Kiran
-# Made by scripts/generate-reference.mjs from src/data/wiki-data.json; it is rewritten at every
-# sync. To write this page, set tier to assisted (or human), set status, and write below.
-title: "ALIGNSPACE"
-description: "The ALIGNSPACE command in Musa CAD: Pan and scale a layout viewport so points of the model fall on points of the sheet. How to start it, where it is on the ribbon, and what it asks first."
-tier: generated
+title: ALIGNSPACE
+description: How to use ALIGNSPACE in Musa CAD 0.9.0. Align a layout viewport to points on the sheet.
+tier: assisted
 appliesTo: 0.9.0
-lastVerified: 2026-11-13
-status: stub
+lastVerified: 2026-11-21
+status: complete
 kind: command
 command: "ALIGNSPACE"
-tableOfContents: false
 ---
+
+ALIGNSPACE pans and scales a layout viewport so points in the model appear at chosen positions on the sheet. It changes the view, not the model geometry.
+
+## Align one point
+
+1. Switch to a layout tab and stay in paper space.
+2. Type `ALIGNSPACE`.
+3. Pick a point on the model as shown **inside a viewport**. This also identifies the viewport to change.
+4. Press Enter at the second model-point prompt.
+5. Pick where the first point should appear on the sheet.
+
+The viewport pans to align that point and keeps its scale.
+
+## Align two points
+
+Give two model points, then their two corresponding paper-space points. The distance between the paper points sets the new viewport scale.
+
+For example, if two model points are 100 units apart and their paper-space destinations are 50 units apart, the resulting scale is 1:2. Use matching directions for both pairs.
+
+## Limits
+
+- The first pick must be inside a viewport on the active layout.
+- Version 0.9.0 adjusts **position and scale only**. It does not rotate the view to match the angle between the point pairs. If the angles differ, the command reports this.
+- Use [U](/reference/commands/u/) to undo the viewport change.
+
+See [Layouts and plotting](/user-manual/layouts-and-plotting/) for setting up the sheet and its viewports.

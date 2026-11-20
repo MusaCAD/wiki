@@ -4,8 +4,8 @@
 title: "ARRAY"
 description: "The ARRAY (AR) command in Musa CAD makes many copies of selected objects in a pattern: rows and columns, around a centre, or along a path. How to choose the type, change counts and spacing, and finish the array."
 tier: assisted
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: command
 command: "ARRAY"
@@ -131,8 +131,8 @@ Unlike the other two types, every item along the path is a new copy, starting at
 | **Items** (`I`) | With Measure: asks for the distance between items, then how many, or **Fill entire path** (`F`) for as many as fit. With Divide: asks how many items, at least 2. |
 | **Align items** (`A`) | **Yes**, the default, turns each copy to follow the curve. The first copy keeps the direction you drew. **No** keeps every copy as drawn. |
 | **Base point** (`B`) | The point on the selected objects that goes onto the path. <kbd>Enter</kbd> keeps the middle of the objects. |
-| **Tangent direction** (`T`) | Accepted, but the items keep the direction they have at the start of the path. |
-| **Rows** (`R`) | Not available: Musa CAD says `A path array here has one row.` |
+| **Tangent direction** (`T`) | Choose two points to define the source tangent direction. It controls how aligned items turn relative to the path. |
+| **Rows** (`R`) | Sets the number of rows and their spacing across the path. Row elevation is accepted but has no effect in 2D. |
 | **Z direction** (`Z`) | A 3D setting. It changes nothing in a 2D drawing. |
 
 The default distance in Measure is one and a half times the width of what you selected.
@@ -159,7 +159,7 @@ If objects are already selected when you start ARRAY, it uses them and goes stra
 - A fill angle of 0, or more than 360 either way, is refused with `Requires an angle between -360 and 360, not 0.`
 - On a full circle, the **Fill angle** question shows the default as `<0>`. Pressing <kbd>Enter</kbd> there keeps the full circle.
 - In Measure, a distance of 0 or less says `Requires a positive distance.` In Divide, fewer than 2 items says `Requires an integer of 2 or more.`
-- **Base point** is asked for all three types, but in version 0.8.0 it only changes path arrays.
+- **Base point** is asked for all three types, but in version 0.9.0 it only changes path arrays.
 - Nothing is remembered between runs. Every array starts from the defaults.
 - A 1 by 1 rectangular array adds nothing and says `Array: a 1x1 array adds nothing.` A polar array of 1 item says `Polar array: need at least two items.`
 - For a path array, clicking where there is no curve says `Path array: no curve under the pick.` Selecting the path itself says `Path array: the path curve is part of the selection. Deselect it first.`

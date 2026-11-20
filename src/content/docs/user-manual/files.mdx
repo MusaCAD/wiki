@@ -4,8 +4,8 @@
 title: Working with files
 description: Opening, saving and closing drawings in Musa CAD, working with several drawings in tabs, copying between drawings, and exchanging files with AutoCAD and other programs through DXF, DWG and PDF.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -29,7 +29,7 @@ Musa CAD saves drawings as `.musa` files. It reads and writes DXF itself, and DW
 
 When you close a drawing or quit with changes not saved, Musa CAD asks whether to save them first.
 
-Musa CAD 0.8.0 does not save automatically. Save often, and keep backups of drawings that matter.
+Musa CAD 0.9.0 does not save automatically. Save often, and keep backups of drawings that matter.
 
 <CommandList label="File commands" names={['NEW', 'OPEN', 'QSAVE', 'SAVEAS', 'CLOSE', 'CLOSEALL', 'QUIT', 'DWGPROPS']} />
 
@@ -60,6 +60,8 @@ DWG needs the free ODA File Converter, which Musa CAD downloads for you from **D
 <CommandList label="Import and export commands" names={['IMPORT', 'EXPORT', 'DWGIN', 'DWGOUT', 'EXPORTPDF', 'WBLOCK']} />
 
 ## Files from newer versions
+
+Version 0.9.0 saves native format **49**. Files saved by it need Musa CAD 0.9.0 or newer. Keep an older copy if a collaborator still uses 0.8.0.
 
 Each Musa CAD release can open drawings from itself and from every older release. A drawing saved by a newer release needs that release or newer. To send a drawing to someone with an older version, export it as DXF. [The .musa format](/file-formats/musa-format/) lists which release writes which version.
 

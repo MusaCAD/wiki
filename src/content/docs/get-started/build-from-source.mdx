@@ -4,8 +4,8 @@
 title: Build from source
 description: Build Musa CAD yourself from its source code on Linux in three commands. What you need to install first, and where the program ends up.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -21,13 +21,13 @@ You can build Musa CAD from its source code with a few standard tools. It does n
 | A C++23 compiler | GCC 13, Clang 17, or Visual Studio 2022 (17.8) |
 | CMake | 3.25 or newer |
 | Ninja | 1.10 or newer |
-| Qt 6 (Core, Gui, Widgets) | 6.4 or newer |
-| Vulkan loader and headers | 1.3 or newer (needed to configure; the program itself draws with OpenGL) |
+| Qt 6 (Core, Gui, Widgets, OpenGL, OpenGLWidgets, PrintSupport, Network) | 6.4 or newer |
+| Vulkan loader and headers | Optional; the active renderer uses OpenGL |
 
 On Debian or Ubuntu, one command installs them:
 
 ```sh
-sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev libvulkan-dev
+sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev libqt6opengl6-dev qt6-svg-dev
 ```
 
 Everything else (such as the test framework) is downloaded by the build itself.
@@ -35,7 +35,7 @@ Everything else (such as the test framework) is downloaded by the build itself.
 ## Build it
 
 ```sh
-git clone https://github.com/MusaCAD/MusaCAD.git
+git clone --branch v0.9.0 https://github.com/MusaCAD/MusaCAD.git
 cd MusaCAD
 cmake --preset release
 cmake --build --preset release
@@ -55,7 +55,7 @@ DWG support is not compiled in, and needs nothing at build time. Musa CAD runs a
 
 ## Windows and macOS
 
-Both are built by the project's GitHub workflows. [Building](/developer/building/) explains how to set up Visual Studio and Qt for a Windows build on your own PC. A Mac build gives you a working command line, but the drawing area cannot open yet (see [Install on macOS](/get-started/install-macos/)).
+Both are built by the project's GitHub workflows. [Building](/developer/building/) explains how to set up Visual Studio and Qt for a Windows build on your own PC. For a working experimental Mac drawing window, use the Mac tag described in [Building](/developer/building/) or [install the Mac preview](/get-started/install-macos/).
 
 ## Next
 

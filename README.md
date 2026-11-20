@@ -68,7 +68,8 @@ fails the build (`scripts/check-staleness.mjs`).
 - Prompts go in a ` ```musacad ` block, copied from Musa CAD. They are shown the way the
   command line shows them.
 - Every image needs alt text. Drawings are `<Figure id="...">` with a file in `examples/`;
-  screenshots are `<Screenshot capturedWith="0.8.0">`.
+  screenshots record the actual capture version, for example `<Screenshot capturedWith="0.9.0">`.
+  Keep historical screenshots labelled with their original version.
 - Nothing may come from Autodesk's documentation. Write from Musa CAD's own source, its
   prompts, and what it does when you use it.
 - Every file starts with the `SPDX-License-Identifier` and copyright lines

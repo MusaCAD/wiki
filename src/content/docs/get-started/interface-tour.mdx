@@ -4,8 +4,8 @@
 title: A tour of the interface
 description: The parts of the Musa CAD window and what they are called. The ribbon, the application menu, drawing tabs, Dynamic Input, the command line, the status bar and the Properties palette.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: guide
 sidebar:
@@ -15,7 +15,7 @@ sidebar:
 import Screenshot from '../../../components/Screenshot.astro';
 import overview from '../../../assets/screenshots/overview.png';
 import commandEntry from '../../../assets/screenshots/command-entry.png';
-import dynamicInput from '../../../assets/screenshots/dynamic-input.png';
+import dynamicInput from '../../../assets/screenshots/dynamic-input-0.9.0.png';
 
 This page names the parts of the Musa CAD window, so the rest of the wiki makes sense. The layout and the names are the same as AutoCAD's "Drafting & Annotation" workspace, so if you know AutoCAD you can skim it.
 
@@ -30,7 +30,7 @@ A few things worth knowing:
 - **Hover over any button** to see the command's name, its short alias and what it does.
 - **A small arrow under a button** opens more ways to use it. Circle, for instance, has six ways to draw a circle.
 - **A small arrow in a panel's corner** opens the matching window, such as the Dimension Style Manager.
-- **A greyed-out button** is a tool Musa CAD does not have yet. Its tooltip says so. The whole Parametric tab is like that in version 0.8.0.
+- **A greyed-out button** is a tool Musa CAD does not have yet. Its tooltip says so. The whole Parametric tab is like that in version 0.9.0.
 
 When the window gets narrow, the panels shrink to icons so everything still fits. Extra tabs appear while you work on a hatch, a text, a block or in the Block Editor.
 
@@ -53,9 +53,9 @@ This is the part of Musa CAD you will use most, and it is switched on from the s
 - The command you type appears next to the cursor, with a list of matching commands and what each one does. Press <kbd>Enter</kbd> to run it.
 - Musa CAD's question, the *prompt*, also appears next to the cursor, for example `Specify next point or [Close/Undo]:`.
 - At a prompt with options, press <kbd>↓</kbd> (the down arrow) to see the options as a list, and pick one.
-- While you draw, the length and angle of what you are drawing appear in small boxes. Type a number into them to make it exact. <kbd>Tab</kbd> moves between the boxes.
+- While you draw, named fields show the length, angle or other dimensions. The active value is selected in blue. Type to replace it, and press <kbd>Tab</kbd> to move to the next field. A padlock marks a valid typed constraint.
 
-<Screenshot src={dynamicInput} alt="A thick polyline being drawn away from a house plan. Next to the cursor, two boxes show the segment's length and its angle, and a dashed line shows polar tracking holding the segment at 45 degrees." caption="The length and angle of the line, at the cursor, ready to type into." capturedWith="0.8.0" />
+<Screenshot src={dynamicInput} alt="Musa CAD 0.9.0 drawing a line beside a floor plan. The Length field is selected in blue, Angle shows 45 degrees, and the prompt lists the Tab, Enter and down-arrow keys." caption="Dynamic Input in 0.9.0: named fields, a blue active value and keyboard hints beside the drawing." capturedWith="0.9.0" />
 
 Prefer the classic command line at the bottom of the window? Press <kbd>F12</kbd>. The prompts and commands are exactly the same either way. [Read more about Dynamic Input](/user-manual/dynamic-input/).
 

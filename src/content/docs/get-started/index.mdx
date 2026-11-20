@@ -4,8 +4,8 @@
 title: Get started
 description: Get Musa CAD running and make your first real drawing. Install it, learn the parts of the window, and see what carries over from AutoCAD.
 tier: human
-appliesTo: 0.8.0
-lastVerified: 2026-10-23
+appliesTo: 0.9.0
+lastVerified: 2026-11-21
 status: complete
 kind: landing
 sidebar:
@@ -25,13 +25,15 @@ This section takes you from nothing to a saved, dimensioned drawing printed to P
 4. [A tour of the interface](/get-started/interface-tour/): the names of the parts of the window, so the rest of the wiki makes sense.
 5. [Coming from AutoCAD](/get-started/coming-from-autocad/): what carries over, what is different, and what is missing.
 
+Already installed? See [Updating Musa CAD](/get-started/updating/) before replacing an older version.
+
 ## Check your graphics first
 
-The drawing area needs a graphics driver that supports **OpenGL 4.5**. Up-to-date drivers for Intel, AMD and NVIDIA graphics on Windows and Linux all do. macOS does not, which is why the Mac version is only a preview for now.
+The stable Windows and Linux builds need **OpenGL 4.5**. A current driver is recommended; older hardware may use the software rendering fallback. The separate [Mac experimental build](/get-started/install-macos/) uses OpenGL 4.1.
 
-If your computer cannot run the drawing area, Musa CAD does not just show a black window. It tells you what it found and what it needs, and then closes.
+If the drawing area cannot start, see [startup troubleshooting](/troubleshooting/app-will-not-start/).
 
 <CardGrid>
-  <LinkCard title="Download page" description="The newest release on GitHub: Windows installer, AppImage, Flatpak bundle and Mac disk image." href="https://github.com/MusaCAD/MusaCAD/releases/latest" />
+  <LinkCard title="Download page" description="The newest release on GitHub: Windows installer, AppImage and Flatpak bundle. The Mac build has a separate experimental release." href="https://github.com/MusaCAD/MusaCAD/releases/latest" />
   <LinkCard title="Musa CAD on Flathub" description="The easiest Linux install. Updates arrive with your other apps." href="https://flathub.org/apps/org.musacad.MusaCAD" />
 </CardGrid>
